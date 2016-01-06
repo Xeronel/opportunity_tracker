@@ -15,7 +15,7 @@ CREATE TABLE location (
   address2 VARCHAR(80),
   city VARCHAR(30) NOT NULL,
   state VARCHAR(2) NOT NULL,
-  company_id INTEGER NOT NULL    -- Foreign key set later
+  company_id INTEGER NOT NULL    -- Foreign key
 );
 
 ---
@@ -26,7 +26,7 @@ CREATE TABLE company (
   name VARCHAR(25) NOT NULL,
   industry VARCHAR(80),
   active BOOLEAN NOT NULL,
-  employee_id INTEGER NOT NULL  -- Foreign key set later
+  employee_id INTEGER NOT NULL  -- Foreign key
 );
 
 ---
@@ -39,4 +39,16 @@ CREATE TABLE employee (
   email VARCHAR(80),
   username VARCHAR(25) UNIQUE,
   pwhash TEXT
+);
+
+---
+--- Create action table
+---
+CREATE TABLE action (
+  id SERIAL PRIMARY KEY,
+  company_id INTEGER,     -- Foreign key
+  contact_id INTEGER,     -- Foreign key
+  emplyee_id INTEGER,     -- Foreign key
+  action_date TIMESTAMP WITH TIME ZONE,
+  note VARCHAR(255)
 );
