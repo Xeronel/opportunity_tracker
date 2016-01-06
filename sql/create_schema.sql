@@ -67,9 +67,9 @@ CREATE TABLE contact (
 ---
 CREATE TABLE action (
   id SERIAL PRIMARY KEY,
-  company INTEGER,     -- Foreign key
-  contact INTEGER,     -- Foreign key
-  emplyee INTEGER,     -- Foreign key
+  company INTEGER NOT NULL REFERENCES company (id),
+  contact INTEGER REFERENCES contact (id),
+  employee INTEGER NOT NULL REFERENCES employee (id),
   action_date TIMESTAMP WITH TIME ZONE,
   note VARCHAR(255)
 );
