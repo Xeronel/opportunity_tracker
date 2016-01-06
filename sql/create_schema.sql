@@ -50,6 +50,19 @@ CREATE TABLE location (
 );
 
 ---
+--- Create contact table
+---
+CREATE TABLE contact (
+  id SERIAL PRIMARY KEY,
+  company INTEGER NOT NULL REFERENCES company (id),
+  location INTEGER NOT NULL REFERENCES location (id),
+  first_name VARCHAR(25) NOT NULL,
+  last_name VARCHAR(25),
+  email VARCHAR(255),
+  phone VARCHAR(15)
+);
+
+---
 --- Create action table
 ---
 CREATE TABLE action (
@@ -60,4 +73,3 @@ CREATE TABLE action (
   action_date TIMESTAMP WITH TIME ZONE,
   note VARCHAR(255)
 );
-
