@@ -58,5 +58,5 @@ CREATE TABLE action (
 ---
 CREATE TABLE industry (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(80)
+  name VARCHAR(80) UNIQUE
 );
