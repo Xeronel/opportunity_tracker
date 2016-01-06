@@ -28,3 +28,15 @@ CREATE TABLE company (
   active BOOLEAN NOT NULL,
   employee_id INTEGER NOT NULL  -- Foreign key set later
 );
+
+---
+--- Create employee table
+---
+CREATE TABLE employee (
+  id SERIAL PRIMARY KEY,
+  first_name VARCHAR(25),
+  last_name VARCHAR(25),
+  email VARCHAR(80),
+  username VARCHAR(25) UNIQUE,
+  pwhash TEXT
+);
