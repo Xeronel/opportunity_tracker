@@ -52,3 +52,11 @@ CREATE TABLE action (
   action_date TIMESTAMP WITH TIME ZONE,
   note VARCHAR(255)
 );
+
+---
+--- Create industry table
+---
+CREATE TABLE industry (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(80)
+);
