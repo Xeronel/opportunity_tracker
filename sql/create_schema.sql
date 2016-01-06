@@ -17,3 +17,14 @@ CREATE TABLE location (
   state VARCHAR(2) NOT NULL,
   company_id INTEGER NOT NULL    -- Foreign key set later
 );
+
+---
+--- Create company table
+---
+CREATE TABLE company (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(25) NOT NULL,
+  industry VARCHAR(80),
+  active BOOLEAN NOT NULL,
+  employee_id INTEGER NOT NULL  -- Foreign key set later
+);
