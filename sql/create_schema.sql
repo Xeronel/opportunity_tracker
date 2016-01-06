@@ -46,7 +46,7 @@ CREATE TABLE location (
   address2 VARCHAR(80),
   city VARCHAR(30) NOT NULL,
   state VARCHAR(2) NOT NULL,
-  company INTEGER NOT NULL    -- Foreign key
+  company INTEGER NOT NULL REFERENCES company (id)
 );
 
 ---
