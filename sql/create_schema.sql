@@ -19,6 +19,17 @@ CREATE TABLE employee (
 );
 
 ---
+--- Create session table
+---
+CREATE TABLE session (
+  id SERIAL PRIMARY KEY,
+  access_token TEXT NOT NULL,
+  employee INTEGER NOT NULL REFERENCES employee (id),
+  expire_dt TIMESTAMP WITH TIME ZONE NOT NULL,
+  last_ip VARCHAR(45) NOT NULL
+);
+
+---
 --- Create industry table
 ---
 CREATE TABLE industry (
