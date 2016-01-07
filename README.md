@@ -8,4 +8,7 @@ Customer opportunity tracker. It helps you keep track of who you're calling and 
 
 ## Dependencies
    * Python 3.4+
-   * PostgreSQL (requires pgcrypto)
+      - psycopg2
+      - tornado
+   * PostgreSQL
+      - pgcrypto
