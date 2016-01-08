@@ -84,3 +84,14 @@ CREATE TABLE action (
   action_date TIMESTAMP WITH TIME ZONE,
   note VARCHAR(255)
 );
+
+---
+--- Create notification table
+---
+CREATE TABLE notification (
+  id SERIAL PRIMARY KEY,
+  company INTEGER NOT NULL REFERENCES company (id),
+  employee INTEGER NOT NULL REFERENCES employee (id),
+  notify_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  note VARCHAR(512)
+);
