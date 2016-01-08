@@ -69,6 +69,7 @@ CREATE TABLE contact (
   location INTEGER NOT NULL REFERENCES location (id),
   first_name VARCHAR(25) NOT NULL,
   last_name VARCHAR(25),
+  title VARCHAR(25),
   email VARCHAR(255),
   phone VARCHAR(15)
 );
