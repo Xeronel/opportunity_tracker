@@ -83,7 +83,7 @@ CREATE TABLE action (
   contact INTEGER REFERENCES contact (id),
   employee INTEGER NOT NULL REFERENCES employee (id),
   action_date TIMESTAMP WITH TIME ZONE,
-  note VARCHAR(255)
+  note VARCHAR(2048)
 );
 
 ---
