@@ -96,3 +96,11 @@ CREATE TABLE notification (
   notify_date TIMESTAMP WITH TIME ZONE NOT NULL,
   note VARCHAR(1024)
 );
+
+---
+--- Create notification types table
+---
+CREATE TABLE notification_type (
+  id INTEGER NOT NULL UNIQUE,
+  label VARCHAR(50) NOT NULL
+)
