@@ -94,6 +94,7 @@ CREATE TABLE notification (
   company INTEGER NOT NULL REFERENCES company (id),
   employee INTEGER NOT NULL REFERENCES employee (id),
   notify_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  type INTEGER REFERENCES notification_type (id),
   note VARCHAR(1024)
 );
 
@@ -103,4 +104,4 @@ CREATE TABLE notification (
 CREATE TABLE notification_type (
   id INTEGER NOT NULL UNIQUE,
   label VARCHAR(50) NOT NULL
-)
+);
