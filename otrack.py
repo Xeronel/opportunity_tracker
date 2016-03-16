@@ -40,14 +40,23 @@ class Contact(tornado.web.RequestHandler):
     def get(self):
         self.render('contact.html')
 
+    def post(self):
+        self.render('contact.html')
+
 
 class Notification(tornado.web.RequestHandler):
     def get(self):
         self.render('notification.html')
 
+    def post(self):
+        self.render('notification.html')
+
 
 class Note(tornado.web.RequestHandler):
     def get(self):
+        self.render('note.html')
+
+    def post(self):
         self.render('note.html')
 
 
