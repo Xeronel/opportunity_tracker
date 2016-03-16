@@ -1,0 +1,53 @@
+{% extends "template.html" %}
+
+{% block title %}Add Note{% end %}
+{% block active %}note{% end %}
+
+{% block panel-heading %}Add Note{% end %}
+{% block panel-body %}
+<div class="form-group">
+    <form role="form" method="post">
+        <div class="form-group">
+            <label for="company">Company:</label>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle"
+                        aria-haspopup="true"
+                        type="button"
+                        data-toggle="dropdown"
+                        id="company">
+                    Company Name <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">Company 1</a></li>
+                    <li><a href="#">Company 2</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="action">Action Taken:</label>
+            <div class="dropdown">
+                <button class="btn btn-default dropdown-toggle"
+                        aria-haspopup="true"
+                        type="button"
+                        data-toggle="dropdown"
+                        id="company">
+                    Action Taken <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">Phone Call</a></li>
+                    <li><a href="#">Email</a></li>
+                    <li><a href="#">Meeting</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="note">Note:</label>
+            <textarea class="form-control" rows="5" id="note"></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success pull-right">Submit</button>
+            <button type="button" class="btn btn-danger pull-right">Cancel</button>
+        </div>
+    </form>
+</div>
+{% end %}

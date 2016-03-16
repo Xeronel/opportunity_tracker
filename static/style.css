@@ -1,3 +1,7 @@
+body {
+    background-color: #d8dce3;;
+}
+
 .headerpanel {
     position: fixed;
     top: 0;
@@ -18,10 +22,10 @@
 }
 
 .logo-image {
-   position: absolute;
-   left: 50%;
-   top: 50%;
-   transform: translate(-50%, -50%);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .leftpanel {
@@ -42,7 +46,7 @@
 }
 
 .nav {
-    margin: 0 0 30px 0;
+    margin: 0 0 10px 0;
     text-align: center;
     padding-left: 0;
 }
@@ -53,7 +57,8 @@
     color: #909090;
     font-weight: 700;
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
-    text-align: center;
+    text-align: left;
+    margin:0 auto;
 }
 
 .nav > li > a {
@@ -61,12 +66,60 @@
     text-decoration: none;
 }
 
-.nav > li > a:hover {
+.nav > li > a:hover,
+.nav > li > a:active,
+.nav > li > a:focus {
     color: #ffffff;
     text-decoration: none;
+    background-color: transparent;
 }
 
-.nav > li > a:active {
-    color: #ffffff;
-    text-decoration: none;
+.nav-tabs {
+    background-color: #1f1f1f;
+}
+
+.nav > li.active,
+.nav > li.active > a {
+    color: white;
+    background-color: #1F1F1F;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+    color: white;
+    padding-left: 60px;
+    padding-right: 60px;
+    margin-top: 20px;
+    background-color: #2a2a2a;
+    border-color: transparent;
+}
+
+.content-panel {
+    margin-left: 280px;
+    margin-top: 64px;
+    padding: 20px;
+    position: relative;
+    height: 100%;
+}
+
+.panel-heading {
+    background-color: #2a2a2a;
+    color: white;
+}
+
+.btn.pull-right {
+    margin-left: 5px;
+}
+
+textarea {
+    min-width: 100%;
+    max-width: 100%;
+}
+
+#datepicker {
+    width:180px;
+}
+#datepicker > span:hover {
+    cursor: pointer;
 }

@@ -1,3 +1,4 @@
+-- noinspection SqlNoDataSourceInspectionForFile
 ---
 --- Create schema
 ---
