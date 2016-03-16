@@ -106,3 +106,14 @@ CREATE TABLE notification_type (
   id INTEGER NOT NULL UNIQUE,
   label VARCHAR(50) NOT NULL
 );
+
+---
+--- Create notification table
+---
+CREATE TABLE notification (
+  id SERIAL PRIMARY KEY,
+  company INTEGER NOT NULL REFERENCES company (id),
+  employee INTEGER NOT NULL REFERENCES employee (id),
+  notify_date TIMESTAMP WITH TIME ZONE NOT NULL,
+  note VARCHAR(512)
+);
