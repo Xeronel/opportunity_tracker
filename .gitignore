@@ -4,3 +4,6 @@
 # Ignore python cache
 __pycache__/
 *.pyc
+
+# Bower controlled libs
+bower/
