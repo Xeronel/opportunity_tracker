@@ -1,4 +1,4 @@
-# Opporunity Tracker
+# Opportunity Tracker
 
 Customer opportunity tracker. It helps you keep track of who you're calling and what your next action will be.
 
