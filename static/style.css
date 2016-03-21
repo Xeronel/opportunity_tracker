@@ -1,5 +1,19 @@
 body {
-    background-color: #d8dce3;;
+    background-color: #D8DCE3;
+}
+
+.btn-inverse {
+    color: white;
+    background-color: #2A2A2A;
+}
+
+.btn-inverse:hover {
+    color: white;
+    background-color: #1F1F1F;
+}
+
+.btn-primary {
+    background-color: #0081BD;
 }
 
 .headerpanel {
@@ -8,7 +22,7 @@ body {
     left: 0;
     right: 0;
     height: 64px;
-    background-color: #2a2a2a;
+    background-color: #2A2A2A;
     z-index: 2000;
 }
 
@@ -29,7 +43,7 @@ body {
 }
 
 .leftpanel {
-    background-color: #1f1f1f;
+    background-color: #1F1F1F;
     width: 280px;
     position: fixed;
     top: 64px;
@@ -40,7 +54,7 @@ body {
 }
 
 .paneltitle {
-    color: #f1c40f;
+    color: #F1C40F;
     text-align: center;
     font-size: 11pt;
     margin: 12px 0 12px 0;
@@ -70,13 +84,13 @@ body {
 .nav > li > a:hover,
 .nav > li > a:active,
 .nav > li > a:focus {
-    color: #ffffff;
+    color: white;
     text-decoration: none;
     background-color: transparent;
 }
 
 .nav-tabs {
-    background-color: #1f1f1f;
+    background-color: #1F1F1F;
     border: none;
 }
 
@@ -93,7 +107,7 @@ body {
     color: white;
     padding: 0 30px;
     margin-top: 20px;
-    background-color: #2a2a2a;
+    background-color: #2A2A2A;
     border-color: transparent;
     display: none;
 }
@@ -107,7 +121,7 @@ body {
 }
 
 .panel-heading {
-    background-color: #2a2a2a;
+    background-color: #2A2A2A;
     color: white;
 }
 
