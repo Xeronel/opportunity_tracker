@@ -94,11 +94,9 @@
     <script src="{{ static_url('bower/jquery-form/jquery.form.js') }}"></script>
     <script src="{{ static_url('otrack.js') }}"></script>
     <script>
-        // Nav selector
-        $(document).ready(function () {
-            $(".nav ul li").removeClass("active");
-            $('#{% block active %}{% end %}').addClass('active');
-        });
+    $(document).ready(
+            navSelector({% block active %}{% end %})
+    );
     </script>
     {% block footer %}{% end %}
 </footer>
