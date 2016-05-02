@@ -2,6 +2,16 @@ body {
     background-color: #D8DCE3;
 }
 
+textarea {
+    min-width: 100%;
+    max-width: 100%;
+}
+
+#notes {
+    max-height: 245px;
+    overflow-y: auto;
+}
+
 .btn-inverse {
     color: white;
     background-color: #2A2A2A;
@@ -28,7 +38,7 @@ body {
 
 .logopanel {
     position: absolute;
-    width: 280px;
+    min-width: 255px;
     height: 64px;
     margin-left: 0;
     background-color: #1F1F1F;
@@ -39,12 +49,12 @@ body {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-57%, -50%);
 }
 
 .leftpanel {
     background-color: #1F1F1F;
-    width: 280px;
+    min-width: 255px;
     position: fixed;
     top: 64px;
     left: 0;
@@ -129,14 +139,10 @@ body {
     margin-left: 5px;
 }
 
-textarea {
-    min-width: 100%;
-    max-width: 100%;
-}
-
 #datepicker {
     width:180px;
 }
+
 #datepicker > span:hover {
     cursor: pointer;
 }
