@@ -1,11 +1,11 @@
-{% extends "template.html" %}
+{% extends "../base.html" %}
 
 {% block title %}Add Company{% end %}
 {% block active %}company{% end %}
 
 {% block panel-heading %}Add Company{% end %}
 {% block panel-body %}
-<form role="form" method="post">
+<form id="company_entry" role="form" method="post">
     <div class="form-group">
         <label for="contactname">Name:</label>
         <input id="contactname" type="text" class="form-control" name="companyname">

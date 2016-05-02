@@ -1,0 +1,16 @@
+<table class="table table-striped">
+    <thead><tr>
+        <th>Date</th>
+        <th>Action</th>
+        <th>Note</th>
+    </tr></thead>
+    <tbody>
+    {% for note in notes %}
+    <tr>
+        <td>{{ escape(note['date']) }}</td>
+        <td>{{ escape(note['action']) }}</td>
+        <td>{{ escape(note['note']) }}</td>
+    </tr>
+    {% end %}
+    </tbody>
+</table>

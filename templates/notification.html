@@ -1,4 +1,4 @@
-{% extends "template.html" %}
+{% extends "base.html" %}
 
 {% block title %}Add Notification{% end %}
 {% block active %}notification{% end %}
@@ -18,8 +18,9 @@
                     Company Name <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#">Company 1</a></li>
-                    <li><a href="#">Company 2</a></li>
+                {% for company in companies %}
+                    <li><a href="#">{{ escape(company) }}</a></li>
+                {% end %}
                 </ul>
             </div>
         </div>

@@ -2,6 +2,11 @@ import settings
 import tornado.ioloop
 import tornado.web
 import tornado.escape
+import json
+
+
+companies = set()
+notes = {}
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -26,38 +31,75 @@ class Calendar(tornado.web.RequestHandler):
         self.render('calendar.html')
 
 
-class Company(tornado.web.RequestHandler):
+class Industry(tornado.web.RequestHandler):
     def get(self):
-        self.render('company.html')
+        self.render('industry.html')
 
     def post(self):
-        print(self.get_argument('companyname'))
+        self.render('industry.html')
         print(self.get_argument('industry'))
-        self.render('company.html')
+
+
+class Company(tornado.web.RequestHandler):
+    def get(self):
+        self.render('forms/company.html')
+
+    def post(self):
+        company = self.get_argument('companyname')
+        if company:
+            companies.add(company)
+        self.render('forms/company.html')
 
 
 class Contact(tornado.web.RequestHandler):
     def get(self):
-        self.render('contact.html')
+        self.render('forms/contact.html', companies=companies)
 
     def post(self):
-        self.render('contact.html')
+        self.render('forms/contact.html', companies=companies)
 
 
 class Notification(tornado.web.RequestHandler):
     def get(self):
-        self.render('notification.html')
+        self.render('notification.html', companies=companies)
 
     def post(self):
-        self.render('notification.html')
+        self.render('notification.html', companies=companies)
 
 
 class Note(tornado.web.RequestHandler):
     def get(self):
-        self.render('note.html')
+        self.render('forms/note.html',
+                    companies=companies,
+                    notes=notes)
 
     def post(self):
-        self.render('note.html')
+        company = self.get_argument('companyname')
+        action = self.get_argument('action')
+        note = self.get_argument('note')
+        date = self.get_argument('date')
+
+        for k in self.request.arguments:
+            if not self.request.arguments[k][0]:
+                raise tornado.web.HTTPError(422)
+
+        # Store note
+        if company not in notes:
+            notes[company] = []
+        notes[company].append({'action': action,
+                               'note': note,
+                               'date': date})
+        self.render('forms/note.html',
+                    companies=companies,
+                    notes=notes)
+
+
+class GetNotes(tornado.web.RequestHandler):
+    def get(self, company):
+        if company in notes:
+            self.render('get_notes.html', notes=notes[company][-5:])
+        else:
+            self.write('')
 
 
 def make_app():
@@ -65,10 +107,12 @@ def make_app():
         [(r'/', Dashboard),
          (r'/dashboard', Dashboard),
          (r'/calendar', Calendar),
+         (r'/add_industry', Industry),
          (r'/add_company', Company),
          (r'/add_contact', Contact),
          (r'/add_notification', Notification),
-         (r'/add_note', Note)],
+         (r'/add_note', Note),
+         (r'/get_notes/(.*)', GetNotes)],
         debug=True,
         autoreload=True,
         compiled_template_cache=False,

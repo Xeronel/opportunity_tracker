@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 
 {% block title %}Add Note{% end %}
 {% block active %}note{% end %}
@@ -7,6 +7,7 @@
 {% block panel-body %}
 <div class="form-group">
     <form role="form" method="post">
+        <!-- Company dropdown -->
         <div class="form-group">
             <label for="company">Company:</label>
             <div class="dropdown">
@@ -17,12 +18,15 @@
                         id="company">
                     Company Name <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#">Company 1</a></li>
-                    <li><a href="#">Company 2</a></li>
+                <ul id="company_dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                {% for company in companies %}
+                    <li><a href="#">{{ escape(company) }}</a></li>
+                {% end %}
                 </ul>
+                <input type="hidden" name="companyname">
             </div>
         </div>
+        <!-- Action dropdown -->
         <div class="form-group">
             <label for="action">Action Taken:</label>
             <div class="dropdown">
@@ -38,11 +42,26 @@
                     <li><a href="#">Email</a></li>
                     <li><a href="#">Meeting</a></li>
                 </ul>
+                <input type="hidden" name="action">
             </div>
         </div>
+        <!-- Date selector -->
+        <div class="form-group">
+            <label>Select Date: </label>
+            <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
+                <input class="form-control" type="text" name="date" readonly />
+                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            </div>
+        </div>
+        <!-- Previous notes -->
+        <div class="form-group">
+            <label>Previous Notes:</label><br>
+            <div id="notes"></div>
+        </div>
+        <!-- Note entry -->
         <div class="form-group">
             <label for="note">Note:</label>
-            <textarea class="form-control" rows="5" id="note"></textarea>
+            <textarea class="form-control" rows="5" id="note" name="note"></textarea>
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
@@ -50,4 +69,12 @@
         </div>
     </form>
 </div>
+{% end %}
+{% block footer %}
+<script>
+    $("#company_dropdown li a").click(function() {
+        var selText = $(this).text();
+        $("#notes").load('/get_notes/' + selText)
+    });
+</script>
 {% end %}
