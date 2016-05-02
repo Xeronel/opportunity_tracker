@@ -1,9 +1,9 @@
-{% extends "template.html" %}
+{% extends "base.html" %}
 
-{% block title %}Add Note{% end %}
-{% block active %}note{% end %}
+{% block title %}Add Contact{% end %}
+{% block active %}contact{% end %}
 
-{% block panel-heading %}Add Note{% end %}
+{% block panel-heading %}Add Contact{% end %}
 {% block panel-body %}
 <div class="form-group">
     <form role="form" method="post">
@@ -24,25 +24,24 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="action">Action Taken:</label>
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle"
-                        aria-haspopup="true"
-                        type="button"
-                        data-toggle="dropdown"
-                        id="company">
-                    Action Taken <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#">Phone Call</a></li>
-                    <li><a href="#">Email</a></li>
-                    <li><a href="#">Meeting</a></li>
-                </ul>
-            </div>
+            <label for="firstname">First Name:</label>
+            <input id="firstname" type="text" class="form-control" name="firstname">
         </div>
         <div class="form-group">
-            <label for="note">Note:</label>
-            <textarea class="form-control" rows="5" id="note"></textarea>
+            <label for="lastname">Last Name:</label>
+            <input id="lastname" type="text" class="form-control" name="lastname">
+        </div>
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input id="title" type="text" class="form-control" name="title">
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input id="email" type="text" class="form-control" name="email">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input id="phone" type="text" class="form-control" name="phone">
         </div>
         <div class="form-group">
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
