@@ -1,0 +1,20 @@
+<div class="form-group">
+    <form role="form" method="post">
+        {% include '../ui/company-dropdown.html' %}
+        <div class="form-group">
+            <label>Select Date: </label>
+            <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
+                <input class="form-control" type="text" readonly />
+                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="note">Note:</label>
+            <textarea class="form-control" rows="5" id="note"></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+            <button type="button" class="btn btn-inverse pull-right">Cancel</button>
+        </div>
+    </form>
+</div>
