@@ -53,10 +53,10 @@ class Company(tornado.web.RequestHandler):
 
 class Contact(tornado.web.RequestHandler):
     def get(self):
-        self.render('forms/contact.html', companies=companies)
+        self.render('contact.html', companies=companies)
 
     def post(self):
-        self.render('forms/contact.html', companies=companies)
+        self.render('contact.html', companies=companies)
 
 
 class Notification(tornado.web.RequestHandler):
