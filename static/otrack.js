@@ -19,5 +19,5 @@ $(function() {
 // Nav selector
 function navSelector(id) {
     $(".nav ul li").removeClass("active");
-    $('#'+id.id).addClass('active');
+    $('#'+id).addClass('active');
 }
