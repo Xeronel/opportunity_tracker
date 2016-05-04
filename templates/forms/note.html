@@ -1,31 +1,14 @@
 {% extends "../base.html" %}
 
 {% block title %}Add Note{% end %}
-{% block active %}note{% end %}
+{% block active %}note-menu{% end %}
 
 {% block panel-heading %}Add Note{% end %}
 {% block panel-body %}
 <div class="form-group">
     <form role="form" method="post">
-        <!-- Company dropdown -->
-        <div class="form-group">
-            <label for="company">Company:</label>
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle"
-                        aria-haspopup="true"
-                        type="button"
-                        data-toggle="dropdown"
-                        id="company">
-                    Company Name <span class="caret"></span>
-                </button>
-                <ul id="company_dropdown" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                {% for company in companies %}
-                    <li><a href="#">{{ escape(company) }}</a></li>
-                {% end %}
-                </ul>
-                <input type="hidden" name="companyname">
-            </div>
-        </div>
+        {% include '../ui/company-dropdown.html' %}
+
         <!-- Action dropdown -->
         <div class="form-group">
             <label for="action">Action Taken:</label>
