@@ -7,23 +7,7 @@
 {% block panel-body %}
 <div class="form-group">
     <form role="form" method="post">
-        <div class="form-group">
-            <label for="company">Company:</label>
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle"
-                        aria-haspopup="true"
-                        type="button"
-                        data-toggle="dropdown"
-                        id="company">
-                    Company Name <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                {% for company in companies %}
-                    <li><a href="#">{{ escape(company) }}</a></li>
-                {% end %}
-                </ul>
-            </div>
-        </div>
+        {% include 'ui/company-dropdown.html' %}
         <div class="form-group">
             <label>Select Date: </label>
             <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
