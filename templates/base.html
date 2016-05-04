@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" href="{{ static_url('bower/selectize/dist/css/selectize.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ static_url('bower/selectize/dist/css/selectize.bootstrap3.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ static_url('style.css') }}">
-    <script src="{{ static_url('bower/jquery/dist/jquery.min.js') }}"></script>
 </head>
 
 <body>
@@ -87,12 +86,14 @@
         {% end %}
     </div>
     <footer>
+        <script src="{{ static_url('bower/jquery/dist/jquery.min.js') }}"></script>
         <script src="{{ static_url('bower/bootstrap/dist/js/bootstrap.min.js') }}"></script>
         <script src="{{ static_url('bower/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
         <script src="{{ static_url('bower/selectize/dist/js/standalone/selectize.min.js') }}"></script>
         <script src="{{ static_url('bower/jquery-form/jquery.form.js') }}"></script>
         <script src="{{ static_url('bower/js-cookie/src/js.cookie.js') }}"></script>
         <script src="{{ static_url('otrack.js') }}"></script>
+        <script src="{{ static_url('ui.js') }}"></script>
         <script>
             $(document).ready(
                     navSelector('{% block active %}{% end %}')

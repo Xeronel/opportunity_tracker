@@ -1,0 +1,20 @@
+{% extends "../base.html" %}
+
+{% block title %}Add Note{% end %}
+{% block active %}note-menu{% end %}
+
+{% block panel-heading %}Add Note{% end %}
+{% block panel-body %}
+{% include 'forms/add_note.html' %}
+{% end %}
+
+{% block footer %}
+<script>
+    $(function () {
+        var company = $('#company').val();
+        if (company) {
+            $('#notes').load('/get_notes/' + company);
+        }
+    });
+</script>
+{% end %}

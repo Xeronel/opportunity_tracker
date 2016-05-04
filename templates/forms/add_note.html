@@ -1,14 +1,6 @@
-{% extends "../base.html" %}
-
-{% block title %}Add Note{% end %}
-{% block active %}note-menu{% end %}
-
-{% block panel-heading %}Add Note{% end %}
-{% block panel-body %}
 <div class="form-group">
     <form role="form" method="post">
         {% include '../ui/company-dropdown.html' %}
-
         <!-- Action dropdown -->
         <div class="form-group">
             <label for="action">Action Taken:</label>
@@ -52,12 +44,3 @@
         </div>
     </form>
 </div>
-{% end %}
-{% block footer %}
-<script>
-    $("#company_dropdown li a").click(function() {
-        var selText = $(this).text();
-        $("#notes").load('/get_notes/' + selText)
-    });
-</script>
-{% end %}

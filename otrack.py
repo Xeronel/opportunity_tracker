@@ -69,19 +69,15 @@ class Notification(tornado.web.RequestHandler):
 
 class Note(tornado.web.RequestHandler):
     def get(self):
-        self.render('forms/note.html',
+        self.render('note.html',
                     companies=companies,
                     notes=notes)
 
     def post(self):
-        company = self.get_argument('companyname')
+        company = self.get_argument('company')
         action = self.get_argument('action')
         note = self.get_argument('note')
         date = self.get_argument('date')
-
-        for k in self.request.arguments:
-            if not self.request.arguments[k][0]:
-                raise tornado.web.HTTPError(422)
 
         # Store note
         if company not in notes:
