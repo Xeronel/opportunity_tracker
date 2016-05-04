@@ -5,16 +5,7 @@
 
 {% block panel-heading %}Add Company{% end %}
 {% block panel-body %}
-<form id="industry_entry" role="form" method="post">
-    <div class="form-group">
-        <label for="industry">Industry Name:</label>
-        <input id="industry" type="text" class="form-control" name="industry">
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-primary pull-right">Submit</button>
-        <button type="button" class="btn btn-inverse pull-right">Cancel</button>
-    </div>
-</form>
+{% include 'forms/add_industry.html' %}
 {% end %}
 {% block footer %}
 <script>
