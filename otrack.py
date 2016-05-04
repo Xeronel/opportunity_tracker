@@ -42,13 +42,13 @@ class Industry(tornado.web.RequestHandler):
 
 class Company(tornado.web.RequestHandler):
     def get(self):
-        self.render('forms/company.html')
+        self.render('company.html')
 
     def post(self):
-        company = self.get_argument('companyname')
+        company = self.get_argument('company')
         if company:
             companies.add(company)
-        self.render('forms/company.html')
+        self.render('company.html')
 
 
 class Contact(tornado.web.RequestHandler):
