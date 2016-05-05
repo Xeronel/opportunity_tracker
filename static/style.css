@@ -7,9 +7,11 @@ textarea {
     max-width: 100%;
 }
 
+/*
 td {
     white-space: nowrap;
 }
+*/
 
 #notes {
     max-height: 275px;

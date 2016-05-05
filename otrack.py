@@ -2,7 +2,6 @@ import settings
 import tornado.ioloop
 import tornado.web
 import tornado.escape
-import json
 
 
 companies = set()
@@ -85,7 +84,7 @@ class Note(tornado.web.RequestHandler):
         notes[company].append({'action': action,
                                'note': note,
                                'date': date})
-        self.render('forms/note.html',
+        self.render('note.html',
                     companies=companies,
                     notes=notes)
 

@@ -24,6 +24,7 @@
     "jquery-form": "^3.46.0",
     "js-cookie": "^2.1.1",
     "selectize": "^0.12.1",
-    "tinymce": "^4.3.11"
+    "tinymce": "^4.3.11",
+    "jquery.fixedheadertable": "*"
   }
 }
