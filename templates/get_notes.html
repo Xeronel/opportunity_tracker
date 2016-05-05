@@ -1,4 +1,4 @@
-<table class="table table-striped">
+<table>
     <thead><tr>
         <th>Date</th>
         <th>Action</th>
@@ -9,7 +9,7 @@
     <tr>
         <td>{{ escape(note['date']) }}</td>
         <td>{{ escape(note['action']) }}</td>
-        <td>{{ escape(note['note']) }}</td>
+        <td>{% raw note['note'] %}</td>
     </tr>
     {% end %}
     </tbody>

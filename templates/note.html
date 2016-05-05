@@ -7,14 +7,39 @@
 {% block panel-body %}
 {% include 'forms/add_note.html' %}
 {% end %}
-
 {% block footer %}
 <script>
+    function loadNotes(company) {
+        var notes = $('#notes');
+        var notes_div = notes.parent('div');
+        notes_div.hide();
+
+        // Try to load previous notes
+        notes.load('/get_notes/' + company, function () {
+            // Display previous notes only if not empty
+            var hasNotes = $('#notes:not(:empty)');
+                if (hasNotes.length > 0) {
+                    notes_div.show();
+                }
+        });
+    }
+
     $(function () {
-        var company = $('#company').val();
-        if (company) {
-            $('#notes').load('/get_notes/' + company);
-        }
+        // Insert a previous notes section into the add notes form
+        var company = $('#company')[0].selectize;
+        $(
+                '<div class="form-group">' +
+                '<label>Previous Notes:</label><br>' +
+                '<div id="notes"></div>' +
+                '</div>'
+        ).insertBefore($('#note').parent('div'));
+        // Try to load notes
+        loadNotes(company.getValue());
+
+        // Try to load notes if the selection changes
+        company.on('change', function (value) {
+            loadNotes(value);
+        });
     });
 </script>
 {% end %}

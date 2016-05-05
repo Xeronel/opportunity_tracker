@@ -1,44 +1,21 @@
 <div class="form-group">
     <form role="form" method="post">
         {% include '../ui/company-dropdown.html' %}
-        <!-- Action dropdown -->
-        <div class="form-group">
-            <label for="action">Action Taken:</label>
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle"
-                        aria-haspopup="true"
-                        type="button"
-                        data-toggle="dropdown"
-                        id="company">
-                    Action Taken <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#">Phone Call</a></li>
-                    <li><a href="#">Email</a></li>
-                    <li><a href="#">Meeting</a></li>
-                </ul>
-                <input type="hidden" name="action">
-            </div>
-        </div>
+        {% include '../ui/actiontaken-dropdown.html' %}
         <!-- Date selector -->
-        <div class="form-group">
+        <div class="form-group col-lg-4">
             <label>Select Date: </label>
             <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
-                <input class="form-control" type="text" name="date" readonly />
+                <input class="form-control" type="text" name="date" readonly/>
                 <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
             </div>
-        </div>
-        <!-- Previous notes -->
-        <div class="form-group">
-            <label>Previous Notes:</label><br>
-            <div id="notes"></div>
         </div>
         <!-- Note entry -->
         <div class="form-group">
             <label for="note">Note:</label>
             <textarea class="form-control" rows="5" id="note" name="note"></textarea>
         </div>
-        <div class="form-group">
+        <div class="form-group col-lg-12">
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
             <button type="button" class="btn btn-inverse pull-right">Cancel</button>
         </div>

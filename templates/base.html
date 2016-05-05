@@ -4,102 +4,112 @@
     <meta charset="UTF-8">
     <title>{% block title %}Main{% end %}</title>
     <link rel="icon" type="image/x-icon" href="{{ static_url('images/favicon.ico') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static_url('bower/bootstrap/dist/css/bootstrap.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static_url('bower/bootstrap-datepicker/css/datepicker.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static_url('bower/font-awesome/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static_url('bower/selectize/dist/css/selectize.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static_url('bower/selectize/dist/css/selectize.bootstrap3.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ static_url('style.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ static_url('bower/bootstrap/dist/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ static_url('bower/bootstrap-datepicker/css/datepicker.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ static_url('bower/font-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ static_url('bower/selectize/dist/css/selectize.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ static_url('bower/selectize/dist/css/selectize.bootstrap3.css') }}">
+    <link rel="stylesheet" type="text/css"
+          href="{{ static_url('style.css') }}">
 </head>
 
 <body>
-    <header>
-        <div class="headerpanel">
-            <div class="logopanel">
-                <a href="/">
-                    <img class="logo-image" alt="Shealy Strategic Solutions" src="/static/images/SSS-Landscape-Small.png">
-                </a>
+<header>
+    <div class="headerpanel">
+        <div class="logopanel">
+            <a href="/">
+                <img class="logo-image"
+                     alt="Shealy Strategic Solutions"
+                     src="/static/images/SSS-Landscape-Small.png">
+            </a>
+        </div>
+    </div>
+</header>
+<div class="leftpanel">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#"><i class="fa fa-ellipsis-h"></i></a>
+        </li>
+    </ul>
+    <ul class="nav">
+        <li id="dashboard-menu">
+            <a href="dashboard">
+                <i class="fa fa-tachometer"></i>
+                <span> Dashboard</span>
+            </a>
+        </li>
+        <li id="calendar-menu">
+            <a href="calendar">
+                <i class="fa fa-calendar"></i>
+                <span> Calendar</span>
+            </a>
+        </li>
+        <li id="industry-menu">
+            <a href="add_industry">
+                <i class="fa fa-industry"></i>
+                <span> Add Industry</span>
+            </a>
+        </li>
+        <li id="company-menu">
+            <a href="add_company">
+                <i class="fa fa-building-o"></i>
+                <span> Add Company</span>
+            </a>
+        </li>
+        <li id="contact-menu">
+            <a href="add_contact">
+                <i class="fa fa-user"></i>
+                <span> Add Contact</span>
+            </a>
+        </li>
+        <li id="notification-menu">
+            <a href="add_notification">
+                <i class="fa fa-bell"></i>
+                <span> Add Notification</span>
+            </a>
+        </li>
+        <li id="note-menu">
+            <a href="add_note">
+                <i class="fa fa-sticky-note"></i>
+                <span> Add Note</span>
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="content-panel">
+    {% block content-panel %}
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+            <div class="panel-heading">{% block panel-heading %}{% end %}</div>
+            <div class="panel-body" style="background-color: white;">
+                {% block panel-body %}{% end %}
             </div>
         </div>
-    </header>
-    <div class="leftpanel">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#"><i class="fa fa-ellipsis-h"></i></a>
-            </li>
-        </ul>
-        <ul class="nav">
-            <li id="dashboard-menu">
-                <a href="dashboard">
-                    <i class="fa fa-tachometer"></i>
-                    <span> Dashboard</span>
-                </a>
-            </li>
-            <li id="calendar-menu">
-                <a href="calendar">
-                    <i class="fa fa-calendar"></i>
-                    <span> Calendar</span>
-                </a>
-            </li>
-            <li id="industry-menu">
-                <a href="add_industry">
-                    <i class="fa fa-industry"></i>
-                    <span> Add Industry</span>
-                </a>
-            </li>
-            <li id="company-menu">
-                <a href="add_company">
-                    <i class="fa fa-building-o"></i>
-                    <span> Add Company</span>
-                </a>
-            </li>
-            <li id="contact-menu">
-                <a href="add_contact">
-                    <i class="fa fa-user"></i>
-                    <span> Add Contact</span>
-                </a>
-            </li>
-            <li id="notification-menu">
-                <a href="add_notification">
-                    <i class="fa fa-bell"></i>
-                    <span> Add Notification</span>
-                </a>
-            </li>
-            <li id="note-menu">
-                <a href="add_note">
-                    <i class="fa fa-sticky-note"></i>
-                    <span> Add Note</span>
-                </a>
-            </li>
-        </ul>
     </div>
-    <div class="content-panel">
-        {% block content-panel %}
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
-                <div class="panel-heading">{% block panel-heading %}{% end %}</div>
-                <div class="panel-body" style="background-color: white;">
-                    {% block panel-body %}{% end %}
-                </div>
-            </div>
-        </div>
-        {% end %}
-    </div>
-    <footer>
-        <script src="{{ static_url('bower/jquery/dist/jquery.min.js') }}"></script>
-        <script src="{{ static_url('bower/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        <script src="{{ static_url('bower/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
-        <script src="{{ static_url('bower/selectize/dist/js/standalone/selectize.min.js') }}"></script>
-        <script src="{{ static_url('bower/jquery-form/jquery.form.js') }}"></script>
-        <script src="{{ static_url('bower/js-cookie/src/js.cookie.js') }}"></script>
-        <script src="{{ static_url('otrack.js') }}"></script>
-        <script src="{{ static_url('ui.js') }}"></script>
-        <script>
-            $(document).ready(
-                    navSelector('{% block active %}{% end %}')
-            );
-        </script>
-        {% block footer %}{% end %}
-    </footer>
+    {% end %}
+</div>
+<footer>
+    <script src="{{ static_url('bower/jquery/dist/jquery.min.js') }}"></script>
+    <script src="{{ static_url('bower/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+    <script src="{{ static_url('bower/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
+    <script src="{{ static_url('bower/selectize/dist/js/standalone/selectize.min.js') }}"></script>
+    <script src="{{ static_url('bower/jquery-form/jquery.form.js') }}"></script>
+    <script src="{{ static_url('bower/js-cookie/src/js.cookie.js') }}"></script>
+    <script src="{{ static_url('bower/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ static_url('bower/jquery.fixedheadertable/jquery.fixedheadertable.min.js') }}"></script>
+    <script src="{{ static_url('otrack.js') }}"></script>
+    <script src="{{ static_url('ui.js') }}"></script>
+    <script>
+        $(document).ready(
+                navSelector('{% block active %}{% end %}')
+        );
+    </script>
+    {% block footer %}{% end %}
+</footer>
 </body>
 </html>
