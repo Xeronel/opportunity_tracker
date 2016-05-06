@@ -2,9 +2,11 @@ import settings
 import tornado.ioloop
 import tornado.web
 import tornado.escape
+from tornado.escape import json_encode
 
 
 companies = set()
+contacts = {}
 notes = {}
 
 
@@ -55,6 +57,20 @@ class Contact(tornado.web.RequestHandler):
         self.render('contact.html', companies=companies)
 
     def post(self):
+        company = self.get_argument('company')
+        first_name = self.get_argument('firstname')
+        last_name = self.get_argument('lastname')
+        title = self.get_argument('title')
+        email = self.get_argument('email')
+        phone = self.get_argument('phone')
+
+        if company not in contacts:
+            contacts[company] = []
+        contacts[company].append({'first_name': first_name,
+                                  'last_name': last_name,
+                                  'title': title,
+                                  'email': email,
+                                  'phone': phone})
         self.render('contact.html', companies=companies)
 
 
@@ -70,6 +86,7 @@ class Note(tornado.web.RequestHandler):
     def get(self):
         self.render('note.html',
                     companies=companies,
+                    contacts=contacts,
                     notes=notes)
 
     def post(self):
@@ -97,6 +114,14 @@ class GetNotes(tornado.web.RequestHandler):
             self.write('')
 
 
+class GetContacts(tornado.web.RequestHandler):
+    def get(self, company):
+        if company in contacts:
+            self.write(json_encode([{'text': contact['first_name'], 'value': idx} for idx, contact in enumerate(contacts[company])]))
+        else:
+            self.write('')
+
+
 def make_app():
     return tornado.web.Application(
         [(r'/', Dashboard),
@@ -107,7 +132,8 @@ def make_app():
          (r'/add_contact', Contact),
          (r'/add_notification', Notification),
          (r'/add_note', Note),
-         (r'/get_notes/(.*)', GetNotes)],
+         (r'/get_notes/(.*)', GetNotes),
+         (r'/get_contacts/(.*)', GetContacts)],
         debug=True,
         autoreload=True,
         compiled_template_cache=False,
