@@ -94,13 +94,18 @@ class Note(tornado.web.RequestHandler):
         action = self.get_argument('action')
         note = self.get_argument('note')
         date = self.get_argument('date')
+        try:
+            contact = int(self.get_argument('contact'))
+        except ValueError:
+            raise tornado.web.HTTPError(400, 'contact must be an integer')
 
         # Store note
         if company not in notes:
             notes[company] = []
         notes[company].append({'action': action,
                                'note': note,
-                               'date': date})
+                               'date': date,
+                               'contact': contact})
         self.render('note.html',
                     companies=companies,
                     notes=notes)
@@ -109,7 +114,9 @@ class Note(tornado.web.RequestHandler):
 class GetNotes(tornado.web.RequestHandler):
     def get(self, company):
         if company in notes:
-            self.render('get_notes.html', notes=notes[company][-5:])
+            self.render('get_notes.html',
+                        notes=notes[company][-5:],
+                        contacts=contacts[company],)
         else:
             self.write('')
 
@@ -117,7 +124,10 @@ class GetNotes(tornado.web.RequestHandler):
 class GetContacts(tornado.web.RequestHandler):
     def get(self, company):
         if company in contacts:
-            self.write(json_encode([{'text': contact['first_name'], 'value': idx} for idx, contact in enumerate(contacts[company])]))
+            self.write(json_encode(
+                [{'text': '%s %s' % (contact['first_name'], contact['last_name']),
+                  'value': idx}
+                 for idx, contact in enumerate(contacts[company])]))
         else:
             self.write('')
 
