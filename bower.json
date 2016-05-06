@@ -25,6 +25,7 @@
     "js-cookie": "^2.1.1",
     "selectize": "^0.12.1",
     "tinymce": "^4.3.11",
-    "jquery.fixedheadertable": "*"
+    "jquery.fixedheadertable": "*",
+    "jquery-validation": "^1.15.0"
   }
 }
