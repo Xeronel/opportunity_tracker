@@ -1,4 +1,5 @@
 <form id="company_entry" role="form" method="post">
+    {% module xsrf_form_html() %}
     <div class="form-group">
         <label for="company-name">Name:</label>
         <input id="company-name" type="text" class="form-control" name="company">

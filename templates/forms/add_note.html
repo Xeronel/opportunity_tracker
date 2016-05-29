@@ -1,5 +1,6 @@
 <div class="form-group">
     <form role="form" method="post">
+        {% module xsrf_form_html() %}
         {% include '../ui/company-dropdown.html' %}
         {% include '../ui/actiontaken-dropdown.html' %}
         {% include '../ui/contact-dropdown.html' %}
