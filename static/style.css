@@ -7,11 +7,9 @@ textarea {
     max-width: 100%;
 }
 
-/*
-td {
-    white-space: nowrap;
+.center-block {
+    float: none;
 }
-*/
 
 #notes {
     max-height: 275px;
@@ -136,8 +134,13 @@ td {
     height: 100%;
 }
 
+.panel {
+    border: none;
+}
+
 .panel-heading {
     background-color: #2A2A2A;
+    border-color: #2A2A2A;
     color: white;
 }
 
@@ -151,4 +154,8 @@ td {
 
 #datepicker > span:hover {
     cursor: pointer;
+}
+
+#login {
+    background-color: #2A2A2A;
 }

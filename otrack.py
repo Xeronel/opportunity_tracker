@@ -4,47 +4,70 @@ import tornado.web
 import tornado.escape
 from tornado.escape import json_encode
 
-
 companies = set()
 contacts = {}
 notes = {}
 
 
-class MainHandler(tornado.web.RequestHandler):
+class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        return self.get_secure_cookie('user')
+        return self.get_secure_cookie('username')
 
+
+class Login(BaseHandler):
     def get(self):
-        self.render('dashboard.html')
+        if self.get_current_user():
+            self.redirect('/dashboard')
+        else:
+            self.render('login.html')
 
     def post(self):
-        self.set_secure_cookie('user', self.get_argument('name'))
-        self.redirect('/')
+        self.set_secure_cookie("username", self.get_argument("username"))
+        self.redirect("/dashboard")
 
 
-class Dashboard(tornado.web.RequestHandler):
+class Logout(BaseHandler):
     def get(self):
-        self.render('dashboard.html')
+        self.clear_cookie('username')
+        self.redirect('/login')
 
 
-class Calendar(tornado.web.RequestHandler):
+class MainHandler(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        self.redirect('/dashboard')
+
+
+class Dashboard(BaseHandler):
+    @tornado.web.authenticated
+    def get(self):
+        username = self.current_user
+        self.render('dashboard.html', username=username)
+
+
+class Calendar(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render('calendar.html')
 
 
-class Industry(tornado.web.RequestHandler):
+class Industry(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render('industry.html')
 
+    @tornado.web.authenticated
     def post(self):
         self.render('industry.html')
         print(self.get_argument('industry'))
 
 
-class Company(tornado.web.RequestHandler):
+class Company(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render('company.html')
 
+    @tornado.web.authenticated
     def post(self):
         company = self.get_argument('company')
         if company:
@@ -52,10 +75,12 @@ class Company(tornado.web.RequestHandler):
         self.render('company.html')
 
 
-class Contact(tornado.web.RequestHandler):
+class Contact(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render('contact.html', companies=companies)
 
+    @tornado.web.authenticated
     def post(self):
         company = self.get_argument('company')
         first_name = self.get_argument('firstname')
@@ -74,21 +99,25 @@ class Contact(tornado.web.RequestHandler):
         self.render('contact.html', companies=companies)
 
 
-class Notification(tornado.web.RequestHandler):
+class Notification(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render('notification.html', companies=companies)
 
+    @tornado.web.authenticated
     def post(self):
         self.render('notification.html', companies=companies)
 
 
-class Note(tornado.web.RequestHandler):
+class Note(BaseHandler):
+    @tornado.web.authenticated
     def get(self):
         self.render('note.html',
                     companies=companies,
                     contacts=contacts,
                     notes=notes)
 
+    @tornado.web.authenticated
     def post(self):
         company = self.get_argument('company')
         action = self.get_argument('action')
@@ -111,17 +140,19 @@ class Note(tornado.web.RequestHandler):
                     notes=notes)
 
 
-class GetNotes(tornado.web.RequestHandler):
+class GetNotes(BaseHandler):
+    @tornado.web.authenticated
     def get(self, company):
         if company in notes:
             self.render('get_notes.html',
                         notes=notes[company][-5:],
-                        contacts=contacts[company],)
+                        contacts=contacts[company], )
         else:
             self.write('')
 
 
-class GetContacts(tornado.web.RequestHandler):
+class GetContacts(BaseHandler):
+    @tornado.web.authenticated
     def get(self, company):
         if company in contacts:
             self.write(json_encode(
@@ -143,13 +174,17 @@ def make_app():
          (r'/add_notification', Notification),
          (r'/add_note', Note),
          (r'/get_notes/(.*)', GetNotes),
-         (r'/get_contacts/(.*)', GetContacts)],
+         (r'/get_contacts/(.*)', GetContacts),
+         (r'/login', Login),
+         (r'/logout', Logout)],
         debug=True,
         autoreload=True,
         compiled_template_cache=False,
         static_path=settings.STATIC_PATH,
         template_path=settings.TEMPLATE_PATH,
-        cookie_secret='j9Wy1m*3CnwKw!AFd5sd3kl@')
+        login_url='/login',
+        cookie_secret='j9Wy1m*3CnwKw!AFd5sd3kl@',
+        xsrf_cookies=True)
 
 
 if __name__ == '__main__':
