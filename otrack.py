@@ -22,8 +22,13 @@ class Login(BaseHandler):
             self.render('login.html')
 
     def post(self):
+        try:
+            next_page = self.get_argument('next')
+        except tornado.web.MissingArgumentError:
+            next_page = '/dashboard'
+
         self.set_secure_cookie("username", self.get_argument("username"))
-        self.redirect("/dashboard")
+        self.redirect(next_page)
 
 
 class Logout(BaseHandler):
