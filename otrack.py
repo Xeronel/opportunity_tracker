@@ -2,6 +2,7 @@ import settings
 import tornado.ioloop
 import tornado.web
 from page_handlers import *
+import ui
 
 
 def make_app():
@@ -25,7 +26,8 @@ def make_app():
         template_path=settings.TEMPLATE_PATH,
         login_url='/login',
         cookie_secret='j9Wy1m*3CnwKw!AFd5sd3kl@',
-        xsrf_cookies=True)
+        xsrf_cookies=True,
+        ui_modules=ui)
 
 
 if __name__ == '__main__':
