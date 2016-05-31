@@ -1,7 +1,7 @@
 <div class="form-group">
     <form role="form" method="post">
         {% module xsrf_form_html() %}
-        {% include '../ui/company-dropdown.html' %}
+        {% module CompanyDropdown(companies) %}
         <div class="form-group col-lg-12">
             <label for="firstname">First Name:</label>
             <input id="firstname" type="text" class="form-control" name="firstname">

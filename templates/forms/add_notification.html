@@ -1,7 +1,7 @@
 <div class="form-group">
     <form role="form" method="post">
         {% module xsrf_form_html() %}
-        {% include '../ui/company-dropdown.html' %}
+        {% module CompanyDropdown(companies) %}
         <div class="form-group">
             <label>Select Date: </label>
             <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
