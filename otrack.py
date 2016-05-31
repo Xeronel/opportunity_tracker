@@ -5,6 +5,11 @@ from page_handlers import *
 import ui
 
 
+class Admin(BaseHandler):
+    def get(self):
+        self.render('admin.html')
+
+
 def make_app():
     return tornado.web.Application(
         [(r'/', Dashboard),
@@ -17,6 +22,7 @@ def make_app():
          (r'/add_note', Note),
          (r'/get_notes/(.*)', GetNotes),
          (r'/get_contacts/(.*)', GetContacts),
+         (r'/admin', Admin),
          (r'/login', Login),
          (r'/logout', Logout)],
         debug=True,

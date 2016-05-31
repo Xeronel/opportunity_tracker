@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin{% end %}
+{% block active %}admin-menu{% end %}
+
+{% block content-panel %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        <div class="panel-heading">
+            <span>Add User</span>
+            <a href="#add_user_panel" data-toggle="collapse">
+                <span class="glyphicon glyphicon-plus pull-right"></span>
+            </a>
+        </div>
+        <div class="panel-body collapse in" id="add_user_panel" style="background-color: white;">
+            <form method="post" action="/add_user" id="add_user_form">
+                {% module xsrf_form_html() %}
+                <fieldset class="form-group">
+                    <label for="username">Username:</label>
+                    <input id="username" type="text" class="form-control" placeholder="Enter a username"
+                           required>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input id="email" type="email" class="form-control" placeholder="Enter users email address"
+                           required>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label for="firstname">First Name:</label>
+                    <input id="firstname" type="text" class="form-control" placeholder="Enter users first name"
+                           required>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label for="lastname">Last Name:</label>
+                    <input id="lastname" type="text" class="form-control" placeholder="Enter users last name"
+                           required>
+                </fieldset>
+
+                <fieldset class="form-group">
+                    <label for="password">Password:</label>
+                    <input id="password" type="password" class="form-control" placeholder="Enter a password"
+                           required minlength="8">
+                </fieldset>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block footer %}
+<script>
+    $('#add_user_form').validate();
+</script>
+{% end %}

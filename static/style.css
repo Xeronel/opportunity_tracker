@@ -148,6 +148,10 @@ textarea {
     margin-left: 5px;
 }
 
+.help-block {
+    margin-bottom: 0;
+}
+
 #datepicker {
     width:180px;
 }

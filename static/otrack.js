@@ -54,3 +54,14 @@ function navSelector(id) {
     $(".nav ul li").removeClass("active");
     $('#' + id).addClass('active');
 }
+
+// Collapse functions
+$('.panel-body.collapse').each(function () {
+    $(this)
+        .on('hide.bs.collapse', function () {
+            $(this).parent().find('.glyphicon-plus').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        })
+        .on('show.bs.collapse', function () {
+            $(this).parent().find('.glyphicon-minus').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+        })
+});
