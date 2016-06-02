@@ -29,7 +29,7 @@ class Admin(BaseHandler):
         self.render('admin.html')
 
 
-def make_app(config):
+def make_app():
     return tornado.web.Application(
         [(r'/', Dashboard),
          (r'/dashboard', Dashboard),
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     config = Config()
 
     # Create a new web application
-    app = make_app(config)
+    app = make_app()
     app.listen(8181)
 
     # Attempt toconnect to the database
