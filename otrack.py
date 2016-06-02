@@ -5,7 +5,8 @@ from tornado import gen
 import momoko
 import psycopg2
 from page_handlers import *
-import ui
+import ui_modules
+import ui_methods
 
 
 class Admin(BaseHandler):
@@ -53,7 +54,8 @@ def make_app():
         cookie_secret=config.cookie_secret,
         key_version=config.key_version,
         xsrf_cookies=True,
-        ui_modules=ui)
+        ui_modules=ui_modules,
+        ui_methods=ui_methods)
 
 
 if __name__ == '__main__':
@@ -64,8 +66,8 @@ if __name__ == '__main__':
     app = make_app()
     app.listen(8181)
 
-    # Attempt toconnect to the database
-    ioloop = tornado.ioloop.IOLoop.instance()
+    # Attempt to connect to the database
+    ioloop = tornado.ioloop.IOLoop.current()
     app.db = momoko.Pool(dsn="dbname=%s user=%s password=%s host=%s port=%s" %
                              (config.database, config.username, config.password,
                               config.hostname, config.port),

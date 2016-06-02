@@ -29,8 +29,13 @@
                          src="/static/images/SSS-Landscape-Small.png">
                 </a>
             </div>
-            <div class="pull-right">
-                <a href="/logout">Logout</a>
+            <div class="dropdown pull-right">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"
+                style="margin-top: 15px; margin-right: 5px; min-width: 160px;">
+                    {{ first_name() }} {{ last_name() }} <span class="caret caret-right"></span></button>
+                <ul class="dropdown-menu">
+                    <li class="center"><a href="/logout">Logout</a></li>
+                </ul>
             </div>
         </div>
     </div>

@@ -38,7 +38,12 @@
                 <fieldset class="form-group">
                     <label for="password">Password:</label>
                     <input name="password" type="password" class="form-control" placeholder="Enter a password"
-                           required minlength="8">
+                           id="password" required minlength="8">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="password2">Password:</label>
+                    <input name="password2" type="password" class="form-control"
+                           placeholder="Enter a password">
                 </fieldset>
                 <fieldset class="form-group">
                     <button type="submit" name="adduser" class="btn btn-primary pull-right">Submit</button>
@@ -51,6 +56,10 @@
 
 {% block footer %}
 <script>
-    $('#add_user_form').validate();
+    $('#add_user_form').validate({
+        rules: {
+            password2: {equalTo: '#password'}
+        }
+    });
 </script>
 {% end %}

@@ -14,7 +14,7 @@ class Login(BaseHandler):
     def post(self):
         try:
             cursor = yield self.db.execute(
-                "select username, first_name, last_name, email "
+                "select id, username, first_name, last_name, email "
                 "from employee where pwhash = crypt(%(passwd)s, pwhash) and username = %(username)s;",
                 {'username': self.get_argument('username'),
                  'passwd': self.get_argument('password')})
@@ -26,9 +26,13 @@ class Login(BaseHandler):
         if len(rows) < 1:
             self.send_error(401)
         else:
-            username, first_name, last_name, email = rows[0]
+            uid, username, first_name, last_name, email = rows[0]
             next_page = self.get_argument('next', '/dashboard')
+            self.set_secure_cookie('uid', str(uid))
             self.set_secure_cookie("username", username)
+            self.set_secure_cookie('first_name', first_name)
+            self.set_secure_cookie('last_name', last_name)
+            self.set_secure_cookie('email', email)
             self.redirect(next_page)
 
 

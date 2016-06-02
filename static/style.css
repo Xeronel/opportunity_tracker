@@ -152,6 +152,16 @@ textarea {
     margin-bottom: 0;
 }
 
+.caret-right {
+    float:right;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    margin-top: 8px;
+    margin-right: -8px;
+}
+
 #datepicker {
     width:180px;
 }
