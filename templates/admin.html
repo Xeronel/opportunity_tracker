@@ -17,37 +17,32 @@
                 {% module xsrf_form_html() %}
                 <fieldset class="form-group">
                     <label for="username">Username:</label>
-                    <input id="username" type="text" class="form-control" placeholder="Enter a username"
+                    <input name="username" type="text" class="form-control" placeholder="Enter a username"
                            required>
                 </fieldset>
-
                 <fieldset class="form-group">
                     <label for="email">Email Address:</label>
-                    <input id="email" type="email" class="form-control" placeholder="Enter users email address"
+                    <input name="email" type="email" class="form-control" placeholder="Enter users email address"
                            required>
                 </fieldset>
-
                 <fieldset class="form-group">
                     <label for="firstname">First Name:</label>
-                    <input id="firstname" type="text" class="form-control" placeholder="Enter users first name"
+                    <input name="firstname" type="text" class="form-control" placeholder="Enter users first name"
                            required>
                 </fieldset>
-
                 <fieldset class="form-group">
                     <label for="lastname">Last Name:</label>
-                    <input id="lastname" type="text" class="form-control" placeholder="Enter users last name"
+                    <input name="lastname" type="text" class="form-control" placeholder="Enter users last name"
                            required>
                 </fieldset>
-
                 <fieldset class="form-group">
                     <label for="password">Password:</label>
-                    <input id="password" type="password" class="form-control" placeholder="Enter a password"
+                    <input name="password" type="password" class="form-control" placeholder="Enter a password"
                            required minlength="8">
                 </fieldset>
-
-                <div class="form-group">
+                <fieldset class="form-group">
                     <button type="submit" name="adduser" class="btn btn-primary pull-right">Submit</button>
-                </div>
+                </fieldset>
             </form>
         </div>
     </div>
