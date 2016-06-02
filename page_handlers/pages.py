@@ -1,7 +1,8 @@
-from .interfaces import BaseHandler
+from .base import BaseHandler
 import tornado.web
 import tornado.escape
 from tornado.escape import json_encode
+from tornado import gen
 
 
 companies = set()
@@ -16,10 +17,13 @@ class MainHandler(BaseHandler):
 
 
 class Dashboard(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        username = self.current_user
-        self.render('dashboard.html', username=username)
+        cursor = yield self.db.execute('SELECT first_name, last_name FROM employee WHERE username = %(username)s;',
+                                           {'username': self.current_user.decode('utf-8')})
+        first_name, last_name = cursor.fetchone()
+        self.render('dashboard.html', first_name=first_name)
 
 
 class Calendar(BaseHandler):

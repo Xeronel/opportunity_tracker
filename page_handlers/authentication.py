@@ -1,5 +1,6 @@
-from .interfaces import BaseHandler
+from .base import BaseHandler
 from tornado.web import MissingArgumentError
+from tornado import gen
 
 
 class Login(BaseHandler):
@@ -9,14 +10,26 @@ class Login(BaseHandler):
         else:
             self.render('login.html')
 
+    @gen.coroutine
     def post(self):
         try:
-            next_page = self.get_argument('next')
+            cursor = yield self.db.execute(
+                "select username, first_name, last_name, email "
+                "from employee where pwhash = crypt(%(passwd)s, pwhash) and username = %(username)s;",
+                {'username': self.get_argument('username'),
+                 'passwd': self.get_argument('password')})
         except MissingArgumentError:
-            next_page = '/dashboard'
+            self.render('login.html')
+            return
 
-        self.set_secure_cookie("username", self.get_argument("username"))
-        self.redirect(next_page)
+        rows = cursor.fetchall()
+        if len(rows) < 1:
+            self.render('login.html')
+        else:
+            username, first_name, last_name, email = rows[0]
+            next_page = self.get_argument('next', '/dashboard')
+            self.set_secure_cookie("username", username)
+            self.redirect(next_page)
 
 
 class Logout(BaseHandler):
