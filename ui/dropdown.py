@@ -4,11 +4,10 @@ import os
 
 
 config = Config()
-_ui_path = os.path.join(config.template_path, 'ui')
 
 
 def _get_path(file_name):
-    return os.path.join(_ui_path, file_name)
+    return os.path.join('ui', file_name)
 
 
 class ActionTakenDropdown(UIModule):
