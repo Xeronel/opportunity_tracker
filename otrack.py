@@ -1,4 +1,4 @@
-import settings
+from config import Config
 import tornado.ioloop
 import tornado.web
 from tornado import gen
@@ -29,7 +29,7 @@ class Admin(BaseHandler):
         self.render('admin.html')
 
 
-def make_app():
+def make_app(config):
     return tornado.web.Application(
         [(r'/', Dashboard),
          (r'/dashboard', Dashboard),
@@ -44,27 +44,34 @@ def make_app():
          (r'/admin', Admin),
          (r'/login', Login),
          (r'/logout', Logout)],
-        debug=True,
-        autoreload=True,
-        compiled_template_cache=False,
-        static_path=settings.STATIC_PATH,
-        template_path=settings.TEMPLATE_PATH,
+        debug=config.debug,
+        autoreload=config.autoreload,
+        compiled_template_cache=config.compiled_template_cache,
+        static_path=config.static_path,
+        template_path=config.template_path,
         login_url='/login',
-        cookie_secret='j9Wy1m*3CnwKw!AFd5sd3kl@',
+        cookie_secret=config.cookie_secret,
+        key_version=config.key_version,
         xsrf_cookies=True,
         ui_modules=ui)
 
 
 if __name__ == '__main__':
+    # Initialize config
+    config = Config()
+
     # Create a new web application
-    app = make_app()
+    app = make_app(config)
     app.listen(8181)
 
-    # Attempt to connect to the database
+    # Attempt toconnect to the database
     ioloop = tornado.ioloop.IOLoop.instance()
-    app.db = momoko.Pool(dsn="dbname=sss user=postgres password=DBPASS "
-                             "host=localhost port=5432",
+    app.db = momoko.Pool(dsn="dbname=%s user=%s password=%s host=%s port=%s" %
+                             (config.database, config.username, config.password,
+                              config.hostname, config.port),
                          size=1,
+                         max_size=config.max_size,
+                         auto_shrink=config.auto_shrink,
                          ioloop=ioloop)
     future = app.db.connect()
     ioloop.add_future(future, lambda f: ioloop.stop())

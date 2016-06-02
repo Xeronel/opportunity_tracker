@@ -1,0 +1,17 @@
+web_server:
+    debug: True
+    autoreload: False
+    compiled_template_cache: True
+    static_path: "static"
+    template_path: "templates"
+    cookie_secret:
+        0: "COOKIE_ENCRYPTION_KEY"
+    key_version: 0
+
+database:
+    username: 'postgres'
+    password: 'DB_PASSWORD'
+    database: 'sss'
+    hostname: 'sss.sew.dom'
+    port: 5432
+    size: 1

@@ -1,9 +1,10 @@
 from tornado.web import UIModule
-import settings
+from config import Config
 import os
 
 
-_ui_path = os.path.join(settings.TEMPLATE_PATH, 'ui')
+config = Config()
+_ui_path = os.path.join(config.template_path, 'ui')
 
 
 def _get_path(file_name):
