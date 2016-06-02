@@ -7,10 +7,10 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.get_secure_cookie('username')
 
     def get_first_name(self):
-        return self.get_secure_cookie('first_name')
+        return self.get_cookie('first_name')
 
     def get_last_name(self):
-        return self.get_secure_cookie('last_name')
+        return self.get_cookie('last_name')
 
     @gen.coroutine
     def get_permissions(self):

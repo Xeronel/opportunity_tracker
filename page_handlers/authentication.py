@@ -30,9 +30,9 @@ class Login(BaseHandler):
             next_page = self.get_argument('next', '/dashboard')
             self.set_secure_cookie('uid', str(uid))
             self.set_secure_cookie("username", username)
-            self.set_secure_cookie('first_name', first_name)
-            self.set_secure_cookie('last_name', last_name)
-            self.set_secure_cookie('email', email)
+            self.set_cookie('first_name', first_name)
+            self.set_cookie('last_name', last_name)
+            self.set_cookie('email', email)
             self.redirect(next_page)
 
 
