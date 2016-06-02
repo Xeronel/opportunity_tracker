@@ -19,12 +19,12 @@ class Login(BaseHandler):
                 {'username': self.get_argument('username'),
                  'passwd': self.get_argument('password')})
         except MissingArgumentError:
-            self.render('login.html')
+            self.send_error(401)
             return
 
         rows = cursor.fetchall()
         if len(rows) < 1:
-            self.render('login.html')
+            self.send_error(401)
         else:
             username, first_name, last_name, email = rows[0]
             next_page = self.get_argument('next', '/dashboard')
