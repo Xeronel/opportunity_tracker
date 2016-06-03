@@ -1,14 +1,44 @@
 <form id="company_entry" role="form" method="post">
     {% module xsrf_form_html() %}
-    <div class="form-group">
+    <fieldset class="form-group col-lg-12">
         <label for="company-name">Name:</label>
         <input id="company-name" type="text" class="form-control" name="company">
-    </div>
-    <div class="form-group">
+    </fieldset>
+    <fieldset class="form-group col-lg-12">
+        <label for="select-country">Country:</label>
+        <select id="country" name="country" class="form-control" placeholder="Select a country...">
+            <option value="">Select a country...</option>
+            {% for country in countries %}
+            {% if country.alpha2 == 'us' %}
+            <option value="{{ country.alpha2 }}" selected>{{ country.name }}</option>
+            {% else %}
+            <option value="{{ country.alpha2 }}">{{ country.name }}</option>
+            {% end %}
+            {% end %}
+        </select>
+    </fieldset>
+    <fieldset class="form-group col-lg-12">
+        <label for="address1" class="control-label">Street Address:</label>
+        <input name="address1" class="form-control" type="text">
+        <input name="address2" class="form-control" type="text" style="margin-top: 10px;">
+    </fieldset>
+    <fieldset class="form-group col-lg-4">
+        <label for="city" class="control-label">City:</label>
+        <input name="city" type="text" class="form-control">
+    </fieldset>
+    <fieldset class="form-group col-lg-4 col-md-6">
+        <label form="state" class="control-label">State:</label>
+        <input name="state" type="text" class="form-control">
+    </fieldset>
+    <fieldset class="form-group col-lg-4 col-md-6">
+        <label form="state" class="control-label">Zip:</label>
+        <input name="state" type="text" class="form-control">
+    </fieldset>
+    <fieldset class="form-group col-lg-12">
         <label for="industry">Industry:</label>
         <input id="industry" type="text" class="form-control" name="industry">
-    </div>
-    <div class="form-group">
+    </fieldset>
+    <div class="form-group col-lg-12">
         <button type="submit" class="btn btn-primary pull-right">Submit</button>
         <button type="button" class="btn btn-inverse pull-right">Cancel</button>
     </div>

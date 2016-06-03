@@ -3,6 +3,8 @@ import tornado.web
 import tornado.escape
 from tornado.escape import json_encode
 from tornado import gen
+import pycountry
+
 
 companies = set()
 contacts = {}
@@ -41,14 +43,14 @@ class Industry(BaseHandler):
 class Company(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        self.render('company.html')
+        self.render('company.html', countries=pycountry.countries)
 
     @tornado.web.authenticated
     def post(self):
         company = self.get_argument('company')
         if company:
             companies.add(company)
-        self.render('company.html')
+        self.render('company.html', countries=pycountry.countries)
 
 
 class Contact(BaseHandler):
