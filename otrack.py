@@ -1,9 +1,7 @@
 from config import Config
 import tornado.ioloop
 import tornado.web
-from tornado import gen
 import momoko
-import psycopg2
 from page_handlers import *
 import ui_modules
 import ui_methods
