@@ -19,7 +19,8 @@ $(function () {
     var dropdowns = [
         {id: '#action', value: ''},
         {id: '#contact', value: ''},
-        {id: '#country', value: 'US'}
+        {id: '#country', value: 'US'},
+        {id: '#employee', value: ''}
     ];
     for (var i = 0; i < dropdowns.length; i++) {
         var e = $(dropdowns[i].id);

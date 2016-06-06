@@ -3,7 +3,8 @@ from tornado import gen
 
 
 class User:
-    def __init__(self, first_name, last_name, email):
+    def __init__(self, uid, first_name, last_name, email):
+        self.uid = uid
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -19,10 +20,10 @@ class BaseHandler(tornado.web.RequestHandler):
     @gen.coroutine
     def get_user(self):
         uid = self.get_secure_cookie('uid').decode('utf-8')
-        cursor = yield self.db.execute("SELECT first_name, last_name, email FROM employee "
+        cursor = yield self.db.execute("SELECT id, first_name, last_name, email FROM employee "
                                        "WHERE (id = %(uid)s)", {'uid': uid})
-        first_name, last_name, email = cursor.fetchone()
-        return User(first_name, last_name, email)
+        uid, first_name, last_name, email = cursor.fetchone()
+        return User(uid, first_name, last_name, email)
 
     def get_first_name(self):
         return self.get_cookie('first_name')
@@ -42,6 +43,12 @@ class BaseHandler(tornado.web.RequestHandler):
                 'delete_user': delete_user,
                 'change_other_password': change_other_password,
                 'admin': admin}
+
+    @gen.coroutine
+    def get_employees(self):
+        cursor = yield self.db.execute("SELECT id, first_name, last_name FROM employee "
+                                       "ORDER BY first_name ASC, last_name ASC;")
+        return cursor.fetchall()
 
     @property
     def db(self):

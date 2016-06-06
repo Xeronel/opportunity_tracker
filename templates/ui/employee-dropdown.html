@@ -1,9 +1,6 @@
-<div class="form-group col-md-5 col-lg-4">
-    <label for="users">Company:</label>
-    <select id="users" name="user" class="form-control" placeholder="Select a company...">
-        <option>Select a company...</option>
-        {% for company in companies %}
-        <option value="{{ escape(company) }}">{{ escape(company) }}</option>
-        {% end %}
-    </select>
-</div>
+<select id="employee" name="employee" class="form-control" placeholder="Select an employee..." required>
+    <option value="">Select an employee...</option>
+    {% for employee in employees %}
+    <option value="{{ employee[0] }}">{{ escape(employee[1]) }} {{ escape(employee[2]) }}</option>
+    {% end %}
+</select>

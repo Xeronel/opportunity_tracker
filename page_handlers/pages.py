@@ -5,7 +5,6 @@ from tornado.escape import json_encode
 from tornado import gen
 import pycountry
 
-
 companies = set()
 contacts = {}
 notes = {}
@@ -53,16 +52,24 @@ class Company(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user_info = yield self.get_user()
-        self.render('company.html', countries=pycountry.countries, user=user_info)
+        employees = yield self.get_employees()
+        self.render('company.html',
+                    countries=pycountry.countries,
+                    user=user_info,
+                    employees=employees)
 
     @gen.coroutine
     @tornado.web.authenticated
     def post(self):
         user_info = yield self.get_user()
-        company = self.get_argument('company', user=user_info)
+        employees = yield self.get_employees()
+        company = self.get_argument('company')
         if company:
             companies.add(company)
-        self.render('company.html', countries=pycountry.countries, user=user_info)
+        self.render('company.html',
+                    countries=pycountry.countries,
+                    user=user_info,
+                    employees=employees)
 
 
 class Contact(BaseHandler):
@@ -140,7 +147,8 @@ class Note(BaseHandler):
                                'contact': contact})
         self.render('note.html',
                     companies=companies,
-                    notes=notes)
+                    notes=notes,
+                    user=user_info)
 
 
 class GetNotes(BaseHandler):
@@ -158,10 +166,8 @@ class GetNotes(BaseHandler):
 
 
 class GetContacts(BaseHandler):
-    @gen.coroutine
     @tornado.web.authenticated
     def get(self, company):
-        user_info = yield self.get_user()
         if company in contacts:
             self.write(json_encode(
                 [{'text': '%s %s' % (contact['first_name'], contact['last_name']),

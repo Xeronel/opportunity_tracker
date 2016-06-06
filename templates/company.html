@@ -19,6 +19,7 @@
                 lettersonly: true
             }
         }
-    })
+    });
+    $('#employee').selectize()[0].selectize.setValue('{{ user.uid }}');
 </script>
 {% end %}
