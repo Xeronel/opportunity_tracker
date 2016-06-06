@@ -3,7 +3,7 @@
     <select id="company" name="company" class="form-control" placeholder="Select a company...">
         <option>Select a company...</option>
         {% for company in companies %}
-        <option value="{{ escape(company) }}">{{ escape(company) }}</option>
+        <option value="{{ company[0] }}">{{ escape(company[1]) }}</option>
         {% end %}
     </select>
 </div>

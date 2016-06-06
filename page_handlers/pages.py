@@ -5,7 +5,6 @@ from tornado.escape import json_encode
 from tornado import gen
 import pycountry
 
-companies = set()
 contacts = {}
 notes = {}
 
@@ -104,12 +103,14 @@ class Contact(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user_info = yield self.get_user()
+        companies = yield self.get_companies()
         self.render('contact.html', companies=companies, user=user_info)
 
     @gen.coroutine
     @tornado.web.authenticated
     def post(self):
         user_info = yield self.get_user()
+        companies = yield self.get_companies()
         company = self.get_argument('company')
         first_name = self.get_argument('firstname')
         last_name = self.get_argument('lastname')
@@ -132,12 +133,14 @@ class Notification(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user_info = yield self.get_user()
+        companies = yield self.get_companies()
         self.render('notification.html', companies=companies, user=user_info)
 
     @gen.coroutine
     @tornado.web.authenticated
     def post(self):
         user_info = yield self.get_user()
+        companies = yield self.get_companies()
         self.render('notification.html', companies=companies, user=user_info)
 
 
@@ -146,6 +149,7 @@ class Note(BaseHandler):
     @tornado.web.authenticated
     def get(self):
         user_info = yield self.get_user()
+        companies = yield self.get_companies()
         self.render('note.html',
                     companies=companies,
                     contacts=contacts,
@@ -156,6 +160,7 @@ class Note(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         user_info = yield self.get_user()
+        companies = yield self.get_companies()
         company = self.get_argument('company')
         action = self.get_argument('action')
         note = self.get_argument('note')

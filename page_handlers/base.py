@@ -21,7 +21,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_user(self):
         uid = self.get_secure_cookie('uid').decode('utf-8')
         cursor = yield self.db.execute("SELECT id, first_name, last_name, email FROM employee "
-                                       "WHERE (id = %(uid)s)", {'uid': uid})
+                                       "WHERE (id = %(uid)s);", {'uid': uid})
         uid, first_name, last_name, email = cursor.fetchone()
         return User(uid, first_name, last_name, email)
 
@@ -48,6 +48,11 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_employees(self):
         cursor = yield self.db.execute("SELECT id, first_name, last_name FROM employee "
                                        "ORDER BY first_name ASC, last_name ASC;")
+        return cursor.fetchall()
+
+    @gen.coroutine
+    def get_companies(self):
+        cursor = yield self.db.execute("SELECT id, name FROM company")
         return cursor.fetchall()
 
     @property
