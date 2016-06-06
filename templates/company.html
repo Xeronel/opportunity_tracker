@@ -7,3 +7,18 @@
 {% block panel-body %}
 {% include 'forms/add_company.html' %}
 {% end %}
+{% block footer %}
+<script>
+    $('#add_company_form').validate({
+        rules: {
+            zip: {
+                required: true,
+                zipcodeUS: true
+            },
+            state: {
+                lettersonly: true
+            }
+        }
+    })
+</script>
+{% end %}
