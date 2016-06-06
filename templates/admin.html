@@ -4,6 +4,8 @@
 {% block active %}admin-menu{% end %}
 
 {% block content-panel %}
+{% if permissions['admin'] %}
+{% if permissions['add_user'] %}
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
         <div class="panel-heading">
@@ -46,13 +48,50 @@
                            placeholder="Enter your password again">
                 </fieldset>
                 <fieldset class="form-group">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label>Permissions:</label>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                        <div class="checkbox">
+                            <label>
+                                <input name="add_user" type="checkbox">
+                                Add User
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input name="delete_user" type="checkbox">
+                                Delete User
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-8 col-sm-8 col-xs-12">
+                        <div class="checkbox">
+                            <label>
+                                <input name="change_password" type="checkbox" checked>
+                                Change Own Password
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input name="change_other_password" type="checkbox">
+                                Change Others Password
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="form-group">
                     <button type="submit" name="adduser" class="btn btn-primary pull-right">Submit</button>
                 </fieldset>
             </form>
         </div>
     </div>
 </div>
-{% end %}
+{% end %} <!-- Admin User -->
+{% end %} <!-- Admin -->
+{% end %} <!-- Content Panel -->
 
 {% block footer %}
 <script>

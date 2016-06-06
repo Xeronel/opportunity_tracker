@@ -15,16 +15,20 @@ function loadContacts(company) {
 }
 
 $(function () {
-    // Action Taken dropdown
-    var action_taken = $('#action');
-    if (action_taken.length > 0) {
-        action_taken.selectize();
-    }
-
-    // Contact dropdown
-    var contact = $('#contact');
-    if (contact.length > 0) {
-        contact.selectize();
+    var dropdowns = [
+        {id: '#action', value: ''},
+        {id: '#contact', value: ''},
+        {id: '#country', value: 'US'}
+    ];
+    for (var i = 0; i < dropdowns.length; i++) {
+        var e = $(dropdowns[i].id);
+        if (e.length > 0) {
+            if (dropdowns[i].value) {
+                e.selectize()[0].selectize.setValue(dropdowns[i].value);
+            } else {
+                e.selectize();
+            }
+        }
     }
 
     // Company dropdown

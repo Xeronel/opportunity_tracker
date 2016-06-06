@@ -7,6 +7,10 @@ textarea {
     max-width: 100%;
 }
 
+.checkbox > label {
+    font-weight: 700;
+}
+
 .center-block {
     float: none;
 }

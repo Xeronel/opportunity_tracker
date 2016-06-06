@@ -1,33 +1,10 @@
 from config import Config
 import tornado.ioloop
 import tornado.web
-from tornado import gen
 import momoko
-import psycopg2
 from page_handlers import *
 import ui_modules
 import ui_methods
-
-
-class Admin(BaseHandler):
-    def get(self):
-        self.render('admin.html')
-
-    @gen.coroutine
-    def post(self):
-        if 'adduser' in self.request.arguments:
-            try:
-                cursor = yield self.db.execute(
-                    "INSERT INTO employee (pwhash, username, first_name, last_name, email) VALUES "
-                    "(crypt(%(passwd)s, gen_salt('bf')), %(username)s, %(first_name)s, %(last_name)s, %(email)s);",
-                    {'passwd': self.get_argument('password'),
-                     'username': self.get_argument('username'),
-                     'first_name': self.get_argument('firstname'),
-                     'last_name': self.get_argument('lastname'),
-                     'email': self.get_argument('email')})
-            except psycopg2.IntegrityError:
-                print('Error: User %s already exists' % self.get_argument('username'))
-        self.render('admin.html')
 
 
 def make_app():
