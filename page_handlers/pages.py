@@ -61,11 +61,38 @@ class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def post(self):
+        employee = self.get_argument('employee')
+        company_name = self.get_argument('company')
+        country = self.get_argument('country')
+        address1 = self.get_argument('address1')
+        try:
+            address2 = self.get_argument('address2')
+        except tornado.web.MissingArgumentError:
+            address2 = ''
+        city = self.get_argument('city')
+        state = self.get_argument('state')
+        postal_code = self.get_argument('zip')
         user_info = yield self.get_user()
         employees = yield self.get_employees()
-        company = self.get_argument('company')
-        if company:
-            companies.add(company)
+
+        cursor = yield self.db.execute("INSERT INTO company (name, active, employee, creator) "
+                                       "VALUES (%(company_name)s, %(active)s, %(employee)s, %(creator)s) "
+                                       "RETURNING id",
+                                       {'company_name': company_name,
+                                        'active': True,
+                                        'employee': employee,
+                                        'creator': user_info.uid})
+        company_id = cursor.fetchone()
+        cursor = yield self.db.execute(
+            "INSERT INTO location (address1, address2, city, state, country, postal_code, company) "
+            "VALUES (%(address1)s, %(address2)s, %(city)s, %(state)s, %(country)s, %(postal_code)s, %(company)s)",
+            {'address1': address1,
+             'address2': address2,
+             'city': city,
+             'state': state,
+             'country': country,
+             'postal_code': postal_code,
+             'company': company_id[0]})
         self.render('company.html',
                     countries=pycountry.countries,
                     user=user_info,
