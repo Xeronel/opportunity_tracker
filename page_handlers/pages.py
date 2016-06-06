@@ -18,48 +18,64 @@ class MainHandler(BaseHandler):
 
 
 class Dashboard(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        self.render('dashboard.html')
+        user_info = yield self.get_user()
+        self.render('dashboard.html', user=user_info)
 
 
 class Calendar(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        self.render('calendar.html')
+        user_info = yield self.get_user()
+        self.render('calendar.html', user=user_info)
 
 
 class Industry(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        self.render('industry.html')
+        user_info = yield self.get_user()
+        self.render('industry.html', user=user_info)
 
+    @gen.coroutine
     @tornado.web.authenticated
     def post(self):
-        self.render('industry.html')
+        user_info = yield self.get_user()
+        self.render('industry.html', user=user_info)
         print(self.get_argument('industry'))
 
 
 class Company(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        self.render('company.html', countries=pycountry.countries)
+        user_info = yield self.get_user()
+        self.render('company.html', countries=pycountry.countries, user=user_info)
 
+    @gen.coroutine
     @tornado.web.authenticated
     def post(self):
-        company = self.get_argument('company')
+        user_info = yield self.get_user()
+        company = self.get_argument('company', user=user_info)
         if company:
             companies.add(company)
-        self.render('company.html', countries=pycountry.countries)
+        self.render('company.html', countries=pycountry.countries, user=user_info)
 
 
 class Contact(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        self.render('contact.html', companies=companies)
+        user_info = yield self.get_user()
+        self.render('contact.html', companies=companies, user=user_info)
 
+    @gen.coroutine
     @tornado.web.authenticated
     def post(self):
+        user_info = yield self.get_user()
         company = self.get_argument('company')
         first_name = self.get_argument('firstname')
         last_name = self.get_argument('lastname')
@@ -74,29 +90,38 @@ class Contact(BaseHandler):
                                   'title': title,
                                   'email': email,
                                   'phone': phone})
-        self.render('contact.html', companies=companies)
+        self.render('contact.html', companies=companies, user=user_info)
 
 
 class Notification(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        self.render('notification.html', companies=companies)
+        user_info = yield self.get_user()
+        self.render('notification.html', companies=companies, user=user_info)
 
+    @gen.coroutine
     @tornado.web.authenticated
     def post(self):
-        self.render('notification.html', companies=companies)
+        user_info = yield self.get_user()
+        self.render('notification.html', companies=companies, user=user_info)
 
 
 class Note(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self):
+        user_info = yield self.get_user()
         self.render('note.html',
                     companies=companies,
                     contacts=contacts,
-                    notes=notes)
+                    notes=notes,
+                    user=user_info)
 
+    @gen.coroutine
     @tornado.web.authenticated
     def post(self):
+        user_info = yield self.get_user()
         company = self.get_argument('company')
         action = self.get_argument('action')
         note = self.get_argument('note')
@@ -119,19 +144,24 @@ class Note(BaseHandler):
 
 
 class GetNotes(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self, company):
+        user_info = yield self.get_user()
         if company in notes:
             self.render('get_notes.html',
                         notes=notes[company][-5:],
-                        contacts=contacts[company], )
+                        contacts=contacts[company],
+                        user=user_info)
         else:
             self.write('')
 
 
 class GetContacts(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self, company):
+        user_info = yield self.get_user()
         if company in contacts:
             self.write(json_encode(
                 [{'text': '%s %s' % (contact['first_name'], contact['last_name']),

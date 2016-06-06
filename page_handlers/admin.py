@@ -8,14 +8,16 @@ class Admin(BaseHandler):
     @gen.coroutine
     def get(self):
         permissions = yield self.get_permissions()
-        self.render('admin.html', permissions=permissions)
+        user = yield self.get_user()
+        self.render('admin.html', permissions=permissions, user=user)
 
     @gen.coroutine
     def post(self):
         permissions = yield self.get_permissions()
+        user = yield self.get_user()
         if 'adduser' in self.request.arguments:
             self.add_user(permissions)
-        self.render('admin.html', permissions=permissions)
+        self.render('admin.html', permissions=permissions, user=user)
 
     def add_user(self, permissions):
         if 'add_user' in permissions and permissions['add_user']:

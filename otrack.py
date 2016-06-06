@@ -4,7 +4,6 @@ import tornado.web
 import momoko
 from page_handlers import *
 import ui_modules
-import ui_methods
 
 
 def make_app():
@@ -31,8 +30,7 @@ def make_app():
         cookie_secret=config.cookie_secret,
         key_version=config.key_version,
         xsrf_cookies=True,
-        ui_modules=ui_modules,
-        ui_methods=ui_methods)
+        ui_modules=ui_modules)
 
 
 if __name__ == '__main__':

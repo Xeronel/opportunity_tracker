@@ -2,9 +2,27 @@ import tornado.web
 from tornado import gen
 
 
+class User:
+    def __init__(self, first_name, last_name, email):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+
+
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        return self.get_secure_cookie('username')
+        if self.get_secure_cookie('username') is None or self.get_secure_cookie('uid') is None:
+            return None
+        else:
+            return self.get_secure_cookie('username')
+
+    @gen.coroutine
+    def get_user(self):
+        uid = self.get_secure_cookie('uid').decode('utf-8')
+        cursor = yield self.db.execute("SELECT first_name, last_name, email FROM employee "
+                                       "WHERE (id = %(uid)s)", {'uid': uid})
+        first_name, last_name, email = cursor.fetchone()
+        return User(first_name, last_name, email)
 
     def get_first_name(self):
         return self.get_cookie('first_name')
