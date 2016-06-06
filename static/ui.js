@@ -15,6 +15,7 @@ function loadContacts(company) {
 }
 
 $(function () {
+    // id, default value
     var dropdowns = [
         {id: '#action', value: ''},
         {id: '#contact', value: ''},
