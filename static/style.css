@@ -30,6 +30,10 @@ textarea {
     background-color: #1F1F1F;
 }
 
+.btn-inverse:focus {
+    color: white;
+}
+
 .btn-primary {
     background-color: #0081BD;
 }
