@@ -208,6 +208,7 @@ class GetContacts(BaseHandler):
         else:
             self.write('')
 
+
 class ClearCompany(BaseHandler):
     def get(self):
         self.clear_cookie('company')
