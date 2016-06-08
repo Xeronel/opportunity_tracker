@@ -2,7 +2,6 @@ from tornado.web import UIModule
 from config import Config
 import os
 
-
 config = Config()
 
 
@@ -16,8 +15,10 @@ class ActionTakenDropdown(UIModule):
 
 
 class CompanyDropdown(UIModule):
-    def render(self, companies):
-        return self.render_string(_get_path('company-dropdown.html'), companies=companies)
+    def render(self, companies, required=True):
+        return self.render_string(_get_path('company-dropdown.html'),
+                                  companies=companies,
+                                  required=required)
 
 
 class ContactDropdown(UIModule):

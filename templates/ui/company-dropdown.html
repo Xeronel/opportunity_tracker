@@ -1,7 +1,8 @@
 <div class="form-group col-md-5 col-lg-4">
     <label for="company">Company:</label>
-    <select id="company" name="company" class="form-control" placeholder="Select a company...">
-        <option>Select a company...</option>
+    <select id="company" name="company" class="form-control" placeholder="Select a company..."
+            {% if required %}required="required"{% end %}>
+        <option value="">Select a company...</option>
         {% for company in companies %}
         <option value="{{ company[0] }}">{{ escape(company[1]) }}</option>
         {% end %}
