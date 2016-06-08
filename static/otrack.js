@@ -25,10 +25,13 @@ $.validator.setDefaults({
     errorPlacement: function (error, element) {
         if (element.parent('.input-group').length) {
             error.insertAfter(element.parent());
+        } else if (element.closest('.form-group').length > 0) {
+            element.closest('.form-group').append(error);
         } else {
             error.insertAfter(element);
         }
-    }
+    },
+    ignore: ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
 });
 
 // Date picker
