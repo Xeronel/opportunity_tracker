@@ -19,6 +19,7 @@ def make_app():
          (r'/get_notes/(.*)', GetNotes),
          (r'/get_contacts/(.*)', GetContacts),
          (r'/admin', Admin),
+         (r'/clear_company', ClearCompany),
          (r'/login', Login),
          (r'/logout', Logout)],
         debug=config.debug,

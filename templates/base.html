@@ -31,10 +31,13 @@
             </div>
             <div class="dropdown pull-right">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"
-                style="margin-top: 15px; min-width: 160px;">
+                        style="margin-top: 15px; min-width: 160px;">
                     {{ user.first_name }} {{ user.last_name }} <span class="caret caret-right"></span></button>
                 <ul class="dropdown-menu">
-                    <li class="center"><a href="/logout">Logout</a></li>
+                    {% if user.admin %}
+                    <li><a id="clear_company" href="#">Clear Company</a></li>
+                    {% end %}
+                    <li><a href="/logout">Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -120,6 +123,12 @@
         $(document).ready(
                 navSelector('{% block active %}{% end %}')
         );
+        $('#clear_company').click(function () {
+            $.get({
+                url: '/clear_company',
+                success: null
+            })
+        })
     </script>
     {% block footer %}{% end %}
 </footer>

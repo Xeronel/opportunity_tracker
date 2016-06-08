@@ -207,3 +207,7 @@ class GetContacts(BaseHandler):
                  for idx, contact in enumerate(contacts[company])]))
         else:
             self.write('')
+
+class ClearCompany(BaseHandler):
+    def get(self):
+        self.clear_cookie('company')

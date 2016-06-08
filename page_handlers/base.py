@@ -3,11 +3,12 @@ from tornado import gen
 
 
 class User:
-    def __init__(self, uid, first_name, last_name, email):
+    def __init__(self, uid, first_name, last_name, email, admin):
         self.uid = uid
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.admin = admin
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -23,7 +24,8 @@ class BaseHandler(tornado.web.RequestHandler):
         cursor = yield self.db.execute("SELECT id, first_name, last_name, email FROM employee "
                                        "WHERE (id = %(uid)s);", {'uid': uid})
         uid, first_name, last_name, email = cursor.fetchone()
-        return User(uid, first_name, last_name, email)
+        permissions = yield self.get_permissions()
+        return User(uid, first_name, last_name, email, permissions['admin'])
 
     def get_first_name(self):
         return self.get_cookie('first_name')
