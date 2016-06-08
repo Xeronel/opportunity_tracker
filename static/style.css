@@ -2,11 +2,6 @@ body {
     background-color: #D8DCE3;
 }
 
-textarea {
-    min-width: 100%;
-    max-width: 100%;
-}
-
 .checkbox > label {
     font-weight: 700;
 }
