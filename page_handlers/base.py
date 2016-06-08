@@ -3,12 +3,12 @@ from tornado import gen
 
 
 class User:
-    def __init__(self, uid, first_name, last_name, email, admin):
+    def __init__(self, uid, first_name, last_name, email, permissions):
         self.uid = uid
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
-        self.admin = admin
+        self.permissions = permissions
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -25,7 +25,7 @@ class BaseHandler(tornado.web.RequestHandler):
                                        "WHERE (id = %(uid)s);", {'uid': uid})
         uid, first_name, last_name, email = cursor.fetchone()
         permissions = yield self.get_permissions()
-        return User(uid, first_name, last_name, email, permissions['admin'])
+        return User(uid, first_name, last_name, email, permissions)
 
     def get_first_name(self):
         return self.get_cookie('first_name')
@@ -36,15 +36,16 @@ class BaseHandler(tornado.web.RequestHandler):
     @gen.coroutine
     def get_permissions(self):
         cursor = yield self.db.execute(
-            "SELECT add_user, delete_user, change_other_password, admin FROM permissions "
-            "INNER JOIN employee ON (permissions.employee = employee.id) "
-            "WHERE (employee.username = %(username)s);",
-            {'username': self.current_user.decode('utf-8')})
-        add_user, delete_user, change_other_password, admin = cursor.fetchone()
-        return {'add_user': add_user,
-                'delete_user': delete_user,
-                'change_other_password': change_other_password,
-                'admin': admin}
+            "SELECT * FROM permissions "
+            "INNER JOIN employee ON permissions.employee = employee.id "
+            "WHERE employee.username = %(username)s;",
+            {'username': self.current_user.decode('utf-8')}
+        )
+        permissions = cursor.fetchone()
+        results = {}
+        for i in range(len(cursor.description)):
+            results[cursor.description[i].name] = permissions[i]
+        return results
 
     @gen.coroutine
     def get_employees(self):

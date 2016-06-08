@@ -34,7 +34,7 @@
                         style="margin-top: 15px; min-width: 160px;">
                     {{ user.first_name }} {{ user.last_name }} <span class="caret caret-right"></span></button>
                 <ul class="dropdown-menu">
-                    {% if user.admin %}
+                    {% if user.permissions['developer'] %}
                     <li><a id="clear_company" href="#">Clear Company</a></li>
                     {% end %}
                     <li><a href="/logout">Logout</a></li>
