@@ -35,5 +35,5 @@ class Login(BaseHandler):
 
 class Logout(BaseHandler):
     def get(self):
-        self.clear_cookie('username')
+        self.clear_all_cookies()
         self.redirect('/login')
