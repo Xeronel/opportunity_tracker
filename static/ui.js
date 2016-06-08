@@ -15,6 +15,8 @@ function loadContacts(company) {
 }
 
 $(function () {
+    var options = {selectOnTab: true};
+
     // id, default value
     var dropdowns = [
         {id: '#action', value: ''},
@@ -26,7 +28,7 @@ $(function () {
         var e = $(dropdowns[i].id);
         if (e.length > 0) {
             if (dropdowns[i].value) {
-                e.selectize()[0].selectize.setValue(dropdowns[i].value);
+                e.selectize(options)[0].selectize.setValue(dropdowns[i].value);
             } else {
                 e.selectize();
             }
@@ -39,7 +41,8 @@ $(function () {
         company = company.selectize({
             onChange: function (value) {
                 Cookies.set('company', value);
-            }
+            },
+            selectOnTab: true
         });
 
         company = company[0].selectize;
