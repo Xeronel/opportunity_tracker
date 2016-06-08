@@ -1,21 +1,27 @@
 <div class="form-group">
-    <form role="form" method="post">
-        {% module xsrf_form_html() %}
-        {% module CompanyDropdown(companies) %}
-        <div class="form-group">
-            <label>Select Date: </label>
-            <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
-                <input class="form-control" readonly type="text" />
-                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+    <form role="form" id='add_notification_form' method="post">
+        <div class="grid">
+            {% module xsrf_form_html() %}
+            <div class="row">
+                {% module CompanyDropdown(companies) %}
+                <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    <label for="notify_date">Select Date: </label>
+                    <div id="datepicker" class="input-group date">
+                        <input name="notify_date" id="notify_date" class="form-control" readonly type="date">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label for="note">Note:</label>
-            <textarea class="form-control" rows="5" id="note"></textarea>
-        </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary pull-right">Submit</button>
-            <button type="button" class="btn btn-inverse pull-right">Cancel</button>
+            <div class="row">
+                <div class="form-group col-lg-12">
+                    <label for="note">Note:</label>
+                    <textarea class="form-control" rows="5" id="note"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                <button type="button" class="btn btn-inverse pull-right">Cancel</button>
+            </div>
         </div>
     </form>
 </div>

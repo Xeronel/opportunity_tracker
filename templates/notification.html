@@ -7,3 +7,13 @@
 {% block panel-body %}
 {% include 'forms/add_notification.html' %}
 {% end %}
+
+{% block footer %}
+<script>
+    $('#add_notification_form').validate({
+        errorPlacement: function(error, element) {
+            element.closest('.form-group').append(error);
+        }
+    });
+</script>
+{% end %}
