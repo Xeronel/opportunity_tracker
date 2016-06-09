@@ -4,10 +4,9 @@ import tornado.escape
 from tornado.escape import json_encode
 from tornado import gen
 import pycountry
+import psycopg2
 
-contacts = {}
 notes = {}
-
 
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
@@ -76,15 +75,15 @@ class Company(BaseHandler):
 
         cursor = yield self.db.execute("INSERT INTO company (name, active, employee, creator) "
                                        "VALUES (%(company_name)s, %(active)s, %(employee)s, %(creator)s) "
-                                       "RETURNING id",
+                                       "RETURNING id;",
                                        {'company_name': company_name,
                                         'active': True,
                                         'employee': employee,
                                         'creator': user_info.uid})
         company_id = cursor.fetchone()
-        cursor = yield self.db.execute(
+        yield self.db.execute(
             "INSERT INTO location (address1, address2, city, state, country, postal_code, company) "
-            "VALUES (%(address1)s, %(address2)s, %(city)s, %(state)s, %(country)s, %(postal_code)s, %(company)s)",
+            "VALUES (%(address1)s, %(address2)s, %(city)s, %(state)s, %(country)s, %(postal_code)s, %(company)s);",
             {'address1': address1,
              'address2': address2,
              'city': city,
@@ -109,8 +108,6 @@ class Contact(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def post(self):
-        user_info = yield self.get_user()
-        companies = yield self.get_companies()
         company = self.get_argument('company')
         first_name = self.get_argument('firstname')
         last_name = self.get_argument('lastname')
@@ -118,13 +115,16 @@ class Contact(BaseHandler):
         email = self.get_argument('email')
         phone = self.get_argument('phone')
 
-        if company not in contacts:
-            contacts[company] = []
-        contacts[company].append({'first_name': first_name,
-                                  'last_name': last_name,
-                                  'title': title,
-                                  'email': email,
-                                  'phone': phone})
+        try:
+            yield self.db.execute(
+                "INSERT INTO contact (company, first_name, last_name, title, email, phone) "
+                "VALUES (%s, %s, %s, %s, %s, %s);",
+                [company, first_name, last_name, title, email, phone])
+        except psycopg2.IntegrityError:
+            pass
+
+        user_info = yield self.get_user()
+        companies = yield self.get_companies()
         self.render('contact.html', companies=companies, user=user_info)
 
 
@@ -152,7 +152,6 @@ class Note(BaseHandler):
         companies = yield self.get_companies()
         self.render('note.html',
                     companies=companies,
-                    contacts=contacts,
                     notes=notes,
                     user=user_info)
 
@@ -198,13 +197,16 @@ class GetNotes(BaseHandler):
 
 
 class GetContacts(BaseHandler):
+    @gen.coroutine
     @tornado.web.authenticated
     def get(self, company):
-        if company in contacts:
-            self.write(json_encode(
-                [{'text': '%s %s' % (contact['first_name'], contact['last_name']),
-                  'value': idx}
-                 for idx, contact in enumerate(contacts[company])]))
+        cursor = yield self.db.execute(
+            "SELECT id, first_name, last_name FROM contact "
+            "WHERE company = %s", company)
+        contacts = cursor.fetchall()
+        if len(contacts) > 0:
+            self.write(json_encode([{'text': '%s %s' % (first, last), 'value': idx}
+                                    for idx, first, last in contacts]))
         else:
             self.write('')
 
