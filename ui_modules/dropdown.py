@@ -1,8 +1,5 @@
 from tornado.web import UIModule
-from config import Config
 import os
-
-config = Config()
 
 
 def _get_path(file_name):
