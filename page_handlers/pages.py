@@ -5,8 +5,10 @@ from tornado.escape import json_encode
 from tornado import gen
 import pycountry
 import psycopg2
+from datetime import datetime
 
 notes = {}
+
 
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
@@ -141,6 +143,12 @@ class Notification(BaseHandler):
     def post(self):
         user_info = yield self.get_user()
         companies = yield self.get_companies()
+        company = self.get_argument('company')
+        notify_date = datetime.strptime(self.get_argument('date'), '%m-%d-%Y')
+        note = self.get_argument('note')
+        yield self.db.execute("INSERT INTO notification (company, notify_date, note) "
+                              "VALUES (%s, %s, %s)",
+                              [company, notify_date.strftime('%Y-%m-%d'), note])
         self.render('notification.html', companies=companies, user=user_info)
 
 
@@ -152,7 +160,6 @@ class Note(BaseHandler):
         companies = yield self.get_companies()
         self.render('note.html',
                     companies=companies,
-                    notes=notes,
                     user=user_info)
 
     @gen.coroutine

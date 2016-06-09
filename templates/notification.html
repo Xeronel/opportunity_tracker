@@ -10,10 +10,6 @@
 
 {% block footer %}
 <script>
-    $('#add_notification_form').validate({
-        errorPlacement: function(error, element) {
-            element.closest('.form-group').append(error);
-        }
-    });
+    $('#add_notification_form').validate();
 </script>
 {% end %}
