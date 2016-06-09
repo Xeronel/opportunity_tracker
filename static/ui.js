@@ -15,7 +15,16 @@ function loadContacts(company) {
 }
 
 $(function () {
-    var options = {selectOnTab: true};
+    var options = {
+        selectOnTab: true,
+        onChange: function (value) {
+            var control = $(this.$dropdown).closest('.form-group');
+            if (control.hasClass('has-error')) {
+                control.removeClass('has-error');
+                $(control).children('span.help-block').remove();
+            }
+        }
+    };
 
     // id, default value
     var dropdowns = [
@@ -41,6 +50,11 @@ $(function () {
         company = company.selectize({
             onChange: function (value) {
                 Cookies.set('company', value);
+                var control = $(this.$dropdown).closest('.form-group');
+                if (control.hasClass('has-error')) {
+                    control.removeClass('has-error');
+                    $(control).children('span.help-block').remove();
+                }
             },
             selectOnTab: true
         });
