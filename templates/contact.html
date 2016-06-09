@@ -7,3 +7,9 @@
 {% block panel-body %}
 {% include 'forms/add_contact.html' %}
 {% end %}
+
+{% block footer %}
+<script>
+    $('#add_contact_form').validate();
+</script>
+{% end %}
