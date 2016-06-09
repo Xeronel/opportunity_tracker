@@ -1,4 +1,4 @@
-from config import Config
+import config
 import tornado.ioloop
 import tornado.web
 import momoko
@@ -22,22 +22,19 @@ def make_app():
          (r'/clear_company', ClearCompany),
          (r'/login', Login),
          (r'/logout', Logout)],
-        debug=config.debug,
-        autoreload=config.autoreload,
-        compiled_template_cache=config.compiled_template_cache,
-        static_path=config.static_path,
-        template_path=config.template_path,
+        debug=config.web.debug,
+        autoreload=config.web.autoreload,
+        compiled_template_cache=config.web.compiled_template_cache,
+        static_path=config.web.static_path,
+        template_path=config.web.template_path,
         login_url='/login',
-        cookie_secret=config.cookie_secret,
-        key_version=config.key_version,
+        cookie_secret=config.web.cookie_secret,
+        key_version=config.web.key_version,
         xsrf_cookies=True,
         ui_modules=ui_modules)
 
 
 if __name__ == '__main__':
-    # Initialize config
-    config = Config()
-
     # Create a new web application
     app = make_app()
     app.listen(8181)
@@ -45,11 +42,11 @@ if __name__ == '__main__':
     # Attempt to connect to the database
     ioloop = tornado.ioloop.IOLoop.current()
     app.db = momoko.Pool(dsn="dbname=%s user=%s password=%s host=%s port=%s" %
-                             (config.database, config.username, config.password,
-                              config.hostname, config.port),
+                             (config.db.database, config.db.username, config.db.password,
+                              config.db.hostname, config.db.port),
                          size=1,
-                         max_size=config.max_size,
-                         auto_shrink=config.auto_shrink,
+                         max_size=config.db.max_size,
+                         auto_shrink=config.db.auto_shrink,
                          ioloop=ioloop)
     future = app.db.connect()
     ioloop.add_future(future, lambda f: ioloop.stop())
