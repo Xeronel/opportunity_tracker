@@ -146,9 +146,10 @@ class Notification(BaseHandler):
         company = self.get_argument('company')
         notify_date = datetime.strptime(self.get_argument('date'), '%m-%d-%Y')
         note = self.get_argument('note')
-        yield self.db.execute("INSERT INTO notification (company, notify_date, note) "
-                              "VALUES (%s, %s, %s)",
-                              [company, notify_date.strftime('%Y-%m-%d'), note])
+        uid = self.get_secure_cookie('uid').decode('utf-8')
+        yield self.db.execute("INSERT INTO notification (company, notify_date, note, employee) "
+                              "VALUES (%s, %s, %s, %s)",
+                              [company, notify_date.strftime('%Y-%m-%d'), note, uid])
         self.render('notification.html', companies=companies, user=user_info)
 
 
