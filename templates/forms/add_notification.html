@@ -6,8 +6,8 @@
                 {% module CompanyDropdown(companies) %}
                 <div class="form-group col-lg-6 col-md-6 col-sm-12 col-xs-12">
                     <label for="notify_date">Select Date: </label>
-                    <div id="datepicker" class="input-group date">
-                        <input name="notify_date" id="notify_date" class="form-control" readonly type="date">
+                    <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
+                        <input name="notify_date" id="notify_date" class="form-control" readonly type="text">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                     </div>
                 </div>
