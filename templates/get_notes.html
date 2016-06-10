@@ -7,12 +7,11 @@
     </tr></thead>
     <tbody>
     {% for note in notes %}
-    {% set contact = contacts[note['contact']] %}
     <tr>
-        <td>{{ escape(note['date']) }}</td>
-        <td>{{ escape(note['action']) }}</td>
-        <td>{{ escape('%s %s' % (contact['first_name'], contact['last_name'])) }}</td>
-        <td>{% raw note['note'] %}</td>
+        <td>{{ escape(note[0].strftime('%Y-%m-%d')) }}</td>
+        <td>{{ escape(note[1]) }}</td>
+        <td>{{ escape('%s %s' % (note[2], note[3])) }}</td>
+        <td>{% raw note[4] %}</td>
     </tr>
     {% end %}
     </tbody>

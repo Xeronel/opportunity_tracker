@@ -195,10 +195,15 @@ class GetNotes(BaseHandler):
     @tornado.web.authenticated
     def get(self, company):
         user_info = yield self.get_user()
-        if company in notes:
+        cursor = yield self.db.execute("SELECT note_date, action, first_name, last_name, note "
+                                       "FROM notes, contact "
+                                       "WHERE notes.company = %s "
+                                       "AND contact.id = notes.contact",
+                                       [company])
+        notes = cursor.fetchall()
+        if len(notes) > 0:
             self.render('get_notes.html',
-                        notes=notes[company][-5:],
-                        contacts=contacts[company],
+                        notes=notes,
                         user=user_info)
         else:
             self.write('')
