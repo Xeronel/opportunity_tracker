@@ -37,7 +37,9 @@ $.validator.setDefaults({
             error.insertAfter(element);
         }
     },
-    ignore: ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
+    ignore: [
+        ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
+        ':hidden:not(textarea)']
 });
 
 // Date picker
