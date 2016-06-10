@@ -1,22 +1,25 @@
 from .base import BaseHandler
 from tornado import gen
 from tornado.web import MissingArgumentError
+from tornado.web import authenticated
 from psycopg2 import IntegrityError
 
 
 class Admin(BaseHandler):
     @gen.coroutine
+    @authenticated
     def get(self):
         permissions = yield self.get_permissions()
         user = yield self.get_user()
         self.render('admin.html', permissions=permissions, user=user)
 
     @gen.coroutine
+    @authenticated
     def post(self):
         permissions = yield self.get_permissions()
         user = yield self.get_user()
         if 'adduser' in self.request.arguments:
-            self.add_user(permissions)
+            yield self.add_user(permissions)
         self.render('admin.html', permissions=permissions, user=user)
 
     def add_user(self, permissions):
