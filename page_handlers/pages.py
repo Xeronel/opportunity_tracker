@@ -7,8 +7,6 @@ import pycountry
 import psycopg2
 from datetime import datetime
 
-notes = {}
-
 
 class MainHandler(BaseHandler):
     @tornado.web.authenticated
@@ -166,27 +164,25 @@ class Note(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def post(self):
-        user_info = yield self.get_user()
-        companies = yield self.get_companies()
         company = self.get_argument('company')
         action = self.get_argument('action')
         note = self.get_argument('note')
-        date = self.get_argument('date')
+        date = datetime.strptime(self.get_argument('date'), '%m-%d-%Y')
         try:
             contact = int(self.get_argument('contact'))
         except ValueError:
             raise tornado.web.HTTPError(400, 'contact must be an integer')
 
         # Store note
-        if company not in notes:
-            notes[company] = []
-        notes[company].append({'action': action,
-                               'note': note,
-                               'date': date,
-                               'contact': contact})
+        yield self.db.execute(
+            "INSERT INTO notes (contact, company, action, note_date, note) "
+            "VALUES (%s, %s, %s, %s, %s);",
+            [contact, company, action, date, note])
+
+        user_info = yield self.get_user()
+        companies = yield self.get_companies()
         self.render('note.html',
                     companies=companies,
-                    notes=notes,
                     user=user_info)
 
 
@@ -194,14 +190,18 @@ class GetNotes(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, company):
-        user_info = yield self.get_user()
+        # Get the last 5 notes within the past 90 days
         cursor = yield self.db.execute("SELECT note_date, action, first_name, last_name, note "
                                        "FROM notes, contact "
                                        "WHERE notes.company = %s "
-                                       "AND contact.id = notes.contact",
+                                       "AND contact.id = notes.contact "
+                                       "AND notes.note_date > NOW() - INTERVAL '90 days' "
+                                       "ORDER BY note_date DESC "
+                                       " LIMIT 5;",
                                        [company])
         notes = cursor.fetchall()
         if len(notes) > 0:
+            user_info = yield self.get_user()
             self.render('get_notes.html',
                         notes=notes,
                         user=user_info)
