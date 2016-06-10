@@ -1,6 +1,7 @@
 <div class="form-group col-md-5 col-lg-4">
     <label for="action">Action:</label>
-    <select id="action" name="action" class="form-control">
+    <select id="action" name="action" class="form-control"
+            {% if required %}required="required"{% end %}>
         <option value="Phone Call">Phone Call</option>
         <option value="Email">Email</option>
         <option value="Meeting">Meeting</option>

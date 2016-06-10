@@ -1,4 +1,5 @@
-<select id="employee" name="employee" class="form-control" placeholder="Select an employee..." required>
+<select id="employee" name="employee" class="form-control" placeholder="Select an employee..."
+        {% if required %}required="required"{% end %}>
     <option value="">Select an employee...</option>
     {% for employee in employees %}
     <option value="{{ employee[0] }}">{{ escape(employee[1]) }} {{ escape(employee[2]) }}</option>

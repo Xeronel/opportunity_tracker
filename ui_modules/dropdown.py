@@ -7,8 +7,9 @@ def _get_path(file_name):
 
 
 class ActionTakenDropdown(UIModule):
-    def render(self):
-        return self.render_string(_get_path('actiontaken-dropdown.html'))
+    def render(self, required=True):
+        return self.render_string(_get_path('actiontaken-dropdown.html'),
+                                  required=required)
 
 
 class CompanyDropdown(UIModule):
@@ -19,10 +20,13 @@ class CompanyDropdown(UIModule):
 
 
 class ContactDropdown(UIModule):
-    def render(self):
-        return self.render_string(_get_path('contact-dropdown.html'))
+    def render(self, required=True):
+        return self.render_string(_get_path('contact-dropdown.html'),
+                                  required=required)
 
 
 class EmployeeDropdown(UIModule):
-    def render(self, employees):
-        return self.render_string(_get_path('employee-dropdown.html'), employees=employees)
+    def render(self, employees, required=True):
+        return self.render_string(_get_path('employee-dropdown.html'),
+                                  employees=employees,
+                                  required=required)
