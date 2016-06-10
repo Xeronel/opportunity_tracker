@@ -45,7 +45,15 @@ $(function () {
     $("#datepicker").datepicker({
         autoclose: true,
         todayHighlight: true
-    }).datepicker('update', new Date());
+    })
+        .datepicker('update', new Date())
+        .on('changeDate', function (e) {
+            var control = $(e.target).closest('.form-group');
+            if (control.hasClass('has-error')) {
+                control.removeClass('has-error');
+                $(control).children('span.help-block').remove();
+            }
+        });
 });
 
 // Nav selector
