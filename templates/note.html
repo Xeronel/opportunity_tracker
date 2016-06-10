@@ -44,6 +44,14 @@
             loadNotes(value);
         });
     });
-    $('#add_note_form').validate();
+
+    $('#add_note_form').submit(function () {
+        tinymce.triggerSave();
+    }).validate({
+        ignore: "",
+        rules: {
+            note: 'required'
+        }
+    });
 </script>
 {% end %}

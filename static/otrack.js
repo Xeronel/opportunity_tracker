@@ -9,7 +9,13 @@ tinymce.init({
     theme_advanced_resize_horizontal: false,
     theme_advanced_statusbar_location: 'bottom',
     toolbar: 'undo,redo,bold,italic,alignleft,aligncenter,' +
-    'alignright,alignjustify,bullist,numlist,outdent,indent'
+    'alignright,alignjustify,bullist,numlist,outdent,indent',
+    setup: function (ed) {
+        ed.on('change', function () {
+            tinymce.triggerSave();
+            $("#" + ed.id).valid();
+        })
+    }
 });
 
 // Validator

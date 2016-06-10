@@ -39,7 +39,7 @@ $(function () {
             if (dropdowns[i].value) {
                 e.selectize(options)[0].selectize.setValue(dropdowns[i].value);
             } else {
-                e.selectize();
+                e.selectize(options);
             }
         }
     }
