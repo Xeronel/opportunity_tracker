@@ -13,6 +13,7 @@ class Admin(BaseHandler):
         self.render('admin.html', permissions=permissions, user=user)
 
     @gen.coroutine
+    @authenticated
     def post(self):
         permissions = yield self.get_permissions()
         user = yield self.get_user()
