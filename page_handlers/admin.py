@@ -1,11 +1,12 @@
 from .base import BaseHandler
 from tornado import gen
-from tornado.web import MissingArgumentError
+from tornado.web import MissingArgumentError, authenticated
 from psycopg2 import IntegrityError
 
 
 class Admin(BaseHandler):
     @gen.coroutine
+    @authenticated
     def get(self):
         permissions = yield self.get_permissions()
         user = yield self.get_user()
