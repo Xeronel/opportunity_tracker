@@ -13,33 +13,32 @@ class User:
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
-        if self.get_secure_cookie('username') is None or self.get_secure_cookie('uid') is None:
+        username = self.get_secure_cookie('username')
+        uid = self.get_secure_cookie('uid')
+        if username is None or uid is None:
             return None
         else:
-            return self.get_secure_cookie('username')
+            return username.decode('utf-8') if type(username) == bytes else username
 
     @gen.coroutine
+    @tornado.web.authenticated
     def get_user(self):
-        uid = self.get_secure_cookie('uid').decode('utf-8')
+        uid = self.get_secure_cookie('uid')
+        uid = uid.decode('utf-8') if type(uid) == bytes else uid
         cursor = yield self.db.execute("SELECT id, first_name, last_name, email FROM employee "
                                        "WHERE (id = %(uid)s);", {'uid': uid})
         uid, first_name, last_name, email = cursor.fetchone()
         permissions = yield self.get_permissions()
         return User(uid, first_name, last_name, email, permissions)
 
-    def get_first_name(self):
-        return self.get_cookie('first_name')
-
-    def get_last_name(self):
-        return self.get_cookie('last_name')
-
     @gen.coroutine
+    @tornado.web.authenticated
     def get_permissions(self):
         cursor = yield self.db.execute(
             "SELECT * FROM permissions "
             "INNER JOIN employee ON permissions.employee = employee.id "
             "WHERE employee.username = %(username)s;",
-            {'username': self.current_user.decode('utf-8')}
+            {'username': self.current_user}
         )
         permissions = cursor.fetchone()
         results = {}

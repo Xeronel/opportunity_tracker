@@ -10,6 +10,12 @@
 
 {% block footer %}
 <script>
-    $('#add_contact_form').validate();
+    $('#add_contact_form').validate({
+        rules: {
+            phone: {
+                phoneUS: true
+            }
+        }
+    });
 </script>
 {% end %}
