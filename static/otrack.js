@@ -9,7 +9,13 @@ tinymce.init({
     theme_advanced_resize_horizontal: false,
     theme_advanced_statusbar_location: 'bottom',
     toolbar: 'undo,redo,bold,italic,alignleft,aligncenter,' +
-    'alignright,alignjustify,bullist,numlist,outdent,indent'
+    'alignright,alignjustify,bullist,numlist,outdent,indent',
+    setup: function (ed) {
+        ed.on('change', function () {
+            tinymce.triggerSave();
+            $("#" + ed.id).valid();
+        })
+    }
 });
 
 // Validator
@@ -31,7 +37,9 @@ $.validator.setDefaults({
             error.insertAfter(element);
         }
     },
-    ignore: ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
+    ignore: [
+        ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
+        ':hidden:not(textarea)']
 });
 
 // Date picker
@@ -39,7 +47,15 @@ $(function () {
     $("#datepicker").datepicker({
         autoclose: true,
         todayHighlight: true
-    }).datepicker('update', new Date());
+    })
+        .datepicker('update', new Date())
+        .on('changeDate', function (e) {
+            var control = $(e.target).closest('.form-group');
+            if (control.hasClass('has-error')) {
+                control.removeClass('has-error');
+                $(control).children('span.help-block').remove();
+            }
+        });
 });
 
 // Nav selector

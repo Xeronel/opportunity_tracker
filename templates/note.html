@@ -18,9 +18,9 @@
         notes.load('/get_notes/' + company, function () {
             // Display previous notes only if not empty
             var hasNotes = $('#notes:not(:empty)');
-                if (hasNotes.length > 0) {
-                    notes_div.show();
-                }
+            if (hasNotes.length > 0) {
+                notes_div.show();
+            }
         });
     }
 
@@ -33,13 +33,18 @@
                 '<div id="notes"></div>' +
                 '</div>'
         ).insertBefore($('#note').parent('div'));
+
         // Try to load notes
-        loadNotes(company.getValue());
+        if (company.getValue() != '') {
+            loadNotes(company.getValue());
+        }
 
         // Try to load notes if the selection changes
         company.on('change', function (value) {
             loadNotes(value);
         });
     });
+
+    $('#add_note_form').validate();
 </script>
 {% end %}

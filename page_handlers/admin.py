@@ -18,9 +18,10 @@ class Admin(BaseHandler):
         permissions = yield self.get_permissions()
         user = yield self.get_user()
         if 'adduser' in self.request.arguments:
-            self.add_user(permissions)
+            yield self.add_user(permissions)
         self.render('admin.html', permissions=permissions, user=user)
 
+    @gen.coroutine
     def add_user(self, permissions):
         if 'add_user' in permissions and permissions['add_user']:
             try:
