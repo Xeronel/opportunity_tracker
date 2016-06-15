@@ -17,13 +17,16 @@ class Company(BaseHandler):
 
     @gen.coroutine
     def get_location(self, company_id):
-        cursor = yield self.db.execute(
-            "SELECT id, company, address1, address2, city, state, postal_code, country "
-            "FROM location WHERE id = %(id)s",
-            {'id': company_id})
-        data = cursor.fetchone()
-        result = {}
-        if data:
-            for i in range(len(cursor.description)):
-                result[cursor.description[i].name] = data[i]
-        return result
+        if company_id:
+            cursor = yield self.db.execute(
+                "SELECT id, company, address1, address2, city, state, postal_code, country "
+                "FROM location WHERE id = %(id)s",
+                {'id': company_id})
+            data = cursor.fetchone()
+            result = {}
+            if data:
+                for i in range(len(cursor.description)):
+                    result[cursor.description[i].name] = data[i]
+            return result
+        else:
+            return {}
