@@ -3,6 +3,7 @@ import tornado.ioloop
 import tornado.web
 import momoko
 from page_handlers import *
+from page_handlers import api
 import ui_modules
 
 
@@ -13,6 +14,7 @@ def make_app():
          (r'/calendar', Calendar),
          (r'/add_industry', Industry),
          (r'/(add|rem|mod)_company', Company),
+         (r'/api/v1/company/(.*)/(.*)', api.Company),
          (r'/add_contact', Contact),
          (r'/add_notification', Notification),
          (r'/add_note', Note),

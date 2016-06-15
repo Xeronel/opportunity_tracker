@@ -61,7 +61,7 @@ class Company(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def post(self):
+    def post(self, form):
         employee = self.get_argument('employee')
         company_name = self.get_argument('company')
         country = self.get_argument('country')
@@ -97,7 +97,8 @@ class Company(BaseHandler):
         self.render('company.html',
                     countries=pycountry.countries,
                     user=user_info,
-                    employees=employees)
+                    employees=employees,
+                    form=form)
 
 
 class Contact(BaseHandler):

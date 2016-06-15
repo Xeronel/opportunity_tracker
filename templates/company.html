@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if form == 'add' %}
-        Add Company
-    {% elif form == 'mod' %}
-        Modify Company
-    {% elif form == 'rem' %}
-        Remove Company
-    {% end %}
+{% if form == 'add' %}
+Add Company
+{% elif form == 'mod' %}
+Modify Company
+{% elif form == 'rem' %}
+Remove Company
+{% end %}
 {% end %}
 {% block active %}{{ form }}-company{% end %}
 
@@ -34,17 +34,55 @@
 
 {% block footer %}
 <script>
-    $('#add_company_form').validate({
-        rules: {
-            zip: {
-                required: true,
-                zipcodeUS: true
-            },
-            state: {
-                lettersonly: true
-            }
+    function load_location(company_id) {
+        $.get('/api/v1/company/get_location/' + company_id, function (location) {
+            location = JSON.parse(location);
+            $('#address1').val(location.address1);
+            $('#address2').val(location.address2);
+            $('#city').val(location.city);
+            $('#state').val(location.state);
+            $('#zip').val(location.postal_code);
+        });
+    }
+
+    $(function () {
+        var add_company = $('#add_company_form');
+        var mod_company = $('#mod_company_form');
+        var rem_company = $('#rem_company_form');
+        var company;
+
+        if (add_company.length > 0) {
+            $('#employee').selectize()[0].selectize.setValue('{{ user.uid }}');
+            add_company.validate({
+                rules: {
+                    zip: {
+                        required: true,
+                        zipcodeUS: true
+                    },
+                    state: {
+                        lettersonly: true
+                    }
+                }
+            });
+        }
+
+        if (mod_company.length > 0) {
+            company = $('#company').selectize()[0].selectize;
+            load_location(company.getValue());
+
+            company.on('change', function (id) {
+                load_location(id);
+            });
+        }
+
+        if (rem_company.length > 0) {
+            company = $('#company').selectize()[0].selectize;
+            load_location(company.getValue());
+
+            company.on('change', function (id) {
+                load_location(id);
+            });
         }
     });
-    $('#employee').selectize()[0].selectize.setValue('{{ user.uid }}');
 </script>
 {% end %}
