@@ -104,7 +104,7 @@ class Company(BaseHandler):
 class Contact(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self):
+    def get(self, form):
         user_info = yield self.get_user()
         companies = yield self.get_companies()
         self.render('contact.html', companies=companies, user=user_info)
@@ -135,7 +135,7 @@ class Contact(BaseHandler):
 class Notification(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self):
+    def get(self, form):
         user_info = yield self.get_user()
         companies = yield self.get_companies()
         self.render('notification.html', companies=companies, user=user_info)
@@ -158,7 +158,7 @@ class Notification(BaseHandler):
 class Note(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self):
+    def get(self, form):
         user_info = yield self.get_user()
         companies = yield self.get_companies()
         self.render('note.html',
