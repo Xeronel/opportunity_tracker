@@ -68,9 +68,11 @@ Remove Company
 
         if (mod_company.length > 0) {
             company = $('#company').selectize()[0].selectize;
+            $('#company-name').val(company.getItem(company.getValue()).text());
             load_location(company.getValue());
 
             company.on('change', function (id) {
+                $('#company-name').val(company.getItem(company.getValue()).text());
                 load_location(id);
             });
         }
