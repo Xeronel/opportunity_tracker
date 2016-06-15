@@ -62,6 +62,15 @@ class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def post(self, form):
+        rpc = {'add': self.add_company,
+               'mod': self.mod_company}
+
+        if form in rpc:
+            yield rpc[form](form)
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def add_company(self, form):
         employee = self.get_argument('employee')
         company_name = self.get_argument('company')
         country = self.get_argument('country')
@@ -99,6 +108,11 @@ class Company(BaseHandler):
                     user=user_info,
                     employees=employees,
                     form=form)
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def mod_company(self, form):
+        pass
 
 
 class Contact(BaseHandler):
