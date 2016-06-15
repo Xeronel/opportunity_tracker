@@ -78,55 +78,76 @@ body {
 }
 
 .nav {
-    margin: 0 0 10px 0;
-    text-align: center;
+    margin: 0;
+    text-align: left;
     padding-left: 0;
 }
 
-.nav > li {
-    list-style: none;
-    font-size: 16pt;
+.nav .panel,
+.nav .panel-heading {
+    margin: 0 auto;
+    border: none;
+    background-color: transparent;
+    -webkit-border-radius: unset;
+    -moz-border-radius: unset;
+    border-radius: unset;
+}
+
+.nav .panel-heading {
+    padding: 7px 0;
+    margin-left: 10px
+}
+
+.nav .panel-collapse {
+    margin-bottom: 10px;
+}
+
+.nav > .panel > .panel-collapse a {
+    display: block;
+    padding-left: 40px;
+    text-decoration: none;
+}
+
+.nav .panel-title > a {
+    outline: none;
+    display: block;
+    padding: 0 0 0 10px;
     color: #909090;
-    font-weight: 700;
+    text-decoration: none;
+}
+
+.nav > .panel > .panel-collapse a,
+.nav > .panel > .panel-heading > .panel-title {
+    list-style: none;
+    color: #909090;
     font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
     text-align: left;
-    margin:0 auto;
+    margin: 0 auto;
+    font-size: 12pt;
+    font-weight: 700;
 }
 
-.nav > li > a {
-    color: #909090;
+.nav > .panel > .panel-heading > .panel-title {
+    font-size: 16pt;
+}
+
+.nav .panel-title > a:active,
+.nav .panel-title > a:focus {
     text-decoration: none;
+    background: transparent;
 }
 
-.nav > li > a:hover,
-.nav > li > a:active,
-.nav > li > a:focus {
+.nav > .panel > .panel-collapse a.active:hover,
+.nav > .panel > .panel-collapse a:hover,
+.nav .panel-title > a:hover {
     color: white;
-    text-decoration: none;
-    background-color: transparent;
 }
 
-.nav-tabs {
-    background-color: #1F1F1F;
-    border: none;
-}
-
-.nav > li.active,
-.nav > li.active > a {
+.nav .active,
+.nav .active a,
+.nav > .panel > .panel-collapse a.active {
     color: #0081BD;
-    /*background-color: #1F1F1F;*/
     background-color: #292929;
-}
-
-.nav-tabs > li.active > a,
-.nav-tabs > li.active > a:focus,
-.nav-tabs > li.active > a:hover {
-    color: white;
-    padding: 0 30px;
-    margin-top: 20px;
-    background-color: #2A2A2A;
-    border-color: transparent;
-    display: none;
 }
 
 .content-panel {
@@ -145,6 +166,10 @@ body {
     background-color: #2A2A2A;
     border-color: #2A2A2A;
     color: white;
+}
+
+.panel-body {
+    margin-bottom: 10px;
 }
 
 .btn.pull-right {

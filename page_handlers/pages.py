@@ -48,13 +48,16 @@ class Industry(BaseHandler):
 class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self):
+    def get(self, form):
         user_info = yield self.get_user()
         employees = yield self.get_employees()
+        companies = yield self.get_companies()
         self.render('company.html',
                     countries=pycountry.countries,
                     user=user_info,
-                    employees=employees)
+                    employees=employees,
+                    companies=companies,
+                    form=form)
 
     @gen.coroutine
     @tornado.web.authenticated

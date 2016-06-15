@@ -44,55 +44,82 @@
     </div>
 </header>
 <div class="leftpanel">
-    <ul class="nav nav-tabs">
-        <li class="active">
-            <a href="#"><i class="fa fa-ellipsis-h"></i></a>
-        </li>
-    </ul>
-    <ul class="nav">
-        <li id="dashboard-menu">
-            <a href="dashboard">
-                <i class="fa fa-tachometer"></i>
-                <span> Dashboard</span>
-            </a>
-        </li>
-        <li id="calendar-menu">
-            <a href="calendar">
-                <i class="fa fa-calendar"></i>
-                <span> Calendar</span>
-            </a>
-        </li>
-        <li id="industry-menu" class="hidden">
-            <a href="add_industry">
-                <i class="fa fa-industry"></i>
-                <span> Add Industry</span>
-            </a>
-        </li>
-        <li id="company-menu">
-            <a href="add_company">
-                <i class="fa fa-building-o"></i>
-                <span> Add Company</span>
-            </a>
-        </li>
-        <li id="contact-menu">
-            <a href="add_contact">
-                <i class="fa fa-user"></i>
-                <span> Add Contact</span>
-            </a>
-        </li>
-        <li id="notification-menu">
-            <a href="add_notification">
-                <i class="fa fa-bell"></i>
-                <span> Add Notification</span>
-            </a>
-        </li>
-        <li id="note-menu">
-            <a href="add_note">
-                <i class="fa fa-sticky-note"></i>
-                <span> Add Note</span>
-            </a>
-        </li>
-    </ul>
+    <div class="nav" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel" id="dashboard-menu">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <a href="dashboard">
+                        <i class="fa fa-tachometer"></i> Dashboard
+                    </a>
+                </span>
+            </div>
+        </div>
+        <div class="panel" id="calendar-menu">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <a href="calendar">
+                        <i class="fa fa-calendar"></i> Calendar
+                    </a>
+                </span>
+            </div>
+        </div>
+
+        <div class="panel" id="company-menu">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <a href="#company-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
+                        <i class="fa fa-building-o"></i> Company
+                    </a>
+                </span>
+            </div>
+            <div id="company-submenu" class="panel-collapse collapse">
+                <a id="add-company" href="add_company">Add Company</a>
+                <a id="mod-company" href="mod_company">Modify Company</a>
+                <a id="rem-company" href="rem_company">Remove Company</a>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading" role="tab">
+                <span class="panel-title">
+                    <a href="#contact-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
+                        <i class="fa fa-user"></i> Contact
+                    </a>
+                </span>
+            </div>
+            <div id="contact-submenu" class="panel-collapse collapse">
+                <a id="add-contact" href="add_contact">Add Contact</a>
+                <a id="mod-contact" href="mod_contact">Modify Contact</a>
+                <a id="rem-contact" href="rem_contact">Remove Contact</a>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <a href="#notification-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
+                        <i class="fa fa-bell"></i> Notification
+                    </a>
+                </span>
+            </div>
+            <div id="notification-submenu" class="panel-collapse collapse">
+                <a id="add-contact" href="add_contact" class="submenu">Add Notification</a>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-heading" role="tab" id="headingThree">
+                <span class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseNote">
+                        <i class="fa fa-sticky-note"></i> Note
+                    </a>
+                </span>
+            </div>
+            <div id="collapseNote" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                <a id="add-note" href="add_note">Add Note</a>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="content-panel">
     {% block content-panel %}

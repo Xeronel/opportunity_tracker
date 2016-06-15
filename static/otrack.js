@@ -60,8 +60,10 @@ $(function () {
 
 // Nav selector
 function navSelector(id) {
-    $(".nav ul li").removeClass("active");
-    $('#' + id).addClass('active');
+    $(".nav .panel div").removeClass("active");
+    $('#' + id)
+        .addClass('active')
+        .parent('div').addClass('in');
 }
 
 // Collapse functions

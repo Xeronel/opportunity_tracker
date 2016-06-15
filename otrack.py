@@ -12,7 +12,7 @@ def make_app():
          (r'/dashboard', Dashboard),
          (r'/calendar', Calendar),
          (r'/add_industry', Industry),
-         (r'/add_company', Company),
+         (r'/(add|rem|mod)_company', Company),
          (r'/add_contact', Contact),
          (r'/add_notification', Notification),
          (r'/add_note', Note),

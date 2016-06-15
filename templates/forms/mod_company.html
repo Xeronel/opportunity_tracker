@@ -1,0 +1,35 @@
+<form id="mod_company_form" role="form" method="post">
+    {% module xsrf_form_html() %}
+    <div class="grid">
+        <div class="row">
+            {% module CompanyDropdown(companies) %}
+        </div>
+        <div class="row">
+            <fieldset class="form-group col-lg-12">
+                <label for="address1" class="control-label">Street Address:</label>
+                <input name="address1" class="form-control" type="text" required>
+                <input name="address2" class="form-control" type="text" style="margin-top: 10px;">
+            </fieldset>
+        </div>
+        <div class="row">
+            <fieldset class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <label for="city" class="control-label">City:</label>
+                <input name="city" type="text" class="form-control" required>
+            </fieldset>
+            <fieldset class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                <label for="state" class="control-label">State:</label>
+                <input name="state" type="text" class="form-control" maxlength="2" required>
+            </fieldset>
+            <fieldset class="form-group" style="width: auto; padding-right: 15px; padding-left: 15px;">
+                <label for="zip" class="control-label">Zip:</label>
+                <input name="zip" type="text" class="form-control" required>
+            </fieldset>
+        </div>
+        <div class="row">
+            <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-bottom: 0;">
+                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                <button type="reset" class="btn btn-inverse pull-right">Cancel</button>
+            </div>
+        </div>
+    </div>
+</form>

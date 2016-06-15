@@ -1,12 +1,37 @@
 {% extends "base.html" %}
 
-{% block title %}Add Company{% end %}
-{% block active %}company-menu{% end %}
-
-{% block panel-heading %}Add Company{% end %}
-{% block panel-body %}
-{% include 'forms/add_company.html' %}
+{% block title %}
+    {% if form == 'add' %}
+        Add Company
+    {% elif form == 'mod' %}
+        Modify Company
+    {% elif form == 'rem' %}
+        Remove Company
+    {% end %}
 {% end %}
+{% block active %}{{ form }}-company{% end %}
+
+{% block content-panel %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        <div class="panel-heading">
+            {% if form == 'add' %}Add Company
+            {% elif form == 'mod' %}Modify Company
+            {% elif form == 'rem' %}Remove Company{% end %}
+        </div>
+        <div class="panel-body" style="background-color: white;">
+            {% if form == 'add' %}
+            {% include 'forms/add_company.html' %}
+            {% elif form == 'mod' %}
+            {% include 'forms/mod_company.html' %}
+            {% elif form == 'rem' %}
+            {% include 'forms/rem_company.html' %}
+            {% end %}
+        </div>
+    </div>
+</div>
+{% end %}
+
 {% block footer %}
 <script>
     $('#add_company_form').validate({
