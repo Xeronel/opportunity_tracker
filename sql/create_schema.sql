@@ -435,14 +435,6 @@ ALTER TABLE ONLY contact
 
 
 --
--- Name: contact_unique; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
---
-
-ALTER TABLE ONLY contact
-    ADD CONSTRAINT contact_unique UNIQUE (company, first_name, last_name);
-
-
---
 -- Name: employee_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
 --
 
@@ -512,6 +504,14 @@ ALTER TABLE ONLY permissions
 
 ALTER TABLE ONLY session
     ADD CONSTRAINT session_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: unique_name; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY company
+    ADD CONSTRAINT unique_name UNIQUE (name);
 
 
 --
