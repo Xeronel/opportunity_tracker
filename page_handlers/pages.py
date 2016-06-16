@@ -63,10 +63,13 @@ class Company(BaseHandler):
     @tornado.web.authenticated
     def post(self, form):
         rpc = {'add': self.add_company,
-               'mod': self.mod_company}
+               'mod': self.mod_company,
+               'rem': self.rem_company}
 
         if form in rpc:
             yield rpc[form](form)
+        else:
+            yield self.render_form()
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -119,12 +122,14 @@ class Company(BaseHandler):
     def rem_company(self, form):
         company_id = self.get_argument('company')
         yield self.db.execute("DELETE FROM company WHERE id = %s",
-                              company_id)
-        yield self.render_form()
+                              [company_id])
+        yield self.render_form(form)
 
     @gen.coroutine
     @tornado.web.authenticated
-    def render_form(self, form, user_info=None, employees=None, companies=None):
+    def render_form(self, form=None, user_info=None, employees=None, companies=None):
+        if not form:
+            form = self.request.uri.strip('/')[:3]
         if not user_info:
             user_info = yield self.get_user()
         if not employees:
