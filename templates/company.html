@@ -37,12 +37,16 @@ Remove Company
 <script>
     function load_company(company_id) {
         $.get('/api/v1/company/get_company/' + company_id, function (company) {
-            company = JSON.parse(company)
+            company = JSON.parse(company);
+            var employee = $('#employee');
             $('#company-name').val(company.name);
-            $('#employee').selectize()[0].selectize.setValue(company.employee);
+            if (employee.length > 0){
+                employee.selectize()[0].selectize.setValue(company.employee);
+            }
             load_location(company_id);
         })
     }
+
     function load_location(company_id) {
         $.get('/api/v1/company/get_location/' + company_id, function (location) {
             location = JSON.parse(location);
