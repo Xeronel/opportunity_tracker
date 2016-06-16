@@ -82,7 +82,7 @@ Remove Company
         if (rem_company.length > 0) {
             company = $('#company').selectize()[0].selectize;
             load_location(company.getValue());
-
+            rem_company.validate();
             company.on('change', function (id) {
                 load_location(id);
             });
