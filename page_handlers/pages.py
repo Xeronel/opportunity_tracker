@@ -194,10 +194,10 @@ class Contact(BaseHandler):
     def add_contact(self):
         company = self.get_argument('company')
         first_name = self.get_argument('firstname')
-        last_name = self.get_argument('lastname')
-        title = self.get_argument('title')
-        email = self.get_argument('email')
-        phone = self.get_argument('phone')
+        last_name = self.get_argument('lastname', '')
+        title = self.get_argument('title', '')
+        email = self.get_argument('email', '')
+        phone = self.get_argument('phone', '')
 
         try:
             yield self.db.execute(
