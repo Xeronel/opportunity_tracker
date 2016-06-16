@@ -20,7 +20,7 @@ class Company(BaseHandler):
         if company_id:
             cursor = yield self.db.execute(
                 "SELECT id, company, address1, address2, city, state, postal_code, country "
-                "FROM location WHERE id = %(id)s",
+                "FROM location WHERE company = %(id)s",
                 {'id': company_id})
             data = cursor.fetchone()
             result = {}
