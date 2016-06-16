@@ -9,6 +9,7 @@ import psycopg2
 
 class Company(BaseHandler):
     @gen.coroutine
+    @tornado.web.authenticated
     def get(self, proc, arg):
         rpc = {'get_location': self.get_location,
                'get_company': self.get_company}
@@ -17,6 +18,7 @@ class Company(BaseHandler):
             self.write(json_encode(result))
 
     @gen.coroutine
+    @tornado.web.authenticated
     def get_location(self, company_id):
         if company_id:
             cursor = yield self.db.execute(
@@ -28,6 +30,7 @@ class Company(BaseHandler):
             return {}
 
     @gen.coroutine
+    @tornado.web.authenticated
     def get_company(self, company_id):
         if company_id:
             cursor = yield self.db.execute(
@@ -38,10 +41,21 @@ class Company(BaseHandler):
         else:
             return {}
 
-    @staticmethod
-    def parse_query(data, description):
-        result = {}
-        if data:
-            for i in range(len(description)):
-                result[description[i].name] = data[i]
-        return result
+
+class Contact(BaseHandler):
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get(self, proc, arg):
+        rpc = {'get_contact': self.get_contact}
+        if proc in rpc:
+            result = yield rpc[proc](arg)
+            self.write(json_encode(result))
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get_contact(self, contact_id):
+        if contact_id:
+            cursor = yield self.db.execute("SELECT * FROM contact WHERE id = %s", [contact_id])
+            return self.parse_query(cursor.fetchone(), cursor.description)
+        else:
+            return {}

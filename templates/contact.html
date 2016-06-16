@@ -1,20 +1,73 @@
 {% extends 'base.html' %}
 
-{% block title %}Add Contact{% end %}
-{% block active %}add-contact{% end %}
+{% block title %}
+    {% if form == 'add' %}
+        Add Contact
+    {% elif form == 'mod' %}
+        Modify Contact
+    {% elif form == 'rem' %}
+        Remove Contact
+    {% end %}
+{% end %}
+{% block active %}{{ form }}-contact{% end %}
 
-{% block panel-heading %}Add Contact{% end %}
+{% block panel-heading %}
+    {% if form == 'add' %}
+        Add Contact
+    {% elif form == 'mod' %}
+        Modify Contact
+    {% elif form == 'rem' %}
+        Remove Contact
+    {% end %}
+{% end %}
+
 {% block panel-body %}
-{% include 'forms/add_contact.html' %}
+    <div id="alert"></div>
+    {% if form == 'add' %}
+        {% include 'forms/add_contact.html' %}
+    {% elif form == 'mod' %}
+        {% include 'forms/mod_contact.html' %}
+    {% elif form == 'rem' %}
+        {% include 'forms/rem_contact.html' %}
+    {% end %}
 {% end %}
 
 {% block footer %}
 <script>
-    $('#add_contact_form').validate({
-        rules: {
-            phone: {
-                phoneUS: true
-            }
+    function load_contact(contact_id) {
+        $.get('/api/v1/contact/get_contact/' + contact_id, function (contact) {
+            contact = JSON.parse(contact);
+            $('#firstname').val(contact.first_name);
+            $('#lastname').val(contact.last_name);
+            $('#title').val(contact.title);
+            $('#email').val(contact.email);
+            $('#phone').val(contact.phone);
+        })
+    }
+
+    $(function () {
+        var add_contact = $('#add_contact_form');
+        var mod_contact = $('#mod_contact_form');
+
+        if (add_contact.length > 0) {
+            add_contact.validate({
+                rules: {
+                    phone: {
+                        phoneUS: true
+                    }
+                }
+            });
+        }
+
+        if (mod_contact.length > 0) {
+            mod_contact.validate();
+            var contact = $('#contact').selectize()[0].selectize;
+            load_contact(contact.getValue());
+
+            contact.on('change', function (contact_id) {
+                load_contact(contact_id);
+            });
+            submit_form(mod_contact, undefined, true);
         }
     });
 </script>

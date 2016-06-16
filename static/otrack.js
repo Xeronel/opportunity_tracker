@@ -78,8 +78,9 @@ $('.panel-body.collapse').each(function () {
 });
 
 // AJAX Submit a form
-function submit_form(element, url) {
+function submit_form(element, url, reload) {
     url = typeof url !== 'undefined' ? url : window.location.pathname;
+    reload = typeof reload !== 'undefined' ? reload : false;
     element.submit(function (event) {
         event.preventDefault();
         if ($(this).valid()) {
@@ -92,6 +93,9 @@ function submit_form(element, url) {
                         $('#alert-message').remove();
                     }
                     element.trigger('reset');
+                    if (reload === true) {
+                        location.reload();
+                    }
                 },
                 error: function () {
                     $('#alert').html(

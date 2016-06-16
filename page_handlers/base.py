@@ -60,3 +60,11 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def db(self):
         return self.application.db
+
+    @staticmethod
+    def parse_query(data, description):
+        result = {}
+        if data:
+            for i in range(len(description)):
+                result[description[i].name] = data[i]
+        return result

@@ -66,6 +66,12 @@ $(function () {
             });
         });
 
+        company.on('reset', function (value) {
+            $(function () {
+                loadContacts(value);
+            })
+        })
+
         var cookie = Cookies.get('company');
         if (cookie) {
             company.setValue(cookie);

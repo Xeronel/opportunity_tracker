@@ -129,13 +129,13 @@ class Company(BaseHandler):
         postal_code = self.get_argument('zip')
 
         yield self.db.execute(
-            "UPDATE company SET employee = %s, name = %s WHERE id = %s",
+            "UPDATE company SET employee = %s, NAME = %s WHERE id = %s;",
             [employee, company_name, company]
         )
         yield self.db.execute(
             "UPDATE location "
             "SET (address1, address2, city, state, postal_code, country) = (%s, %s, %s, %s, %s, %s) "
-            "WHERE company = %s",
+            "WHERE company = %s;",
             [address1, address2, city, state, postal_code, country, company]
         )
         yield self.render_form()
@@ -144,7 +144,7 @@ class Company(BaseHandler):
     @tornado.web.authenticated
     def rem_company(self):
         company_id = self.get_argument('company')
-        yield self.db.execute("DELETE FROM company WHERE id = %s",
+        yield self.db.execute("DELETE FROM company WHERE id = %s;",
                               [company_id])
         yield self.render_form()
 
@@ -174,11 +174,24 @@ class Contact(BaseHandler):
     def get(self, form):
         user_info = yield self.get_user()
         companies = yield self.get_companies()
-        self.render('contact.html', companies=companies, user=user_info)
+        self.render('contact.html',
+                    companies=companies,
+                    user=user_info,
+                    form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
-    def post(self):
+    def post(self, form):
+        forms = {'add': self.add_contact,
+                 'mod': self.mod_contact}
+        if form in forms:
+            yield forms[form]()
+        else:
+            yield self.render_form(form)
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def add_contact(self):
         company = self.get_argument('company')
         first_name = self.get_argument('firstname')
         last_name = self.get_argument('lastname')
@@ -193,10 +206,44 @@ class Contact(BaseHandler):
                 [company, first_name, last_name, title, email, phone])
         except psycopg2.IntegrityError:
             pass
+        yield self.render_form()
 
-        user_info = yield self.get_user()
-        companies = yield self.get_companies()
-        self.render('contact.html', companies=companies, user=user_info)
+    @gen.coroutine
+    @tornado.web.authenticated
+    def mod_contact(self):
+        company = self.get_argument('company')
+        contact = self.get_argument('contact')
+        first_name = self.get_argument('firstname')
+        title = self.get_argument('title')
+        last_name = self.get_argument('lastname', '')
+        email = self.get_argument('email', '')
+        phone = self.get_argument('phone', '')
+
+        try:
+            yield self.db.execute(
+                "UPDATE contact "
+                "SET (first_name, last_name, title, email, phone) = (%s, %s, %s, %s, %s) "
+                "WHERE id = %s AND company = %s",
+                [first_name, last_name, title, email, phone,
+                 contact, company])
+        except psycopg2.IntegrityError:
+            self.send_error(400)
+        yield self.render_form()
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def render_form(self, form=None, user_info=None, companies=None):
+        if not form:
+            form = self.request.uri.strip('/')[:3]
+        if not user_info:
+            user_info = yield self.get_user()
+        if not companies:
+            companies = yield self.get_companies()
+
+        self.render('contact.html',
+                    companies=companies,
+                    user=user_info,
+                    form=form)
 
 
 class Notification(BaseHandler):
