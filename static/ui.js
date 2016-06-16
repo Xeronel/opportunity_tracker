@@ -3,6 +3,7 @@ function loadContacts(company) {
     if (contacts.length > 0) {
         var contact_selectize = contacts[0].selectize;
         contact_selectize.clearOptions();
+        contact_selectize.addOption({'text': 'None', 'value': 'None'});
         $.getJSON({
             url: '/get_contacts/' + company,
             success: function (data) {
@@ -44,6 +45,17 @@ $(function () {
         }
     }
 
+    // Contact dropdown
+    var contact = $('#contact');
+    if (contact.length > 0) {
+        contact = contact.selectize()[0].selectize;
+        contact.on('change', function (value) {
+            if (value === 'None') {
+                contact.clear();
+            }
+        })
+    }
+
     // Company dropdown
     var company = $('#company');
     if (company.length > 0) {
@@ -70,7 +82,7 @@ $(function () {
             $(function () {
                 loadContacts(value);
             })
-        })
+        });
 
         var cookie = Cookies.get('company');
         if (cookie) {

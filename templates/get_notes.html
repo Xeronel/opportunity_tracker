@@ -10,7 +10,7 @@
     <tr>
         <td>{{ escape(note[0].strftime('%Y-%m-%d')) }}</td>
         <td>{{ escape(note[1]) }}</td>
-        <td>{{ escape('%s %s' % (note[2], note[3])) }}</td>
+        <td>{{ escape('%s %s' % (note[2] if note[2] else '', note[3] if note[3] else '')) }}</td>
         <td>{% raw note[4] %}</td>
     </tr>
     {% end %}

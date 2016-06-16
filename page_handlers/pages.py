@@ -295,8 +295,10 @@ class Note(BaseHandler):
         note_type = self.get_argument('note_type')
         note = self.get_argument('note')
         date = datetime.strptime(self.get_argument('date'), '%m-%d-%Y')
+        contact = self.get_argument('contact', None) or None
         try:
-            contact = int(self.get_argument('contact'))
+            if contact:
+                contact = int(contact)
         except ValueError:
             raise tornado.web.HTTPError(400, 'contact must be an integer')
 
@@ -319,12 +321,13 @@ class GetNotes(BaseHandler):
     def get(self, company):
         # Get the last 5 notes within the past 90 days
         cursor = yield self.db.execute("SELECT note_date, note_type, first_name, last_name, note "
-                                       "FROM notes, contact "
-                                       "WHERE notes.company = %s "
-                                       "AND contact.id = notes.contact "
+                                       "FROM notes "
+                                       "LEFT OUTER JOIN contact "
+                                       "ON (notes.contact = contact.id) "
+                                       "WHERE notes.company = 2 "
                                        "AND notes.note_date > NOW() - INTERVAL '90 days' "
                                        "ORDER BY note_date DESC "
-                                       " LIMIT 5;",
+                                       "LIMIT 5;",
                                        [company])
         notes = cursor.fetchall()
         if len(notes) > 0:
@@ -345,6 +348,7 @@ class GetContacts(BaseHandler):
             "WHERE company = %s", [company])
         contacts = cursor.fetchall()
         if len(contacts) > 0:
+            contacts.append(('', 'None', ''))
             self.write(json_encode([{'text': '%s %s' % (first, last), 'value': idx}
                                     for idx, first, last in contacts]))
         else:

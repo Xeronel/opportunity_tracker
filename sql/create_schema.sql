@@ -241,8 +241,8 @@ ALTER SEQUENCE location_id_seq OWNED BY location.id;
 
 CREATE TABLE notes (
     id integer NOT NULL,
-    action character varying(255) NOT NULL,
-    contact integer NOT NULL,
+    note_type character varying(255) NOT NULL,
+    contact integer,
     note_date date NOT NULL,
     company integer NOT NULL,
     note character varying(250) NOT NULL
