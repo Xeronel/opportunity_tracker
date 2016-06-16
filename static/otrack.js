@@ -76,3 +76,31 @@ $('.panel-body.collapse').each(function () {
             $(this).parent().find('.glyphicon-minus').removeClass('glyphicon-minus').addClass('glyphicon-plus');
         })
 });
+
+// AJAX Submit a form
+function submit_form(element, url) {
+    url = typeof url !== 'undefined' ? url : window.location.pathname;
+    element.submit(function (event) {
+        event.preventDefault();
+        if ($(this).valid()) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: element.serialize(),
+                success: function () {
+                    if ($('#alert-message').length > 0) {
+                        $('#alert-message').remove();
+                    }
+                    element.trigger('reset');
+                },
+                error: function () {
+                    $('#alert').html(
+                        '<div id="alert-message" class="alert alert-danger fade in" style="margin-top: -10px">' +
+                        '<a class="close" data-dismiss="alert">×</a>' +
+                        '<strong>Error!</strong> A company with that name already exists!' +
+                        '</div>');
+                }
+            });
+        }
+    });
+}
