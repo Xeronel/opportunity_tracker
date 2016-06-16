@@ -290,7 +290,7 @@ class Note(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def post(self):
+    def post(self, form):
         company = self.get_argument('company')
         action = self.get_argument('action')
         note = self.get_argument('note')
