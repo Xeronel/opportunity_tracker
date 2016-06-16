@@ -22,6 +22,7 @@ class Admin(BaseHandler):
         self.render('admin.html', permissions=permissions, user=user)
 
     @gen.coroutine
+    @authenticated
     def add_user(self, permissions):
         if 'add_user' in permissions and permissions['add_user']:
             try:
