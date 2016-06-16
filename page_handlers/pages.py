@@ -324,7 +324,7 @@ class GetNotes(BaseHandler):
                                        "FROM notes "
                                        "LEFT OUTER JOIN contact "
                                        "ON (notes.contact = contact.id) "
-                                       "WHERE notes.company = 2 "
+                                       "WHERE notes.company = %s "
                                        "AND notes.note_date > NOW() - INTERVAL '90 days' "
                                        "ORDER BY note_date DESC "
                                        "LIMIT 5;",
