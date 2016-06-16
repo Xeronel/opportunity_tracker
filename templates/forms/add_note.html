@@ -2,7 +2,7 @@
     <form role="form" id="add_note_form" method="post">
         {% module xsrf_form_html() %}
         {% module CompanyDropdown(companies) %}
-        {% module ActionTakenDropdown() %}
+        {% module NoteTypeDropdown() %}
         {% module ContactDropdown() %}
         <!-- Date selector -->
         <div class="form-group col-md-6 col-lg-4">

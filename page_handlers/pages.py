@@ -292,7 +292,7 @@ class Note(BaseHandler):
     @tornado.web.authenticated
     def post(self, form):
         company = self.get_argument('company')
-        action = self.get_argument('action')
+        note_type = self.get_argument('note_type')
         note = self.get_argument('note')
         date = datetime.strptime(self.get_argument('date'), '%m-%d-%Y')
         try:
@@ -302,9 +302,9 @@ class Note(BaseHandler):
 
         # Store note
         yield self.db.execute(
-            "INSERT INTO notes (contact, company, action, note_date, note) "
+            "INSERT INTO notes (contact, company, note_type, note_date, note) "
             "VALUES (%s, %s, %s, %s, %s);",
-            [contact, company, action, date, note])
+            [contact, company, note_type, date, note])
 
         user_info = yield self.get_user()
         companies = yield self.get_companies()
@@ -318,7 +318,7 @@ class GetNotes(BaseHandler):
     @tornado.web.authenticated
     def get(self, company):
         # Get the last 5 notes within the past 90 days
-        cursor = yield self.db.execute("SELECT note_date, action, first_name, last_name, note "
+        cursor = yield self.db.execute("SELECT note_date, note_type, first_name, last_name, note "
                                        "FROM notes, contact "
                                        "WHERE notes.company = %s "
                                        "AND contact.id = notes.contact "
@@ -342,7 +342,7 @@ class GetContacts(BaseHandler):
     def get(self, company):
         cursor = yield self.db.execute(
             "SELECT id, first_name, last_name FROM contact "
-            "WHERE company = %s", company)
+            "WHERE company = %s", [company])
         contacts = cursor.fetchall()
         if len(contacts) > 0:
             self.write(json_encode([{'text': '%s %s' % (first, last), 'value': idx}

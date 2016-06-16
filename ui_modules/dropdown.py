@@ -6,9 +6,9 @@ def _get_path(file_name):
     return os.path.join('ui', file_name)
 
 
-class ActionTakenDropdown(UIModule):
+class NoteTypeDropdown(UIModule):
     def render(self, required=True):
-        return self.render_string(_get_path('actiontaken-dropdown.html'),
+        return self.render_string(_get_path('note_type-dropdown.html'),
                                   required=required)
 
 

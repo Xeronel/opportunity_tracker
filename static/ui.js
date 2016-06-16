@@ -28,7 +28,7 @@ $(function () {
 
     // id, default value
     var dropdowns = [
-        {id: '#action', value: ''},
+        {id: '#note_type', value: ''},
         {id: '#contact', value: ''},
         {id: '#country', value: 'US'},
         {id: '#employee', value: ''}
