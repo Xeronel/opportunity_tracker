@@ -35,6 +35,14 @@ Remove Company
 
 {% block footer %}
 <script>
+    function load_company(company_id) {
+        $.get('/api/v1/company/get_company/' + company_id, function (company) {
+            company = JSON.parse(company)
+            $('#company-name').val(company.name);
+            $('#employee').selectize()[0].selectize.setValue(company.employee);
+            load_location(company_id);
+        })
+    }
     function load_location(company_id) {
         $.get('/api/v1/company/get_location/' + company_id, function (location) {
             location = JSON.parse(location);
@@ -71,20 +79,20 @@ Remove Company
         if (mod_company.length > 0) {
             company = $('#company').selectize()[0].selectize;
             $('#company-name').val(company.getItem(company.getValue()).text());
-            load_location(company.getValue());
+            load_company(company.getValue());
 
             company.on('change', function (id) {
                 $('#company-name').val(company.getItem(company.getValue()).text());
-                load_location(id);
+                load_company(id);
             });
         }
 
         if (rem_company.length > 0) {
             company = $('#company').selectize()[0].selectize;
-            load_location(company.getValue());
+            load_company(company.getValue());
             rem_company.validate();
             company.on('change', function (id) {
-                load_location(id);
+                load_company(id);
             });
         }
     });
