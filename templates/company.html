@@ -14,6 +14,7 @@ Remove Company
 {% block content-panel %}
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        <div id="alert"></div>
         <div class="panel-heading">
             {% if form == 'add' %}Add Company
             {% elif form == 'mod' %}Modify Company
@@ -62,6 +63,29 @@ Remove Company
                     state: {
                         lettersonly: true
                     }
+                }
+            });
+            add_company.submit(function (event) {
+                event.preventDefault();
+                if ($(this).valid()) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/add_company',
+                        data: add_company.serialize(),
+                        success: function () {
+                            if ($('#alert-message').length > 0) {
+                                $('#alert-message').remove();
+                            }
+                            add_company.trigger('reset');
+                        },
+                        error: function () {
+                            $('#alert').html(
+                                    '<div id="alert-message" class="alert alert-danger fade in" style="margin-top: -10px">' +
+                                    '<a class="close" data-dismiss="alert">×</a>' +
+                                    '<strong>Error!</strong> A company with that name already exists!' +
+                                    '</div>');
+                        }
+                    });
                 }
             });
         }

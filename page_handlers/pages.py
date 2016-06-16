@@ -85,14 +85,19 @@ class Company(BaseHandler):
         user_info = yield self.get_user()
         employees = yield self.get_employees()
 
-        cursor = yield self.db.execute("INSERT INTO company (name, active, employee, creator) "
-                                       "VALUES (%(company_name)s, %(active)s, %(employee)s, %(creator)s) "
-                                       "RETURNING id;",
-                                       {'company_name': company_name,
-                                        'active': True,
-                                        'employee': employee,
-                                        'creator': user_info.uid})
-        company_id = cursor.fetchone()
+        try:
+            cursor = yield self.db.execute("INSERT INTO company (name, active, employee, creator) "
+                                           "VALUES (%(company_name)s, %(active)s, %(employee)s, %(creator)s) "
+                                           "RETURNING id;",
+                                           {'company_name': company_name,
+                                            'active': True,
+                                            'employee': employee,
+                                            'creator': user_info.uid})
+            company_id = cursor.fetchone()
+        except psycopg2.IntegrityError:
+            self.send_error(400)
+            return
+
         yield self.db.execute(
             "INSERT INTO location (address1, address2, city, state, country, postal_code, company) "
             "VALUES (%(address1)s, %(address2)s, %(city)s, %(state)s, %(country)s, %(postal_code)s, %(company)s);",
