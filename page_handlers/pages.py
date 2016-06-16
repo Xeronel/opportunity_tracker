@@ -183,7 +183,8 @@ class Contact(BaseHandler):
     @tornado.web.authenticated
     def post(self, form):
         forms = {'add': self.add_contact,
-                 'mod': self.mod_contact}
+                 'mod': self.mod_contact,
+                 'rem': self.rem_contact}
         if form in forms:
             yield forms[form]()
         else:
@@ -232,6 +233,14 @@ class Contact(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
+    def rem_contact(self):
+        contact_id = self.get_argument('contact')
+        yield self.db.execute("DELETE FROM contact WHERE id = %s;",
+                              [contact_id])
+        yield self.render_form()
+
+    @gen.coroutine
+    @tornado.web.authenticated
     def render_form(self, form=None, user_info=None, companies=None):
         if not form:
             form = self.request.uri.strip('/')[:3]
@@ -256,7 +265,7 @@ class Notification(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def post(self):
+    def post(self, form):
         user_info = yield self.get_user()
         companies = yield self.get_companies()
         company = self.get_argument('company')

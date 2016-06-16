@@ -1,30 +1,30 @@
 <div class="form-group">
-    <form role="form" id="add_contact_form" method="post">
+    <form role="form" id="rem_contact_form" method="post">
         {% module xsrf_form_html() %}
         {% module CompanyDropdown(companies) %}
+        {% module ContactDropdown() %}
         <div class="form-group col-lg-12">
             <label for="firstname">First Name:</label>
-            <input id="firstname" type="text" class="form-control" name="firstname" required>
+            <input id="firstname" type="text" class="form-control" name="firstname" disabled>
         </div>
         <div class="form-group col-lg-12">
             <label for="lastname">Last Name:</label>
-            <input id="lastname" type="text" class="form-control" name="lastname">
+            <input id="lastname" type="text" class="form-control" name="lastname" disabled>
         </div>
         <div class="form-group col-lg-12">
             <label for="title">Title:</label>
-            <input id="title" type="text" class="form-control" name="title" required>
+            <input id="title" type="text" class="form-control" name="title" disabled>
         </div>
         <div class="form-group col-lg-12">
             <label for="email">Email Address:</label>
-            <input id="email" type="email" class="form-control" name="email">
+            <input id="email" type="email" class="form-control" name="email" disabled>
         </div>
         <div class="form-group col-lg-12">
             <label for="phone">Phone Number:</label>
-            <input id="phone" type="tel" class="form-control" name="phone">
+            <input id="phone" type="tel" class="form-control" name="phone" disabled>
         </div>
         <div class="form-group col-lg-12">
             <button type="submit" class="btn btn-primary pull-right">Submit</button>
-            <button type="reset" class="btn btn-inverse pull-right">Cancel</button>
         </div>
     </form>
 </div>

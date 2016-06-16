@@ -48,6 +48,8 @@
     $(function () {
         var add_contact = $('#add_contact_form');
         var mod_contact = $('#mod_contact_form');
+        var rem_contact = $('#rem_contact_form');
+        var contact = $('#contact')
 
         if (add_contact.length > 0) {
             add_contact.validate({
@@ -60,14 +62,24 @@
         }
 
         if (mod_contact.length > 0) {
+            contact = contact.selectize()[0].selectize;
             mod_contact.validate();
-            var contact = $('#contact').selectize()[0].selectize;
             load_contact(contact.getValue());
 
             contact.on('change', function (contact_id) {
                 load_contact(contact_id);
             });
             submit_form(mod_contact, undefined, true);
+        }
+
+        if (rem_contact.length > 0) {
+            contact = contact.selectize()[0].selectize;
+            rem_contact.validate();
+
+            contact.on('change', function (contact_id) {
+                load_contact(contact_id);
+            });
+            submit_form('')
         }
     });
 </script>
