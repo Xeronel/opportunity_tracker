@@ -38,8 +38,9 @@ Remove Company
     function load_company(company_id) {
         $.get('/api/v1/company/get_company/' + company_id, function (company) {
             company = JSON.parse(company);
-            var employee = $('#employee');
             $('#company-name').val(company.name);
+            // Load employee
+            var employee = $('#employee');
             if (employee.length > 0){
                 employee.selectize()[0].selectize.setValue(company.employee);
             }
@@ -55,6 +56,7 @@ Remove Company
             $('#city').val(location.city);
             $('#state').val(location.state);
             $('#zip').val(location.postal_code);
+            $('#country').selectize()[0].selectize.setValue(location.country);
         });
     }
 

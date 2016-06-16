@@ -67,15 +67,15 @@ class Company(BaseHandler):
                'rem': self.rem_company}
 
         if form in rpc:
-            yield rpc[form](form)
+            yield rpc[form]()
         else:
             yield self.render_form()
 
     @gen.coroutine
     @tornado.web.authenticated
-    def add_company(self, form):
+    def add_company(self):
         employee = self.get_argument('employee')
-        company_name = self.get_argument('company')
+        company_name = self.get_argument('company-name')
         country = self.get_argument('country')
         address1 = self.get_argument('address1')
         try:
@@ -110,20 +110,43 @@ class Company(BaseHandler):
              'country': country,
              'postal_code': postal_code,
              'company': company_id[0]})
-        yield self.render_form(form, user_info)
+        yield self.render_form(user_info)
 
     @gen.coroutine
     @tornado.web.authenticated
-    def mod_company(self, form):
-        pass
+    def mod_company(self):
+        employee = self.get_argument('employee')
+        company = self.get_argument('company')
+        company_name = self.get_argument('company-name')
+        country = self.get_argument('country')
+        address1 = self.get_argument('address1')
+        try:
+            address2 = self.get_argument('address2')
+        except tornado.web.MissingArgumentError:
+            address2 = ''
+        city = self.get_argument('city')
+        state = self.get_argument('state')
+        postal_code = self.get_argument('zip')
+
+        yield self.db.execute(
+            "UPDATE company SET employee = %s, name = %s WHERE id = %s",
+            [employee, company_name, company]
+        )
+        yield self.db.execute(
+            "UPDATE location "
+            "SET (address1, address2, city, state, postal_code, country) = (%s, %s, %s, %s, %s, %s) "
+            "WHERE company = %s",
+            [address1, address2, city, state, postal_code, country, company]
+        )
+        yield self.render_form()
 
     @gen.coroutine
     @tornado.web.authenticated
-    def rem_company(self, form):
+    def rem_company(self):
         company_id = self.get_argument('company')
         yield self.db.execute("DELETE FROM company WHERE id = %s",
                               [company_id])
-        yield self.render_form(form)
+        yield self.render_form()
 
     @gen.coroutine
     @tornado.web.authenticated

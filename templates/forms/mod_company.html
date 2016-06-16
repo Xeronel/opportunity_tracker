@@ -12,6 +12,21 @@
         </div>
         <div class="row">
             <fieldset class="form-group col-lg-12">
+                <label for="select-country">Country:</label>
+                <select id="country" name="country" class="form-control" required>
+                    <option value="">Select a country...</option>
+                    {% for country in countries %}
+                    {% if country.alpha2 == 'us' %}
+                    <option value="{{ country.alpha2 }}" selected>{{ country.name }}</option>
+                    {% else %}
+                    <option value="{{ country.alpha2 }}">{{ country.name }}</option>
+                    {% end %}
+                    {% end %}
+                </select>
+            </fieldset>
+        </div>
+        <div class="row">
+            <fieldset class="form-group col-lg-12">
                 <label for="company-name" class="control-label">Company Name:</label>
                 <input id="company-name" name="company-name" type="text" class="form-control" required>
             </fieldset>
