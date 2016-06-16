@@ -83,7 +83,6 @@ class Company(BaseHandler):
         state = self.get_argument('state')
         postal_code = self.get_argument('zip')
         user_info = yield self.get_user()
-        employees = yield self.get_employees()
 
         try:
             cursor = yield self.db.execute("INSERT INTO company (name, active, employee, creator) "
@@ -108,16 +107,37 @@ class Company(BaseHandler):
              'country': country,
              'postal_code': postal_code,
              'company': company_id[0]})
-        self.render('company.html',
-                    countries=pycountry.countries,
-                    user=user_info,
-                    employees=employees,
-                    form=form)
+        yield self.render_form(form, user_info)
 
     @gen.coroutine
     @tornado.web.authenticated
     def mod_company(self, form):
         pass
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def rem_company(self, form):
+        company_id = self.get_argument('company')
+        yield self.db.execute("DELETE FROM company WHERE id = %s",
+                              company_id)
+        yield self.render_form()
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def render_form(self, form, user_info=None, employees=None, companies=None):
+        if not user_info:
+            user_info = yield self.get_user()
+        if not employees:
+            employees = yield self.get_employees()
+        if not companies:
+            companies = yield self.get_companies()
+
+        self.render('company.html',
+                    countries=pycountry.countries,
+                    user=user_info,
+                    employees=employees,
+                    companies=companies,
+                    form=form)
 
 
 class Contact(BaseHandler):
