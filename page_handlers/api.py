@@ -45,15 +45,15 @@ class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def notes(self, company_id):
-        cursor = yield self.db.execute(
-            "SELECT note_date, note_type, first_name, last_name, note "
-            "FROM notes "
-            "LEFT OUTER JOIN contact "
-            "ON (notes.contact = contact.id) "
-            "WHERE notes.company = %s;",
-            [company_id]
-        )
         if company_id:
+            cursor = yield self.db.execute(
+                "SELECT note_date, note_type, first_name, last_name, note "
+                "FROM notes "
+                "LEFT OUTER JOIN contact "
+                "ON (notes.contact = contact.id) "
+                "WHERE notes.company = %s;",
+                [company_id]
+            )
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
