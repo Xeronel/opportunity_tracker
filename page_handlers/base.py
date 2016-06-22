@@ -1,5 +1,6 @@
 import tornado.web
 from tornado import gen
+from datetime import date, datetime
 
 
 class User:
@@ -61,10 +62,19 @@ class BaseHandler(tornado.web.RequestHandler):
     def db(self):
         return self.application.db
 
-    @staticmethod
-    def parse_query(data, description):
-        result = {}
-        if data:
+    def parse_query(self, data, description):
+        if type(data) == list:
+            result = []
+            for value in data:
+                result.append(self.parse_query(value, description))
+        elif type(data) == tuple:
+            result = {}
             for i in range(len(description)):
-                result[description[i].name] = data[i]
+                if type(data[i]) == date:
+                    value = data[i].strftime('%Y-%m-%d')
+                else:
+                    value = data[i]
+                result[description[i].name] = value
+        else:
+            result = {}
         return result

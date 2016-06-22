@@ -18,7 +18,7 @@ def make_app():
          (r'/(add|rem|mod)_contact', Contact),
          (r'/api/v1/contact/(.*)/(.*)', api.Contact),
          (r'/(add|rem|mod)_notification', Notification),
-         (r'/(add|rem|mod)_note', Note),
+         (r'/(add|rem|mod|view)_notes?', Note),
          (r'/get_notes/(.*)', GetNotes),
          (r'/get_contacts/(.*)', GetContacts),
          (r'/admin', Admin),

@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css"
           href="{{ static_url('bower/selectize/dist/css/selectize.bootstrap3.css') }}">
     <link rel="stylesheet" type="text/css"
+          href="{{ static_url('bower/datatables/media/css/dataTables.bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css"
           href="{{ static_url('style.css') }}">
 </head>
 
@@ -117,6 +119,7 @@
             </div>
             <div id="collapseNote" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                 <a id="add-note" href="add_note">Add Note</a>
+                <a id="view-note" href="view_note">View Notes</a>
             </div>
         </div>
     </div>
@@ -144,6 +147,8 @@
     <script src="{{ static_url('bower/jquery.fixedheadertable/jquery.fixedheadertable.min.js') }}"></script>
     <script src="{{ static_url('bower/jquery-validation/dist/jquery.validate.min.js') }}"></script>
     <script src="{{ static_url('bower/jquery-validation/dist/additional-methods.min.js') }}"></script>
+    <script src="{{ static_url('bower/datatables/media/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ static_url('bower/datatables/media/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ static_url('otrack.js') }}"></script>
     <script src="{{ static_url('ui.js') }}"></script>
     <script>

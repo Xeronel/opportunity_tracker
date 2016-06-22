@@ -1,13 +1,31 @@
 {% extends "base.html" %}
 
-{% block title %}Add Note{% end %}
-{% block active %}add-note{% end %}
+{% block title %}{{ form.title() }} Note{% if form == 'view' %}s{% end %}{% end %}
+{% block active %}{{ form }}-note{% end %}
 
-{% block panel-heading %}Add Note{% end %}
-{% block panel-body %}
-{% include 'forms/add_note.html' %}
+{% block content-panel %}
+<div class="row">
+    <div class="{% if form == 'view' %}
+    col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1
+    {% else %}
+    col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2
+    {% end %}">
+        <div class="panel-heading">
+            {{ form.title() }} Note{% if form == 'view' %}s{% end %}
+        </div>
+        <div class="panel-body" style="background-color: white;">
+            {% if form == 'add' %}
+            {% include 'forms/add_note.html' %}
+            {% elif form == 'view' %}
+            {% include 'forms/view_notes.html' %}
+            {% end %}
+        </div>
+    </div>
+</div>
 {% end %}
+
 {% block footer %}
+{% if form == 'add' %}
 <script>
     function loadNotes(company) {
         var notes = $('#notes');
@@ -47,4 +65,33 @@
 
     $('#add_note_form').validate();
 </script>
+{% elif form == 'view' %}
+<script>
+    function getNotes(company_id) {
+        var notes = $('#notes').dataTable().api();
+        notes.ajax.url('api/v1/company/notes/' + company_id).load();
+    }
+    $(function () {
+        $('#notes').DataTable({
+            ajax: {
+                dataSrc: ''
+            },
+            autoWidth: false,
+            columns: [
+                {data: "first_name"},
+                {data: "last_name"},
+                {data: "note", width: "45%"},
+                {data: "note_type", width: "75px"},
+                {data: "note_date", width: "75px"}
+            ]
+        });
+
+        var company = $('#company').selectize()[0].selectize;
+        getNotes(company.getValue());
+        company.on('change', function(company_id) {
+            getNotes(company_id);
+        });
+    });
+</script>
+{% end %}
 {% end %}

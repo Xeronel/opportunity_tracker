@@ -279,18 +279,37 @@ class Notification(BaseHandler):
 
 
 class Note(BaseHandler):
+    form = None
+
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
+        self.form = form
         user_info = yield self.get_user()
         companies = yield self.get_companies()
         self.render('note.html',
                     companies=companies,
-                    user=user_info)
+                    user=user_info,
+                    form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
     def post(self, form):
+        self.form = form
+        forms = {'add': self.add_note}
+        if form in forms:
+            yield forms[form]()
+        else:
+            user_info = yield self.get_user()
+            companies = yield self.get_companies()
+            self.render('note.html',
+                        companies=companies,
+                        user=user_info,
+                        form=form)
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def add_note(self):
         company = self.get_argument('company')
         note_type = self.get_argument('note_type')
         note = self.get_argument('note')
@@ -307,12 +326,26 @@ class Note(BaseHandler):
             "INSERT INTO notes (contact, company, note_type, note_date, note) "
             "VALUES (%s, %s, %s, %s, %s);",
             [contact, company, note_type, date, note])
+        yield self.render_form()
 
-        user_info = yield self.get_user()
-        companies = yield self.get_companies()
+    @gen.coroutine
+    @tornado.web.authenticated
+    def view_notes(self):
+        yield self.render_form()
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def render_form(self, companies=None, user=None):
+        if self.form is None:
+            self.form = self.request.uri[:self.request.uri.find('_')]
+        if companies is None:
+            companies = yield self.get_companies()
+        if user is None:
+            user = yield self.get_user()
         self.render('note.html',
                     companies=companies,
-                    user=user_info)
+                    user=user,
+                    form=self.form)
 
 
 class GetNotes(BaseHandler):

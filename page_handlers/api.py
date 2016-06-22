@@ -12,7 +12,8 @@ class Company(BaseHandler):
     @tornado.web.authenticated
     def get(self, proc, arg):
         rpc = {'get_location': self.get_location,
-               'get_company': self.get_company}
+               'get_company': self.get_company,
+               'notes': self.notes}
         if proc in rpc:
             result = yield rpc[proc](arg)
             self.write(json_encode(result))
@@ -38,6 +39,22 @@ class Company(BaseHandler):
                 [company_id]
             )
             return self.parse_query(cursor.fetchone(), cursor.description)
+        else:
+            return {}
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def notes(self, company_id):
+        cursor = yield self.db.execute(
+            "SELECT note_date, note_type, first_name, last_name, note "
+            "FROM notes "
+            "LEFT OUTER JOIN contact "
+            "ON (notes.contact = contact.id) "
+            "WHERE notes.company = %s;",
+            [company_id]
+        )
+        if company_id:
+            return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
 
