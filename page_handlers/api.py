@@ -11,7 +11,7 @@ class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, proc, arg):
-        rpc = {'get_location': self.get_location,
+        rpc = {'location': self.location,
                'get_company': self.get_company,
                'notes': self.notes}
         if proc in rpc:
@@ -20,7 +20,7 @@ class Company(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def get_location(self, company_id):
+    def location(self, company_id):
         if company_id:
             cursor = yield self.db.execute(
                 "SELECT id, company, address1, address2, city, state, postal_code, country "

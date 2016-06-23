@@ -49,7 +49,7 @@
     }
 
     function load_location(company_id) {
-        $.get('/api/v1/company/get_location/' + company_id, function (location) {
+        $.get('/api/v1/company/location/' + company_id, function (location) {
             location = JSON.parse(location);
             $('#address1').val(location.address1);
             $('#address2').val(location.address2);
