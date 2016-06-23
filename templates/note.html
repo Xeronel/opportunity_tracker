@@ -71,6 +71,7 @@
         var notes = $('#notes').dataTable().api();
         notes.ajax.url('api/v1/company/notes/' + company_id).load();
     }
+
     $(function () {
         $('#notes').DataTable({
             ajax: {
@@ -91,6 +92,10 @@
         company.on('change', function(company_id) {
             getNotes(company_id);
         });
+        var d = new Date();
+        initDatePicker('#end_date', d);
+        d.setDate(d.getDate()-90);
+        initDatePicker('#start_date', d);
     });
 </script>
 {% end %}

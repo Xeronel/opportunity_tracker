@@ -1,0 +1,9 @@
+<div class="form-group col-md-6 col-lg-4">
+    <label for="{{ name }}">{{ label }}: </label>
+    <div id="{{ name }}" class="input-group date" data-date-format="mm-dd-yyyy">
+        <input class="form-control" type="text" name="{{ name }}"
+                {% if readonly %} readonly{% end %}
+                {% if required == True %} required{% end %}/>
+        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+    </div>
+</div>

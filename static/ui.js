@@ -15,6 +15,21 @@ function loadContacts(company) {
     }
 }
 
+function initDatePicker(id, date) {
+    $(id).datepicker({
+        autoclose: true,
+        todayHighlight: true
+    })
+        .datepicker('update', date)
+        .on('changeDate', function (e) {
+            var control = $(e.target).closest('.form-group');
+            if (control.hasClass('has-error')) {
+                control.removeClass('has-error');
+                $(control).children('span.help-block').remove();
+            }
+        });
+}
+
 $(function () {
     var options = {
         selectOnTab: true,
