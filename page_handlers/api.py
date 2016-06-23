@@ -12,7 +12,7 @@ class Company(BaseHandler):
     @tornado.web.authenticated
     def get(self, proc, arg):
         rpc = {'location': self.location,
-               'get_company': self.get_company,
+               'details': self.details,
                'notes': self.notes}
         if proc in rpc:
             result = yield rpc[proc](arg)
@@ -32,7 +32,7 @@ class Company(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def get_company(self, company_id):
+    def details(self, company_id):
         if company_id:
             cursor = yield self.db.execute(
                 "SELECT id, name, active, employee, creator FROM company WHERE id = %s",
