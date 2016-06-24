@@ -97,9 +97,9 @@ CREATE TABLE contact (
     company integer NOT NULL,
     first_name character varying(25) NOT NULL,
     last_name character varying(25),
-    title character varying(25),
+    title character varying(50),
     email character varying(255),
-    phone character varying(15)
+    phone character varying(30)
 );
 
 
