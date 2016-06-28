@@ -287,8 +287,10 @@ class Note(BaseHandler):
         self.form = form
         user_info = yield self.get_user()
         companies = yield self.get_companies()
+        employees = yield self.get_employees()
         self.render('note.html',
                     companies=companies,
+                    employees=employees,
                     user=user_info,
                     form=form)
 
@@ -335,7 +337,7 @@ class Note(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def render_form(self, companies=None, user=None):
+    def render_form(self, companies=None, user=None, **kwargs):
         if self.form is None:
             self.form = self.request.uri[:self.request.uri.find('_')]
         if companies is None:
@@ -345,7 +347,8 @@ class Note(BaseHandler):
         self.render('note.html',
                     companies=companies,
                     user=user,
-                    form=self.form)
+                    form=self.form,
+                    **kwargs)
 
 
 class GetNotes(BaseHandler):

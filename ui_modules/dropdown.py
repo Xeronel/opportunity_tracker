@@ -22,7 +22,10 @@ class ContactDropdown(UIModule):
 
 
 class EmployeeDropdown(UIModule):
-    def render(self, employees, required=True):
+    def render(self, employees, label="Employee:",
+               classes="", required=True):
         return self.render_string(get_path('employee-dropdown.html'),
                                   employees=employees,
+                                  classes=classes,
+                                  label=label,
                                   required=required)
