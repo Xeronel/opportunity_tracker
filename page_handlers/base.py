@@ -48,14 +48,21 @@ class BaseHandler(tornado.web.RequestHandler):
         return results
 
     @gen.coroutine
+    @tornado.web.authenticated
     def get_employees(self):
         cursor = yield self.db.execute("SELECT id, first_name, last_name FROM employee "
                                        "ORDER BY first_name ASC, last_name ASC;")
         return cursor.fetchall()
 
     @gen.coroutine
-    def get_companies(self):
-        cursor = yield self.db.execute("SELECT id, name FROM company")
+    @tornado.web.authenticated
+    def get_companies(self, uid=None):
+        if uid:
+            cursor = yield self.db.execute("SELECT id, name FROM company "
+                                           "WHERE employee = %s;",
+                                           [uid])
+        else:
+            cursor = yield self.db.execute("SELECT id, name FROM company;")
         return cursor.fetchall()
 
     @property

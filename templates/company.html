@@ -36,7 +36,7 @@
 {% block footer %}
 <script>
     function load_company(company_id) {
-        $.get('/api/v1/company/' + company_id + '/details', function (company) {
+        $.get('/api/v1/company/' + company_id, function (company) {
             company = JSON.parse(company);
             $('#company-name').val(company.name);
             // Load employee

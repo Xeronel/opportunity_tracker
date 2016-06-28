@@ -9,14 +9,18 @@ import ui_modules
 
 def make_app():
     return tornado.web.Application(
-        [(r'/', Dashboard),
+        [(r'/api/v1/company/(.*)/(.*)', api.Company),
+         (r'/api/v1/company/(.*)', api.Company),
+         (r'/api/v1/contact/(.*)/(.*)', api.Contact),
+         (r'/api/v1/contact/(.*)', api.Contact),
+         (r'/api/v1/employee/(.*)/(.*)', api.Employee),
+         (r'/api/v1/employee/(.*)', api.Employee),
+         (r'/', Dashboard),
          (r'/dashboard', Dashboard),
          (r'/calendar', Calendar),
          (r'/add_industry', Industry),
-         (r'/(add|rem|mod)_company', Company),
-         (r'/api/v1/company/(.*)/(.*)', api.Company),
          (r'/(add|rem|mod)_contact', Contact),
-         (r'/api/v1/contact/(.*)/(.*)', api.Contact),
+         (r'/(add|rem|mod)_company', Company),
          (r'/(add|rem|mod)_notification', Notification),
          (r'/(add|rem|mod|view)_notes?', Note),
          (r'/get_notes/(.*)', GetNotes),

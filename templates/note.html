@@ -67,18 +67,46 @@
 </script>
 {% elif form == 'view' %}
 <script>
-    function getNotes(company_id) {
+    function getCompanyNotes(company_id) {
         var notes = $('#notes').dataTable().api();
         notes.ajax.url('api/v1/company/' + company_id + '/notes').load();
     }
 
-    function getEmployee(copmany_id) {
-
+    function getEmployeeNotes(employee_id) {
+        var notes = $('#notes').dataTable().api();
+        notes.ajax.url('api/v1/employee/' + employee_id + '/notes').load();
     }
 
-    function selectEmployee(employee_id) {
-        var employee = $('#employee').serialize()[0].selectize;
-        employee.setValue(employee_id);
+    function selectEmployee(company_id, silent) {
+        if (company_id != '') {
+            $.get('api/v1/company/' + company_id + '/employee',
+                    function (data) {
+                        var employee = $('#employee').selectize()[0].selectize;
+                        data = JSON.parse(data);
+                        employee.setValue(data.employee, true);
+                    }
+            );
+        }
+    }
+
+    function loadCompanies(employee_id, company_id) {
+        var company = $('#company').selectize()[0].selectize;
+        company_id = typeof company_id !== 'undefined' ? company_id : '';
+        $.get('api/v1/employee/' + employee_id + '/companies',
+                function (data) {
+                    data = JSON.parse(data);
+                    var companies = [];
+                    $.each(data, function (idx, obj) {
+                        companies.push({'text': obj.name, 'value': obj.id});
+                    });
+                    company.clearOptions();
+                    company.addOption({'text': 'None', 'value': 'None'});
+                    company.addOption(companies);
+                    if (company_id != '') {
+                        company.setValue(company_id);
+                    }
+                }
+        );
     }
 
     $(function () {
@@ -89,6 +117,7 @@
             },
             autoWidth: false,
             columns: [
+                {data: "name"},
                 {data: "first_name"},
                 {data: "last_name"},
                 {data: "note", width: "45%"},
@@ -97,16 +126,48 @@
             ]
         });
 
-        // Load notes based on the selected company
+        // Clear preloaded companies
+        var prev_sel_comp = Cookies.get('company');
         var company = $('#company').selectize()[0].selectize;
-        getNotes(company.getValue());
-        company.on('change', function(company_id) {
-            getNotes(company_id);
+        company.clearOptions();
+
+        // Load only companies associated with an employee
+        if (prev_sel_comp) {
+            $.get('api/v1/company/' + prev_sel_comp, function (data) {
+                data = JSON.parse(data);
+                loadCompanies(data.employee, prev_sel_comp);
+            });
+        }
+
+        // Filter selectable companies based on selected employee
+        var employee = $('#employee').selectize()[0].selectize;
+        employee.on('change', function (employee_id) {
+            loadCompanies(employee_id);
+            getEmployeeNotes(employee_id);
+        });
+
+        // Load notes
+        if (company.getValue() != '') {
+            getCompanyNotes(company.getValue());
+            selectEmployee(company.getValue());
+        } else {
+            getEmployeeNotes(employee.getValue());
+        }
+
+        // Load notes based on the selected company
+        company.on('change', function (company_id) {
+            if (company_id === 'None') {
+                company.clear();
+                getEmployeeNotes(employee.getValue());
+            } else if (company_id != '') {
+                selectEmployee(company_id);
+                getCompanyNotes(company_id);
+            }
         });
 
         var d = new Date();
         initDatePicker('#end_date', d);
-        d.setDate(d.getDate()-90);
+        d.setDate(d.getDate() - 90);
         initDatePicker('#start_date', d);
     });
 </script>

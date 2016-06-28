@@ -35,7 +35,7 @@
 {% block footer %}
 <script>
     function load_contact(contact_id) {
-        $.get('/api/v1/contact/get_contact/' + contact_id, function (contact) {
+        $.get('/api/v1/contact/' + contact_id, function (contact) {
             contact = JSON.parse(contact);
             $('#firstname').val(contact.first_name);
             $('#lastname').val(contact.last_name);

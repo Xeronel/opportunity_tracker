@@ -9,8 +9,11 @@ class NoteTypeDropdown(UIModule):
 
 
 class CompanyDropdown(UIModule):
-    def render(self, companies, required=True):
+    def render(self, companies,
+               classes='form-group col-md-6 col-lg-5',
+               required=True):
         return self.render_string(get_path('company-dropdown.html'),
+                                  classes=classes,
                                   companies=companies,
                                   required=required)
 

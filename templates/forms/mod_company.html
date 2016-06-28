@@ -5,10 +5,10 @@
             {% module CompanyDropdown(companies) %}
         </div>
         <div class="row">
-            <fieldset class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <label for="employee" class="control-label">Owner:</label>
-                {% module EmployeeDropdown(employees) %}
-            </fieldset>
+            {% module EmployeeDropdown(
+            employees,
+            label='Owner:',
+            classes="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12") %}
         </div>
         <div class="row">
             <fieldset class="form-group col-lg-12">
