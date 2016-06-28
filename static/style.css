@@ -190,14 +190,6 @@ body {
     margin-right: -8px;
 }
 
-#datepicker {
-    width:180px;
-}
-
-#datepicker > span:hover {
-    cursor: pointer;
-}
-
 #login {
     background-color: #2A2A2A;
 }
