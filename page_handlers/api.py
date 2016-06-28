@@ -10,10 +10,11 @@ import psycopg2
 class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self, proc, arg):
+    def get(self, arg, proc):
         rpc = {'location': self.location,
                'details': self.details,
-               'notes': self.notes}
+               'notes': self.notes,
+               'employee': self.employee}
         if proc in rpc:
             result = yield rpc[proc](arg)
             self.write(json_encode(result))
@@ -55,6 +56,18 @@ class Company(BaseHandler):
                 [company_id]
             )
             return self.parse_query(cursor.fetchall(), cursor.description)
+        else:
+            return {}
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def employee(self, company_id):
+        if company_id:
+            cursor = yield self.db.execute(
+                "SELECT employee FROM company WHERE id = %s",
+                [company_id]
+            )
+            return self.parse_query(cursor.fetchone(), cursor.description)
         else:
             return {}
 

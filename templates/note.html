@@ -69,10 +69,20 @@
 <script>
     function getNotes(company_id) {
         var notes = $('#notes').dataTable().api();
-        notes.ajax.url('api/v1/company/notes/' + company_id).load();
+        notes.ajax.url('api/v1/company/' + company_id + '/notes').load();
+    }
+
+    function getEmployee(copmany_id) {
+
+    }
+
+    function selectEmployee(employee_id) {
+        var employee = $('#employee').serialize()[0].selectize;
+        employee.setValue(employee_id);
     }
 
     $(function () {
+        // Initialize data table
         $('#notes').DataTable({
             ajax: {
                 dataSrc: ''
@@ -87,11 +97,13 @@
             ]
         });
 
+        // Load notes based on the selected company
         var company = $('#company').selectize()[0].selectize;
         getNotes(company.getValue());
         company.on('change', function(company_id) {
             getNotes(company_id);
         });
+
         var d = new Date();
         initDatePicker('#end_date', d);
         d.setDate(d.getDate()-90);
