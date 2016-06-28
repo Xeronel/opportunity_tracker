@@ -5,13 +5,7 @@
         {% module NoteTypeDropdown() %}
         {% module ContactDropdown(False) %}
         <!-- Date selector -->
-        <div class="form-group col-md-6 col-lg-4">
-            <label>Select Date: </label>
-            <div id="datepicker" class="input-group date" data-date-format="mm-dd-yyyy">
-                <input class="form-control" type="text" name="date" readonly required/>
-                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-            </div>
-        </div>
+        {% module DatePicker('datepicker', classes='col-md-5 col-lg-4') %}
         <!-- Note entry -->
         <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <label for="note">Note:</label>
