@@ -137,11 +137,8 @@
                 data = JSON.parse(data);
                 loadCompanies(data.employee, prev_sel_comp);
             });
-        } else if (employee.getValue() != '') {
-            $.get('api/v1/company/' + prev_sel_comp, function (data) {
-                data = JSON.parse(data);
-                loadCompanies(data.employee, employee.getValue());
-            });
+        } else {
+            employee.clear();
         }
 
         // Filter selectable companies based on selected employee
