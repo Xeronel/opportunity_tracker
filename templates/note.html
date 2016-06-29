@@ -128,10 +128,10 @@
         // Clear preloaded companies
         var prev_sel_comp = Cookies.get('company');
         var company = $('#company').selectize()[0].selectize;
-        company.clearOptions();
 
         // Load only companies associated with an employee
         if (prev_sel_comp) {
+            company.clearOptions();
             $.get('api/v1/company/' + prev_sel_comp, function (data) {
                 data = JSON.parse(data);
                 loadCompanies(data.employee, prev_sel_comp);
