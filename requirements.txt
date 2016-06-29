@@ -3,3 +3,4 @@ psycopg2==2.6.1
 tornado==4.3
 PyYaml==3.11
 pycountry==1.20
+python-dateutil==2.5.3
