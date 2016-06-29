@@ -18,6 +18,8 @@ class Company(BaseHandler):
         if proc in rpc:
             result = yield rpc[proc](arg)
             self.write(json_encode(result))
+        else:
+            self.write(json_encode({}))
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -82,6 +84,8 @@ class Contact(BaseHandler):
         if proc in rpc:
             result = yield rpc[proc](arg)
             self.write(json_encode(result))
+        else:
+            self.write(json_encode({}))
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -104,6 +108,8 @@ class Employee(BaseHandler):
         if proc in rpc:
             result = yield rpc[proc](arg)
             self.write(json_encode(result))
+        else:
+            self.write(json_encode({}))
 
     @gen.coroutine
     @tornado.web.authenticated
