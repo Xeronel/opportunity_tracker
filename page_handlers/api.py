@@ -3,14 +3,26 @@ import tornado.web
 import tornado.escape
 from tornado.escape import json_encode
 from tornado import gen
-import pycountry
-import psycopg2
+from dateutil import parser as dateutil
 
 
 class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, arg, proc=''):
+        rpc = {'': self.company,
+               'location': self.location,
+               'notes': self.notes,
+               'employee': self.employee}
+        if proc in rpc:
+            result = yield rpc[proc](arg)
+            self.write(json_encode(result))
+        else:
+            self.write(json_encode({}))
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def post(self, arg, proc=''):
         rpc = {'': self.company,
                'location': self.location,
                'notes': self.notes,
@@ -49,16 +61,38 @@ class Company(BaseHandler):
     @tornado.web.authenticated
     def notes(self, company_id):
         if company_id:
-            cursor = yield self.db.execute(
-                "SELECT name, note_date, note_type, first_name, last_name, note "
-                "FROM notes "
-                "INNER JOIN company "
-                "ON company.id = notes.company "
-                "LEFT OUTER JOIN contact "
-                "ON (notes.contact = contact.id) "
-                "WHERE notes.company = %s;",
-                [company_id]
-            )
+            start_date = self.get_argument('start_date', False)
+            if start_date:
+                start_date = dateutil.parse(start_date).strftime('%Y-%m-%d')
+
+            end_date = self.get_argument('end_date', False)
+            if end_date:
+                end_date = dateutil.parse(end_date).strftime('%Y-%m-%d')
+
+            if start_date and end_date:
+                cursor = yield self.db.execute(
+                    "SELECT name, note_date, note_type, first_name, last_name, note "
+                    "FROM notes "
+                    "INNER JOIN company "
+                    "ON company.id = notes.company "
+                    "LEFT OUTER JOIN contact "
+                    "ON (notes.contact = contact.id) "
+                    "WHERE notes.company = %s "
+                    "AND note_date >= %s "
+                    "AND note_date <= %s;",
+                    [company_id, start_date, end_date]
+                )
+            else:
+                cursor = yield self.db.execute(
+                    "SELECT name, note_date, note_type, first_name, last_name, note "
+                    "FROM notes "
+                    "INNER JOIN company "
+                    "ON company.id = notes.company "
+                    "LEFT OUTER JOIN contact "
+                    "ON (notes.contact = contact.id) "
+                    "WHERE notes.company = %s;",
+                    [company_id]
+                )
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
@@ -113,6 +147,17 @@ class Employee(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
+    def post(self, arg, proc=''):
+        rpc = {'companies': self.companies,
+               'notes': self.notes}
+        if proc in rpc:
+            result = yield rpc[proc](arg)
+            self.write(json_encode(result))
+        else:
+            self.write(json_encode({}))
+
+    @gen.coroutine
+    @tornado.web.authenticated
     def companies(self, employee_id):
         if employee_id:
             cursor = yield self.db.execute("SELECT * FROM company "
@@ -126,16 +171,38 @@ class Employee(BaseHandler):
     @tornado.web.authenticated
     def notes(self, employee_id):
         if employee_id:
-            cursor = yield self.db.execute(
-                "SELECT name, note_date, note_type, first_name, last_name, note "
-                "FROM notes "
-                "INNER JOIN company "
-                "ON company.id = notes.company "
-                "LEFT OUTER JOIN contact "
-                "ON notes.contact = contact.id "
-                "WHERE employee=%s;",
-                [employee_id]
-            )
+            start_date = self.get_argument('start_date', False)
+            if start_date:
+                start_date = dateutil.parse(start_date).strftime('%Y-%m-%d')
+
+            end_date = self.get_argument('end_date', False)
+            if end_date:
+                end_date = dateutil.parse(end_date).strftime('%Y-%m-%d')
+
+            if start_date and end_date:
+                cursor = yield self.db.execute(
+                    "SELECT name, note_date, note_type, first_name, last_name, note "
+                    "FROM notes "
+                    "INNER JOIN company "
+                    "ON company.id = notes.company "
+                    "LEFT OUTER JOIN contact "
+                    "ON notes.contact = contact.id "
+                    "WHERE employee=%s "
+                    "AND note_date >= %s "
+                    "AND note_date <= %s;",
+                    [employee_id, start_date, end_date]
+                )
+            else:
+                cursor = yield self.db.execute(
+                    "SELECT name, note_date, note_type, first_name, last_name, note "
+                    "FROM notes "
+                    "INNER JOIN company "
+                    "ON company.id = notes.company "
+                    "LEFT OUTER JOIN contact "
+                    "ON notes.contact = contact.id "
+                    "WHERE employee=%s;",
+                    [employee_id]
+                )
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}

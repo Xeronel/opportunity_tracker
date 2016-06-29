@@ -67,6 +67,17 @@
 </script>
 {% elif form == 'view' %}
 <script>
+    function getNotes() {
+        var employee = $('#employee').selectize()[0].selectize;
+        var company = $('#company').selectize()[0].selectize;
+
+        if (company.getValue()) {
+            getCompanyNotes(company.getValue());
+        } else if (employee.getValue()) {
+            getEmployeeNotes(employee.getValue());
+        }
+    }
+
     function getCompanyNotes(company_id) {
         var notes = $('#notes').dataTable().api();
         notes.ajax.url('api/v1/company/' + company_id + '/notes').load();
@@ -77,7 +88,7 @@
         notes.ajax.url('api/v1/employee/' + employee_id + '/notes').load();
     }
 
-    function selectEmployee(company_id, silent) {
+    function selectEmployee(company_id) {
         if (company_id != '') {
             $.get('api/v1/company/' + company_id + '/employee',
                     function (data) {
@@ -110,10 +121,29 @@
     }
 
     $(function () {
+        var d = new Date();
+        initDatePicker('#end_date', d);
+        d.setDate(d.getDate() - 90);
+        initDatePicker('#start_date', d);
+
+        $('#start_date').datepicker().on('changeDate', function (e) {
+            getNotes();
+        });
+        $('#end_date').datepicker().on('changeDate', function (e) {
+            getNotes();
+        });
+
         // Initialize data table
         $('#notes').DataTable({
             ajax: {
-                dataSrc: ''
+                url: 'api/v1/employee//notes',
+                dataSrc: '',
+                data: function (d) {
+                    d.start_date = $('#start_date').datepicker('getDate').toISOString();
+                    d.end_date = $('#end_date').datepicker('getDate').toISOString();
+                    d._xsrf = Cookies.get('_xsrf');
+                },
+                type: 'POST'
             },
             columns: [
                 {data: "name"},
@@ -165,11 +195,6 @@
                 getCompanyNotes(company_id);
             }
         });
-
-        var d = new Date();
-        initDatePicker('#end_date', d);
-        d.setDate(d.getDate() - 90);
-        initDatePicker('#start_date', d);
     });
 </script>
 {% end %}
