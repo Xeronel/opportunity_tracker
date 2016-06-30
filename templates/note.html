@@ -141,9 +141,8 @@
                 data: function (d) {
                     d.start_date = $('#start_date').datepicker('getDate').toISOString();
                     d.end_date = $('#end_date').datepicker('getDate').toISOString();
-                    d._xsrf = Cookies.get('_xsrf');
                 },
-                type: 'POST'
+                type: 'GET'
             },
             columns: [
                 {data: "name"},
