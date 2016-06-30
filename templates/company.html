@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if form == 'add' %}
-        Add Company
-    {% elif form == 'mod' %}
-        Modify Company
-    {% elif form == 'rem' %}
-        Remove Company
-    {% end %}
+{% if form == 'add' %}
+Add Company
+{% elif form == 'mod' %}
+Modify Company
+{% elif form == 'rem' %}
+Remove Company
+{% end %}
 {% end %}
 {% block active %}{{ form }}-company{% end %}
 
@@ -36,28 +36,32 @@
 {% block footer %}
 <script>
     function load_company(company_id) {
-        $.get('/api/v1/company/' + company_id, function (company) {
-            company = JSON.parse(company);
-            $('#company-name').val(company.name);
-            // Load employee
-            var employee = $('#employee');
-            if (employee.length > 0){
-                employee.selectize()[0].selectize.setValue(company.employee);
-            }
-            load_location(company_id);
-        })
+        if (company_id) {
+            $.get('/api/v1/company/' + company_id, function (company) {
+                company = JSON.parse(company);
+                $('#company-name').val(company.name);
+                // Load employee
+                var employee = $('#employee');
+                if (employee.length > 0) {
+                    employee.selectize()[0].selectize.setValue(company.employee);
+                }
+                load_location(company_id);
+            })
+        }
     }
 
     function load_location(company_id) {
-        $.get('/api/v1/company/' + company_id + '/location', function (location) {
-            location = JSON.parse(location);
-            $('#address1').val(location.address1);
-            $('#address2').val(location.address2);
-            $('#city').val(location.city);
-            $('#state').val(location.state);
-            $('#zip').val(location.postal_code);
-            $('#country').selectize()[0].selectize.setValue(location.country);
-        });
+        if (company_id) {
+            $.get('/api/v1/company/' + company_id + '/location', function (location) {
+                location = JSON.parse(location);
+                $('#address1').val(location.address1);
+                $('#address2').val(location.address2);
+                $('#city').val(location.city);
+                $('#state').val(location.state);
+                $('#zip').val(location.postal_code);
+                $('#country').selectize()[0].selectize.setValue(location.country);
+            });
+        }
     }
 
     $(function () {
