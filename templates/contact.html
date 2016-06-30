@@ -35,21 +35,23 @@
 {% block footer %}
 <script>
     function load_contact(contact_id) {
-        $.get('/api/v1/contact/' + contact_id, function (contact) {
-            contact = JSON.parse(contact);
-            $('#firstname').val(contact.first_name);
-            $('#lastname').val(contact.last_name);
-            $('#title').val(contact.title);
-            $('#email').val(contact.email);
-            $('#phone').val(contact.phone);
-        })
+        if (contact_id && contact_id != 'None') {
+            $.get('/api/v1/contact/' + contact_id, function (contact) {
+                contact = JSON.parse(contact);
+                $('#firstname').val(contact.first_name);
+                $('#lastname').val(contact.last_name);
+                $('#title').val(contact.title);
+                $('#email').val(contact.email);
+                $('#phone').val(contact.phone);
+            })
+        }
     }
 
     $(function () {
         var add_contact = $('#add_contact_form');
         var mod_contact = $('#mod_contact_form');
         var rem_contact = $('#rem_contact_form');
-        var contact = $('#contact')
+        var contact = $('#contact');
 
         if (add_contact.length > 0) {
             add_contact.validate({
