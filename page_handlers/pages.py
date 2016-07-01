@@ -199,14 +199,16 @@ class Contact(BaseHandler):
         title = self.get_argument('title', '')
         email = self.get_argument('email', '')
         phone = self.get_argument('phone', '')
+        ext = self.get_argument('ext', '')
 
         try:
             yield self.db.execute(
-                "INSERT INTO contact (company, first_name, last_name, title, email, phone) "
-                "VALUES (%s, %s, %s, %s, %s, %s);",
-                [company, first_name, last_name, title, email, phone])
+                "INSERT INTO contact (company, first_name, last_name, title, email, phone, ext) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s);",
+                [company, first_name, last_name, title, email, phone, ext])
         except psycopg2.IntegrityError:
             pass
+
         yield self.render_form()
 
     @gen.coroutine
@@ -219,13 +221,14 @@ class Contact(BaseHandler):
         last_name = self.get_argument('lastname', '')
         email = self.get_argument('email', '')
         phone = self.get_argument('phone', '')
+        ext = self.get_argument('ext', '')
 
         try:
             yield self.db.execute(
                 "UPDATE contact "
-                "SET (first_name, last_name, title, email, phone) = (%s, %s, %s, %s, %s) "
+                "SET (first_name, last_name, title, email, phone, ext) = (%s, %s, %s, %s, %s, %s) "
                 "WHERE id = %s AND company = %s",
-                [first_name, last_name, title, email, phone,
+                [first_name, last_name, title, email, phone, ext,
                  contact, company])
         except psycopg2.IntegrityError:
             self.send_error(400)
