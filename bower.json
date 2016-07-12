@@ -27,6 +27,9 @@
     "tinymce": "^4.3.11",
     "jquery.fixedheadertable": "*",
     "jquery-validation": "^1.15.0",
-    "datatables": "^1.10.12"
+    "datatables": "^1.10.12",
+    "datatables-buttons": "^1.2.1",
+    "jszip": "^3.0.0",
+    "pdfmake": "^0.1.20"
   }
 }
