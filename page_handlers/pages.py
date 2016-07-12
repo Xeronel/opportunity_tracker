@@ -382,14 +382,17 @@ class GetContacts(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, company):
-        cursor = yield self.db.execute(
-            "SELECT id, first_name, last_name FROM contact "
-            "WHERE company = %s", [company])
-        contacts = cursor.fetchall()
-        if len(contacts) > 0:
-            contacts.append(('', 'None', ''))
-            self.write(json_encode([{'text': '%s %s' % (first, last), 'value': idx}
-                                    for idx, first, last in contacts]))
+        if company:
+            cursor = yield self.db.execute(
+                "SELECT id, first_name, last_name FROM contact "
+                "WHERE company = %s", [company])
+            contacts = cursor.fetchall()
+            if len(contacts) > 0:
+                contacts.append(('', 'None', ''))
+                self.write(json_encode([{'text': '%s %s' % (first, last), 'value': idx}
+                                        for idx, first, last in contacts]))
+            else:
+                self.write('')
         else:
             self.write('')
 
