@@ -1,15 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}Add Notification{% end %}
-{% block active %}add-notification{% end %}
+{% block title %}{{ form.title() }} Notification{% if form == 'view' %}s{% end %}{% end %}
+{% block active %}{{ form }}-notification{% end %}
 
-{% block panel-heading %}Add Notification{% end %}
-{% block panel-body %}
-{% include 'forms/add_notification.html' %}
+{% block content-panel %}
+<div class="row">
+    <div class="{% if form == 'view' %}
+    col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1
+    {% else %}
+    col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2
+    {% end %}">
+        <div class="panel-heading">
+            {{ form.title() }} Notification{% if form == 'view' %}s{% end %}
+        </div>
+        <div class="panel-body" style="background-color: white;">
+            {% if form == 'add' %}
+            {% include 'forms/add_notification.html' %}
+            {% elif form == 'view' %}
+            {% include 'forms/view_notification.html' %}
+            {% end %}
+        </div>
+    </div>
+</div>
 {% end %}
 
 {% block footer %}
+{% if form == 'add' %}
 <script>
     $('#add_notification_form').validate();
 </script>
+{% end %}
 {% end %}

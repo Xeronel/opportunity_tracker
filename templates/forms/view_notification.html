@@ -1,0 +1,32 @@
+<div class="form-group">
+    <div class="row">
+        {% module EmployeeDropdown(employees,
+                classes="form-group col-lg-5 col-md-5") %}
+    </div>
+    <div class="row">
+        {% module CompanyDropdown(companies,
+                                  classes="form-group col-lg-5 col-md-5") %}
+    </div>
+    <div class="row">
+        {% module DatePicker('start_date', 'Start Date',
+                                 classes="col-lg-3 col-md-3",
+                                 style="min-width: 210px;") %}
+        {% module DatePicker('end_date', 'End Date',
+                                 classes="col-lg-3 col-md-3",
+                                 style="min-width: 210px;") %}
+    </div>
+    <div class="form-group" style="padding-top: 5px;">
+        <table id="notes" class="table table-striped table-condensed" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>Company</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Note</th>
+                <th>Type</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>

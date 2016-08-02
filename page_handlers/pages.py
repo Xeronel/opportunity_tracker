@@ -264,7 +264,12 @@ class Notification(BaseHandler):
     def get(self, form):
         user_info = yield self.get_user()
         companies = yield self.get_companies()
-        self.render('notification.html', companies=companies, user=user_info)
+        employees = yield self.get_employees()
+        self.render('notification.html',
+                    companies=companies,
+                    employees=employees,
+                    user=user_info,
+                    form=form)
 
     @gen.coroutine
     @tornado.web.authenticated

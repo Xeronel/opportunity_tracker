@@ -21,7 +21,7 @@ def make_app():
          (r'/add_industry', Industry),
          (r'/(add|rem|mod)_contact', Contact),
          (r'/(add|rem|mod)_company', Company),
-         (r'/(add|rem|mod)_notification', Notification),
+         (r'/(add|rem|mod|view)_notification', Notification),
          (r'/(add|rem|mod|view)_notes?', Note),
          (r'/get_notes/(.*)', GetNotes),
          (r'/get_contacts/(.*)', GetContacts),
