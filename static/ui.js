@@ -15,6 +15,16 @@ function loadContacts(company) {
     }
 }
 
+function selectEmployeeByCompany(company_id, element_id) {
+    company_id = typeof company_id !== 'undefined' ? company_id : '';
+    element_id = typeof element_id !== 'undefined' ? element_id : '#employee';
+    var dropdown = $(element_id).selectize()[0].selectize;
+    var callback = function (data) {
+        dropdown.setValue(data.employee, true);
+    };
+    api.v1.company.employee(company_id, callback);
+}
+
 function initDatePicker(id, date) {
     $(id).datepicker({
         autoclose: true,
