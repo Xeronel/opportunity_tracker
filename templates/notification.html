@@ -29,5 +29,127 @@
 <script>
     $('#add_notification_form').validate();
 </script>
+{% elif form == 'view' %}
+<script>
+    function loadDataTable(url) {
+        var notifications = $('#notifications').dataTable().api();
+        notifications.ajax.url(url).load();
+    }
+
+    function getNotifications() {
+        var employee = $('#employee').selectize()[0].selectize;
+        var company = $('#company').selectize()[0].selectize;
+        var url = '';
+
+        if (company.getValue()) {
+            url = api.v1.company.notifications(company.getValue());
+            loadDataTable(url);
+        } else if (employee.getValue()) {
+            url = api.v1.employee.url.notes(employee.getValue());
+            loadDataTable(url);
+        }
+    }
+
+    function loadCompanies(employee_id, company_id) {
+        var company = $('#company').selectize()[0].selectize;
+        company_id = typeof company_id !== 'undefined' ? company_id : '';
+        api.v1.employee.companies(employee_id, function (data) {
+            var companies = [];
+            $.each(data, function (idx, obj) {
+                companies.push({'text': obj.name, 'value': obj.id});
+            });
+            company.clearOptions();
+            company.addOption({'text': 'None', 'value': 'None'});
+            company.addOption(companies);
+            if (company_id != '') {
+                company.setValue(company_id);
+            }
+        });
+    }
+
+    $(function () {
+        // Initialize date pickers
+        var d = new Date();
+        initDatePicker('#end_date', d);
+        d.setDate(d.getDate() - 90);
+        initDatePicker('#start_date', d);
+
+        $('#start_date').datepicker().on('changeDate', function (e) {
+            getNotifications();
+        });
+        $('#end_date').datepicker().on('changeDate', function (e) {
+            getNotifications();
+        });
+
+        // Initialize data table
+        $('#notifications').DataTable({
+            ajax: {
+                url: api.v1.employee.url.notifications(''),
+                dataSrc: '',
+                data: function (d) {
+                    d.start_date = $('#start_date').datepicker('getDate').toISOString();
+                    d.end_date = $('#end_date').datepicker('getDate').toISOString();
+                },
+                type: 'GET'
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                'excelHtml5',
+                'csvHtml5',
+                'pdfHtml5'
+            ],
+            columns: [
+                {data: "name"},
+                {data: "first_name"},
+                {data: "last_name"},
+                {data: "note", width: "30%"},
+                {data: "notify_date"},
+                {data: "sent"}
+            ]
+        });
+
+        // Clear preloaded companies
+        var prev_sel_comp = Cookies.get('company');
+        var company = $('#company').selectize()[0].selectize;
+        var employee = $('#employee').selectize()[0].selectize;
+        company.clearOptions();
+
+        // Load only companies associated with an employee
+        if (prev_sel_comp) {
+            api.v1.company(prev_sel_comp, function (data) {
+                loadCompanies(data.employee, prev_sel_comp);
+            });
+        } else {
+            employee.clear();
+        }
+
+        // Filter selectable companies based on selected employee
+        employee.on('change', function (employee_id) {
+            var notifications = $('#notifications').dataTable().api();
+            var url = api.v1.employee.url.notifications(employee_id);
+            loadCompanies(employee_id);
+            loadDataTable(url);
+        });
+
+        // Load notes
+        if (company.getValue() != '') {
+            loadDataTable(api.v1.company.url.notifications(company.getValue()));
+            selectEmployeeByCompany(company.getValue());
+        } else if (employee.getValue()) {
+            loadDataTable(api.v1.employee.url.notifications(employee.getValue()));
+        }
+
+        // Load notes based on the selected company
+        company.on('change', function (company_id) {
+            if (company_id === 'None') {
+                company.clear();
+                loadDataTable(api.v1.employee.url.notifications(employee.getValue()));
+            } else if (company_id != '') {
+                selectEmployeeByCompany(company_id);
+                loadDataTable(api.v1.company.url.notifications(company_id));
+            }
+        });
+    });
+</script>
 {% end %}
 {% end %}
