@@ -113,3 +113,17 @@ function submit_form(element, url, reload) {
         }
     });
 }
+
+var api = {
+    v1: {
+        company: {
+            location: function (company_id, success) {
+                var callback = function (data) {
+                    data = JSON.parse(data);
+                    success(data);
+                };
+                $.get('api/v1/company/' + company_id + "/location", callback);
+            }
+        }
+    }
+};
