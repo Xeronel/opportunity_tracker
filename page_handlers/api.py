@@ -208,16 +208,30 @@ class Employee(BaseHandler):
         if employee_id:
             start_date = self._start_date()
             end_date = self._end_date()
-            cursor = yield self.db.execute(
-                "SELECT company.name, first_name, last_name, note, notify_date, sent "
-                "FROM notification "
-                "INNER JOIN company "
-                "ON company.id = notification.company "
-                "INNER JOIN employee "
-                "ON notification.employee = employee.id "
-                "WHERE notification.employee=%s;",
-                [employee_id]
-            )
+            if start_date and end_date:
+                cursor = yield self.db.execute(
+                    "SELECT company.name, first_name, last_name, note, notify_date, sent "
+                    "FROM notification "
+                    "INNER JOIN company "
+                    "ON company.id = notification.company "
+                    "INNER JOIN employee "
+                    "ON notification.employee = employee.id "
+                    "WHERE notification.employee=%s "
+                    "AND notify_date >= %s "
+                    "AND notify_date <= %s;",
+                    [employee_id, start_date, end_date]
+                )
+            else:
+                cursor = yield self.db.execute(
+                    "SELECT company.name, first_name, last_name, note, notify_date, sent "
+                    "FROM notification "
+                    "INNER JOIN company "
+                    "ON company.id = notification.company "
+                    "INNER JOIN employee "
+                    "ON notification.employee = employee.id "
+                    "WHERE notification.employee=%s;",
+                    [employee_id]
+                )
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
