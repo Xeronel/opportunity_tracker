@@ -123,6 +123,27 @@ var api = {
                     success(data);
                 };
                 $.get('api/v1/company/' + company_id + "/location", callback);
+            },
+            notes: function (company_id, success, start_date, end_date) {
+                // Check if a start and end date were provided
+                // both are required to query a date range but not
+                // required to retrieve notes
+                start_date = typeof start_date !== 'undefined' ? start_date : false;
+                end_date = typeof end_date !== 'undefined' ? end_date : false;
+                var data = {
+                    start_date: start_date,
+                    end_date: end_date
+                };
+                var callback = function (data) {
+                    data = JSON.parse(data);
+                    success(data);
+                };
+
+                if (start_date !== false && end_date !== false) {
+                    $.get('api/v1/company/' + company_id + '/notes', data, callback);
+                } else {
+                    $.get('api/v1/company/' + company_id + '/notes', callback);
+                }
             }
         }
     }
