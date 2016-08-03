@@ -145,6 +145,26 @@ var api = {
                     $.get('api/v1/company/' + company_id + '/notes', callback);
                 }
             }
+        },
+        employee: {
+            notifications: function (employee_id, success, start_date, end_date) {
+                start_date = typeof start_date !== 'undefined' ? start_date : false;
+                end_date = typeof end_date !== 'undefined' ? end_date : false;
+                var data = {
+                    start_date: start_date,
+                    end_date: end_date
+                };
+                var callback = function (data) {
+                    data = JSON.parse(data);
+                    success(data);
+                };
+
+                if (start_date !== false && end_date !== false) {
+                    $.get('api/v1/employee/' + employee_id + '/notifications', data, callback);
+                } else {
+                    $.get('api/v1/employee/' + employee_id + '/notifications', callback);
+                }
+            }
         }
     }
 };
