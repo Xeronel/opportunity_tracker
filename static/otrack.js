@@ -114,75 +114,118 @@ function submit_form(element, url, reload) {
     });
 }
 
-var api = {
-    v1: {
-        company: {
-            location: function (company_id, success) {
-                var callback = function (data) {
-                    data = JSON.parse(data);
-                    success(data);
-                };
-                $.get('api/v1/company/' + company_id + "/location", callback);
-            },
-            notes: function (company_id, success, start_date, end_date) {
-                // Check if a start and end date were provided
-                // both are required to query a date range but not
-                // required to retrieve notes
-                start_date = typeof start_date !== 'undefined' ? start_date : false;
-                end_date = typeof end_date !== 'undefined' ? end_date : false;
-                var data = {
-                    start_date: start_date,
-                    end_date: end_date
-                };
-                var callback = function (data) {
-                    data = JSON.parse(data);
-                    success(data);
-                };
+// AJAX API
+var api = {v1: {}};
 
-                if (start_date !== false && end_date !== false) {
-                    $.get('api/v1/company/' + company_id + '/notes', data, callback);
-                } else {
-                    $.get('api/v1/company/' + company_id + '/notes', callback);
-                }
-            },
-            notifications: function (company_id, success, start_date, end_date) {
-                start_date = typeof start_date !== 'undefined' ? start_date : false;
-                end_date = typeof end_date !== 'undefined' ? end_date : false;
-                var data = {
-                    start_date: start_date,
-                    end_date: end_date
-                };
-                var callback = function (data) {
-                    data = JSON.parse(data);
-                    success(data);
-                };
+// Company
+api.v1.company = function (company_id, success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.company.url() + company_id, callback);
+};
+api.v1.company.url = function () {
+    return 'api/v1/company/';
+};
+api.v1.company.url.location = function (company_id) {
+    return api.v1.company.url() + company_id + '/location';
+};
+api.v1.company.url.notes = function (company_id) {
+    return api.v1.company.url() + company_id + '/notes';
+};
+api.v1.company.url.notifications = function (company_id) {
+    return api.v1.company.url() + company_id + '/notifications';
+};
 
-                if (start_date !== false && end_date !== false) {
-                    $.get('api/v1/company/' + company_id + '/notifications', data, callback)
-                } else {
-                    $.get('api/v1/company/' + company_id + '/notifications', callback)
-                }
-            }
-        },
-        employee: {
-            notifications: function (employee_id, success, start_date, end_date) {
-                start_date = typeof start_date !== 'undefined' ? start_date : false;
-                end_date = typeof end_date !== 'undefined' ? end_date : false;
-                var data = {
-                    start_date: start_date,
-                    end_date: end_date
-                };
-                var callback = function (data) {
-                    data = JSON.parse(data);
-                    success(data);
-                };
+api.v1.company.location = function (company_id, success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.company.url() + company_id + '/location', callback);
+};
+api.v1.company.notes = function (company_id, success, start_date, end_date) {
+    // Check if a start and end date were provided
+    // both are required to query a date range but not
+    // required to retrieve notes
+    start_date = typeof start_date !== 'undefined' ? start_date : false;
+    end_date = typeof end_date !== 'undefined' ? end_date : false;
+    var data = {
+        start_date: start_date,
+        end_date: end_date
+    };
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
 
-                if (start_date !== false && end_date !== false) {
-                    $.get('api/v1/employee/' + employee_id + '/notifications', data, callback);
-                } else {
-                    $.get('api/v1/employee/' + employee_id + '/notifications', callback);
-                }
-            }
-        }
+    if (start_date !== false && end_date !== false) {
+        $.get(api.v1.company.url() + company_id + '/notes', data, callback);
+    } else {
+        $.get(api.v1.company.url() + company_id + '/notes', callback);
     }
+};
+api.v1.company.notifications = function (company_id, success, start_date, end_date) {
+    start_date = typeof start_date !== 'undefined' ? start_date : false;
+    end_date = typeof end_date !== 'undefined' ? end_date : false;
+    var data = {
+        start_date: start_date,
+        end_date: end_date
+    };
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+
+    if (start_date !== false && end_date !== false) {
+        $.get(api.v1.company.url() + company_id + '/notifications', data, callback)
+    } else {
+        $.get(api.v1.company.url() + company_id + '/notifications', callback)
+    }
+};
+api.v1.company.employee = function (company_id, success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.company.url() + company_id + '/employee', callback);
+};
+
+// Employee
+api.v1.employee = {};
+api.v1.employee.url = function () {
+    return 'api/v1/employee/';
+};
+api.v1.employee.url.notifications = function (employee_id) {
+    return api.v1.employee.url() + employee_id + '/notifications';
+};
+api.v1.employee.url.companies = function (employee_id) {
+    return api.v1.employee.url() + employee_id + '/companies';
+};
+
+api.v1.employee.notifications = function (employee_id, success, start_date, end_date) {
+    start_date = typeof start_date !== 'undefined' ? start_date : false;
+    end_date = typeof end_date !== 'undefined' ? end_date : false;
+    var data = {
+        start_date: start_date,
+        end_date: end_date
+    };
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+
+    if (start_date !== false && end_date !== false) {
+        $.get(api.v1.employee.url() + employee_id + '/notifications', data, callback);
+    } else {
+        $.get(api.v1.employee.url() + employee_id + '/notifications', callback);
+    }
+};
+api.v1.employee.companies = function (employee_id, success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.employee.url() + employee_id + '/companies', callback);
 };
