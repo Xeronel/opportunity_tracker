@@ -138,7 +138,8 @@ class Employee(BaseHandler):
     @tornado.web.authenticated
     def get(self, arg, proc=''):
         rpc = {'companies': self.companies,
-               'notes': self.notes}
+               'notes': self.notes,
+               'notifications': self.notifications}
         if proc in rpc:
             result = yield rpc[proc](arg)
             self.write(json_encode(result))
@@ -171,14 +172,8 @@ class Employee(BaseHandler):
     @tornado.web.authenticated
     def notes(self, employee_id):
         if employee_id:
-            start_date = self.get_argument('start_date', False)
-            if start_date:
-                start_date = dateutil.parse(start_date).strftime('%Y-%m-%d')
-
-            end_date = self.get_argument('end_date', False)
-            if end_date:
-                end_date = dateutil.parse(end_date).strftime('%Y-%m-%d')
-
+            start_date = self._start_date()
+            end_date = self._end_date()
             if start_date and end_date:
                 cursor = yield self.db.execute(
                     "SELECT name, note_date, note_type, first_name, last_name, note "
@@ -206,3 +201,35 @@ class Employee(BaseHandler):
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def notifications(self, employee_id):
+        if employee_id:
+            start_date = self._start_date()
+            end_date = self._end_date()
+            cursor = yield self.db.execute(
+                "SELECT company.name, first_name, last_name, note, notify_date, sent "
+                "FROM notification "
+                "INNER JOIN company "
+                "ON company.id = notification.company "
+                "INNER JOIN employee "
+                "ON notification.employee = employee.id "
+                "WHERE notification.employee=%s;",
+                [employee_id]
+            )
+            return self.parse_query(cursor.fetchall(), cursor.description)
+        else:
+            return {}
+
+    def _start_date(self):
+        start_date = self.get_argument('start_date', False)
+        if start_date:
+            start_date = dateutil.parse(start_date).strftime('%Y-%m-%d')
+        return start_date
+
+    def _end_date(self):
+        end_date = self.get_argument('end_date', False)
+        if end_date:
+            end_date = dateutil.parse(end_date).strftime('%Y-%m-%d')
+        return end_date
