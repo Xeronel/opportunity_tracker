@@ -41,6 +41,9 @@
                     {% if user.permissions['developer'] %}
                     <li><a id="clear_company" href="#">Clear Company</a></li>
                     {% end %}
+                    {% if user.permissions['change_password'] %}
+                    <li><a href="/profile">Change Password</a></li>
+                    {% end %}
                     <li><a href="/logout">Logout</a></li>
                 </ul>
             </div>
@@ -140,7 +143,7 @@
     {% end %}
 </div>
 <footer>
-    <script src="{{ static_url('bower/jquery/dist/jquery.min.js') }}"></script>
+    <script src="//sss.sew.dom/{{ static_url('bower/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ static_url('bower/bootstrap/dist/js/bootstrap.min.js') }}"></script>
     <script src="{{ static_url('bower/bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
     <script src="{{ static_url('bower/selectize/dist/js/standalone/selectize.min.js') }}"></script>

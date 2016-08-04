@@ -405,3 +405,35 @@ class GetContacts(BaseHandler):
 class ClearCompany(BaseHandler):
     def get(self):
         self.clear_cookie('company')
+
+
+class Profile(BaseHandler):
+    @tornado.gen.coroutine
+    @tornado.web.authenticated
+    def get(self):
+        user_info = yield self.get_user()
+        self.render('profile.html', user=user_info)
+
+    @tornado.gen.coroutine
+    @tornado.web.authenticated
+    def post(self):
+        yield self.change_password()
+
+    @tornado.gen.coroutine
+    @tornado.web.authenticated
+    def change_password(self):
+        user = yield self.get_user()
+        permissions = user.permissions
+        password = self.get_argument('password', False)
+        if permissions['change_password']:
+            if password:
+                self.db.execute(
+                    "UPDATE employee "
+                    "SET pwhash = crypt(%s, gen_salt('bf')) "
+                    "WHERE id = %s",
+                    [password, user.uid]
+                )
+            else:
+                self.send_error(422)
+        else:
+            self.send_error(401)

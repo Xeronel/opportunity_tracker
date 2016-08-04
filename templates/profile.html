@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% end %}
+{% block active %}profile-menu{% end %}
+
+{% block content-panel %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        <div class="panel-heading">
+            <span>Change Password</span>
+        </div>
+        <div class="panel-body collapse in" id="change_password_panel" style="background-color: white;">
+            <div id="alert"></div>
+            <form method="post" id="change_password_form">
+                {% module xsrf_form_html() %}
+                <fieldset class="form-group">
+                    <label for="password">Password:</label>
+                    <input name="password" type="password" class="form-control" placeholder="Enter a password"
+                           id="password" required minlength="8">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="password2">Verify Password:</label>
+                    <input name="password2" type="password" class="form-control"
+                           placeholder="Enter your password again">
+                </fieldset>
+                <fieldset class="form-group">
+                    <button type="submit" name="changepassword" class="btn btn-primary pull-right">Submit</button>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block footer %}
+<script>
+    $('#change_password_form').validate({
+        rules: {
+            password2: {equalTo: '#password'}
+        },
+        submitHandler: function (form) {
+            $.ajax({
+                type: 'POST',
+                url: '/profile',
+                data: $(form).serialize(),
+                success: function () {
+                    document.location.reload();
+                    $('#alert').html(
+                            '<div class="alert alert-success fade in" style="margin-top: -10px">' +
+                            '<a class="close" data-dismiss="alert">×</a>' +
+                            '<strong>Success!</strong> Password changed.' +
+                            '</div>');
+                },
+                error: function () {
+                    $('#alert').html(
+                            '<div class="alert alert-danger fade in" style="margin-top: -10px">' +
+                            '<a class="close" data-dismiss="alert">×</a>' +
+                            '<strong>Error!</strong> Access denied.' +
+                            '</div>');
+                }
+            });
+        }
+    });
+</script>
+{% end %}

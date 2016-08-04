@@ -27,6 +27,7 @@ def make_app():
          (r'/get_contacts/(.*)', GetContacts),
          (r'/admin', Admin),
          (r'/clear_company', ClearCompany),
+         (r'/profile', Profile),
          (r'/login', Login),
          (r'/logout', Logout)],
         debug=config.web.debug,
