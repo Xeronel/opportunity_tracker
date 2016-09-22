@@ -359,6 +359,18 @@ class Note(BaseHandler):
                     **kwargs)
 
 
+class Project(BaseHandler):
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get(self, form):
+        user_info = yield self.get_user()
+        companies = yield self.get_companies()
+        self.render('project.html',
+                    companies=companies,
+                    user=user_info,
+                    form=form)
+
+
 class GetNotes(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated

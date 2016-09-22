@@ -23,6 +23,7 @@ def make_app():
          (r'/(add|rem|mod)_company', Company),
          (r'/(add|rem|mod|view)_notification', Notification),
          (r'/(add|rem|mod|view)_notes?', Note),
+         (r'/(add|manage)_project', Project),
          (r'/get_notes/(.*)', GetNotes),
          (r'/get_contacts/(.*)', GetContacts),
          (r'/admin', Admin),

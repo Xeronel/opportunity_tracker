@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form.title() }} Project{% end %}
+{% block active %}{{ form }}-project{% end %}
+
+{% block content-panel %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        <div class="panel-heading">
+            {{ form.title() }} Project
+        </div>
+        <div class="panel-body" style="background-color: white;">
+            {% if form == 'add' %}
+            {% include 'forms/add_project.html' %}
+            {% elif form == 'manage' %}
+            {% include 'forms/manage_project.html' %}
+            {% end %}
+        </div>
+    </div>
+</div>
+{% end %}

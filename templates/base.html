@@ -128,6 +128,22 @@
                 <a id="view-note" href="view_note">View Notes</a>
             </div>
         </div>
+
+        <div class="panel">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <a href="#project-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
+                        <i class="fa fa-clipboard"></i> Project
+                    </a>
+                </span>
+            </div>
+            <div id="project-submenu" class="panel-collapse collapse">
+                {% if user.permissions['developer'] %}
+                <a id="add-project" href="add_project">Add Project</a>
+                {% end %}
+                <a id="manage-project" href="manage_project">Manage Project</a>
+            </div>
+        </div>
     </div>
 </div>
 <div class="content-panel">
