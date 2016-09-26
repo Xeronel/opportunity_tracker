@@ -2,12 +2,23 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 9.5.2
+-- Dumped by pg_dump version 9.5.2
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: postgres; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON DATABASE postgres IS 'default administrative connection database';
+
 
 --
 -- Name: opportunity_tracker; Type: SCHEMA; Schema: -; Owner: postgres
@@ -33,6 +44,20 @@ COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+--
 -- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: 
 --
 
@@ -53,7 +78,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: company; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: company; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE company (
@@ -89,7 +114,7 @@ ALTER SEQUENCE company_id_seq OWNED BY company.id;
 
 
 --
--- Name: contact; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: contact; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE contact (
@@ -99,7 +124,8 @@ CREATE TABLE contact (
     last_name character varying(25),
     title character varying(50),
     email character varying(255),
-    phone character varying(30)
+    phone character varying(30),
+    ext text DEFAULT ''::text NOT NULL
 );
 
 
@@ -127,7 +153,7 @@ ALTER SEQUENCE contact_id_seq OWNED BY contact.id;
 
 
 --
--- Name: employee; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: employee; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE employee (
@@ -164,7 +190,7 @@ ALTER SEQUENCE employee_id_seq OWNED BY employee.id;
 
 
 --
--- Name: industry; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: industry; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE industry (
@@ -197,7 +223,7 @@ ALTER SEQUENCE industry_id_seq OWNED BY industry.id;
 
 
 --
--- Name: location; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: location; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE location (
@@ -236,7 +262,7 @@ ALTER SEQUENCE location_id_seq OWNED BY location.id;
 
 
 --
--- Name: notes; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: notes; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE notes (
@@ -273,7 +299,7 @@ ALTER SEQUENCE notes_id_seq OWNED BY notes.id;
 
 
 --
--- Name: notification; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: notification; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE notification (
@@ -310,7 +336,7 @@ ALTER SEQUENCE notification_id_seq OWNED BY notification.id;
 
 
 --
--- Name: permissions; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: permissions; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE permissions (
@@ -327,7 +353,7 @@ CREATE TABLE permissions (
 ALTER TABLE permissions OWNER TO postgres;
 
 --
--- Name: session; Type: TABLE; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: session; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE TABLE session (
@@ -419,7 +445,7 @@ ALTER TABLE ONLY session ALTER COLUMN id SET DEFAULT nextval('session_id_seq'::r
 
 
 --
--- Name: company_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: company_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY company
@@ -427,7 +453,7 @@ ALTER TABLE ONLY company
 
 
 --
--- Name: contact_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: contact_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY contact
@@ -435,7 +461,7 @@ ALTER TABLE ONLY contact
 
 
 --
--- Name: employee_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: employee_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY employee
@@ -443,7 +469,7 @@ ALTER TABLE ONLY employee
 
 
 --
--- Name: employee_username_key; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: employee_username_key; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY employee
@@ -451,7 +477,7 @@ ALTER TABLE ONLY employee
 
 
 --
--- Name: id_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: id_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notification
@@ -459,7 +485,7 @@ ALTER TABLE ONLY notification
 
 
 --
--- Name: industry_name_key; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: industry_name_key; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY industry
@@ -467,7 +493,7 @@ ALTER TABLE ONLY industry
 
 
 --
--- Name: industry_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: industry_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY industry
@@ -475,7 +501,7 @@ ALTER TABLE ONLY industry
 
 
 --
--- Name: location_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: location_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY location
@@ -483,7 +509,7 @@ ALTER TABLE ONLY location
 
 
 --
--- Name: note_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: note_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notes
@@ -491,7 +517,7 @@ ALTER TABLE ONLY notes
 
 
 --
--- Name: pk_employee; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: pk_employee; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY permissions
@@ -499,7 +525,7 @@ ALTER TABLE ONLY permissions
 
 
 --
--- Name: session_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: session_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY session
@@ -507,7 +533,7 @@ ALTER TABLE ONLY session
 
 
 --
--- Name: unique_name; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: unique_name; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY company
@@ -515,35 +541,35 @@ ALTER TABLE ONLY company
 
 
 --
--- Name: fki_company_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: fki_company_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE INDEX fki_company_fk ON notes USING btree (company);
 
 
 --
--- Name: fki_company_fkey; Type: INDEX; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: fki_company_fkey; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE INDEX fki_company_fkey ON location USING btree (company);
 
 
 --
--- Name: fki_contact_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: fki_contact_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE INDEX fki_contact_fk ON notes USING btree (contact);
 
 
 --
--- Name: fki_creator_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: fki_creator_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE INDEX fki_creator_fk ON company USING btree (creator);
 
 
 --
--- Name: fki_employee_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres; Tablespace: 
+-- Name: fki_employee_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
 --
 
 CREATE INDEX fki_employee_fk ON company USING btree (employee);
