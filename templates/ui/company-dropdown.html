@@ -4,7 +4,7 @@
             {% if required %}required="required"{% end %}>
         <option value="">Select a company...</option>
         {% for company in companies %}
-        <option value="{{ company[0] }}">{{ escape(company[1]) }}</option>
+        <option value="{{ company[0] }}">{{ company[1] }}</option>
         {% end %}
     </select>
 </div>
