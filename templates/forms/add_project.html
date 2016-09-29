@@ -2,13 +2,19 @@
     <form role="form" id="add_project_form" method="post">
         {% module xsrf_form_html() %}
         <div class="row">
-            {% module CompanyDropdown(companies) %}
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <label for="project">Project Name:</label>
+                <input id="project" name="project" type="text" class="form-control" required>
+            </div>
         </div>
         <div class="row">
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label for="project">Project:</label>
-                <input id="project" name="project" type="text" class="form-control" required>
+                <label for="path">URL Path (Ex: my_project):</label>
+                <input id="path" name="path" type="text" class="form-control" required>
             </div>
+        </div>
+        <div class="row">
+            {% module CompanyDropdown(companies, classes="form-group col-lg-12 col-md-12") %}
         </div>
         <div class="row">
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
