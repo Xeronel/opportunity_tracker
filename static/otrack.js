@@ -94,8 +94,9 @@ function submit_form(element, url, reload) {
                 url: url,
                 data: element.serialize(),
                 success: function () {
-                    if ($('#alert-message').length > 0) {
-                        $('#alert-message').remove();
+                    var alertMessage = $('#alert-message');
+                    if (alertMessage.length > 0) {
+                        alertMessage.remove();
                     }
                     element.trigger('reset');
                     if (reload === true) {
