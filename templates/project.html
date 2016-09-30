@@ -10,6 +10,7 @@
             {{ form.title() }} Project
         </div>
         <div class="panel-body" style="background-color: white;">
+            <div id="alert"></div>
             {% if form == 'add' %}
             {% include 'forms/add_project.html' %}
             {% elif form == 'manage' %}
@@ -20,9 +21,12 @@
 </div>
 {% end %}
 {% block footer %}
-{% if form == 'manage' %}
+{% if form == 'add' %}
 <script>
-    $('')
+    var add_project_form = $('#add_project_form');
+    add_project_form.validate();
+    submit_form(add_project_form, 'Project or path already exists!');
 </script>
+{% elif form == 'manage' %}
 {% end %}
 {% end %}

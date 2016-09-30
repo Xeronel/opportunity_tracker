@@ -362,7 +362,27 @@ class Note(BaseHandler):
 class Project(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self, form):
+    def get(self, form, project=None):
+        if project is None:
+            user_info = yield self.get_user()
+            companies = yield self.get_companies()
+            self.render('project.html',
+                        companies=companies,
+                        user=user_info,
+                        form=form)
+        else:
+            try:
+                # If a project is supplied the "form" actually contains the company number
+                self.render('projects/%s/%s' % (form, project))
+            except FileNotFoundError:
+                self.send_error(404)
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def post(self, form):
+        forms = {'add': self.add_project}
+        if form in forms:
+            yield forms[form]()
         user_info = yield self.get_user()
         companies = yield self.get_companies()
         self.render('project.html',
@@ -371,14 +391,18 @@ class Project(BaseHandler):
                     form=form)
 
     @gen.coroutine
-    @tornado.web.authenticated
-    def post(self, form):
-        user_info = yield self.get_user
-        companies = yield self.get_companies()
-        self.render('project.html',
-                    companies=companies,
-                    user=user_info,
-                    form=form)
+    def add_project(self):
+        project_name = self.get_argument('project')
+        project_path = self.get_argument('path')
+        company_id = self.get_argument('company')
+        description = self.get_argument('description')
+        yield self.db.execute(
+            """
+            INSERT INTO project (name, description, company, path)
+            VALUES (%s, %s, %s, %s);
+            """,
+            [project_name, description, company_id, project_path]
+        )
 
 
 class GetNotes(BaseHandler):
