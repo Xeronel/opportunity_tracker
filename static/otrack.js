@@ -83,7 +83,7 @@ $('.panel-body.collapse').each(function () {
 });
 
 // AJAX Submit a form
-function submit_form(element, url, reload) {
+function submit_form(element, message, reload, url) {
     url = typeof url !== 'undefined' ? url : window.location.pathname;
     reload = typeof reload !== 'undefined' ? reload : false;
     element.submit(function (event) {
@@ -107,7 +107,7 @@ function submit_form(element, url, reload) {
                     $('#alert').html(
                         '<div id="alert-message" class="alert alert-danger fade in" style="margin-top: -10px">' +
                         '<a class="close" data-dismiss="alert">×</a>' +
-                        '<strong>Error!</strong> A company with that name already exists!' +
+                        '<strong>Error!</strong> ' + message +
                         '</div>');
                 }
             });

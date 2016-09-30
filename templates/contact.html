@@ -75,7 +75,7 @@
             contact.on('change', function (contact_id) {
                 load_contact(contact_id);
             });
-            submit_form(mod_contact, undefined, true);
+            submit_form(mod_contact, 'An error occurred!', true);
         }
 
         if (rem_contact.length > 0) {
@@ -85,7 +85,7 @@
             contact.on('change', function (contact_id) {
                 load_contact(contact_id);
             });
-            submit_form(rem_contact, undefined, true);
+            submit_form(rem_contact, 'An error occurred!', true);
         }
     });
 </script>

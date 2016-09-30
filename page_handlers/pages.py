@@ -370,6 +370,16 @@ class Project(BaseHandler):
                     user=user_info,
                     form=form)
 
+    @gen.coroutine
+    @tornado.web.authenticated
+    def post(self, form):
+        user_info = yield self.get_user
+        companies = yield self.get_companies()
+        self.render('project.html',
+                    companies=companies,
+                    user=user_info,
+                    form=form)
+
 
 class GetNotes(BaseHandler):
     @gen.coroutine
