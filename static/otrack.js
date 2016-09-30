@@ -138,6 +138,9 @@ api.v1.company.url.notes = function (company_id) {
 api.v1.company.url.notifications = function (company_id) {
     return api.v1.company.url() + company_id + '/notifications';
 };
+api.v1.company.url.projects = function (company_id) {
+    return api.v1.company.url() + company_id + '/projects';
+};
 
 api.v1.company.location = function (company_id, success) {
     var callback = function (data) {
@@ -191,6 +194,13 @@ api.v1.company.employee = function (company_id, success) {
         success(data);
     };
     $.get(api.v1.company.url() + company_id + '/employee', callback);
+};
+api.v1.company.projects = function (company_id, success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.company.url.projects(company_id), callback);
 };
 
 // Employee

@@ -365,7 +365,15 @@ class Project(BaseHandler):
     def get(self, form, project=None):
         if project is None:
             user_info = yield self.get_user()
-            companies = yield self.get_companies()
+            if form == 'manage':
+                cursor = yield self.db.execute(
+                    "SELECT DISTINCT company.id, company.name "
+                    "FROM project "
+                    "LEFT JOIN company ON company = company.id;"
+                )
+                companies = cursor.fetchall()
+            else:
+                companies = yield self.get_companies()
             self.render('project.html',
                         companies=companies,
                         user=user_info,
@@ -381,10 +389,11 @@ class Project(BaseHandler):
     @tornado.web.authenticated
     def post(self, form):
         forms = {'add': self.add_project}
+        companies = self.get_companies()
         if form in forms:
             yield forms[form]()
         user_info = yield self.get_user()
-        companies = yield self.get_companies()
+
         self.render('project.html',
                     companies=companies,
                     user=user_info,
@@ -401,7 +410,7 @@ class Project(BaseHandler):
             INSERT INTO project (name, description, company, path)
             VALUES (%s, %s, %s, %s);
             """,
-            [project_name, description, company_id, project_path]
+            [project_name.lower(), description, company_id, project_path.lower()]
         )
 
 

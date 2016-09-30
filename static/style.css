@@ -2,6 +2,13 @@ body {
     background-color: #D8DCE3;
 }
 
+tbody > tr > td > a {
+    display: block;
+    text-transform: capitalize;
+    color: #0081BD;
+    font-weight: bold;
+}
+
 .checkbox > label {
     font-weight: 700;
 }

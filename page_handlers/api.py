@@ -28,7 +28,8 @@ class Company(ApiBase):
                'location': self.location,
                'notes': self.notes,
                'employee': self.employee,
-               'notifications': self.notifications}
+               'notifications': self.notifications,
+               'projects': self.projects}
         if proc in rpc:
             result = yield rpc[proc](arg)
             self.write(json_encode(result))
@@ -154,6 +155,18 @@ class Company(ApiBase):
                     "ON notification.employee = employee.id "
                     "WHERE notification.company=%s;",
                     [company_id])
+            return self.parse_query(cursor.fetchall(), cursor.description)
+        else:
+            return {}
+
+    @gen.coroutine
+    def projects(self, company_id):
+        if company_id:
+            cursor = yield self.db.execute(
+                "SELECT * FROM project "
+                "WHERE company = %s",
+                [company_id]
+            )
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
