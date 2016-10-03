@@ -52,6 +52,7 @@
 </header>
 <div class="leftpanel">
     <div class="nav" id="accordion" role="tablist" aria-multiselectable="true">
+        {%  block leftpanel %}
         <div class="panel" id="dashboard-menu">
             <div class="panel-heading">
                 <span class="panel-title">
@@ -70,7 +71,6 @@
                 </span>
             </div>
         </div>
-
         <div class="panel" id="company-menu">
             <div class="panel-heading">
                 <span class="panel-title">
@@ -85,8 +85,7 @@
                 <a id="rem-company" href="rem_company">Remove Company</a>
             </div>
         </div>
-
-        <div class="panel">
+        <div class="panel" id="contact-menu">
             <div class="panel-heading" role="tab">
                 <span class="panel-title">
                     <a href="#contact-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
@@ -100,8 +99,7 @@
                 <a id="rem-contact" href="rem_contact">Remove Contact</a>
             </div>
         </div>
-
-        <div class="panel">
+        <div class="panel" id="notification-menu">
             <div class="panel-heading">
                 <span class="panel-title">
                     <a href="#notification-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
@@ -114,8 +112,7 @@
                 <a id="view-notification" href="view_notification">View Notification</a>
             </div>
         </div>
-
-        <div class="panel">
+        <div class="panel" id="note-menu">
             <div class="panel-heading" role="tab" id="headingThree">
                 <span class="panel-title">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseNote">
@@ -128,8 +125,7 @@
                 <a id="view-note" href="view_note">View Notes</a>
             </div>
         </div>
-
-        <div class="panel">
+        <div class="panel" id="project-menu">
             <div class="panel-heading">
                 <span class="panel-title">
                     <a href="#project-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
@@ -144,6 +140,7 @@
                 <a id="manage-project" href="manage_project">Manage Project</a>
             </div>
         </div>
+        {% end %}
     </div>
 </div>
 <div class="content-panel">
