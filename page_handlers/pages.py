@@ -389,7 +389,7 @@ class Project(BaseHandler):
     @tornado.web.authenticated
     def post(self, form):
         forms = {'add': self.add_project}
-        companies = self.get_companies()
+        companies = yield self.get_companies()
         if form in forms:
             yield forms[form]()
         user_info = yield self.get_user()
