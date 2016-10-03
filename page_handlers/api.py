@@ -297,3 +297,13 @@ class Employee(ApiBase):
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
+
+
+class Notifications(ApiBase):
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get(self):
+        rpc = {'': self.notifications}
+
+    def notifications(self):
+        pass
