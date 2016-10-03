@@ -381,7 +381,7 @@ class Project(BaseHandler):
         else:
             try:
                 # If a project is supplied the "form" actually contains the company number
-                self.render('projects/%s/%s' % (form, project))
+                self.render('projects/%s/%s.html' % (form, project))
             except FileNotFoundError:
                 self.send_error(404)
 
