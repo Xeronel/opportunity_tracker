@@ -1,0 +1,22 @@
+{% extends "../../project_base.html" %}
+
+{% if form == 'upload' %}
+{% block active %}upload-pdf{% end %}
+{% else %}
+{% block active %}upload-pdf{% end %}
+{% end %}
+
+{% block nav %}
+<div class="panel" id="pdf_extractor-menu">
+    <div class="panel-heading">
+        <span class="panel-title">
+            <a href="#pdf_extractor-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
+                <i class="fa fa-file-pdf-o"></i> PDF Extractor
+            </a>
+        </span>
+    </div>
+    <div id="pdf_extractor-submenu" class="panel-collapse collapse">
+        <a id="upload-pdf" href="upload">Upload PDFs</a>
+    </div>
+</div>
+{% end %}
