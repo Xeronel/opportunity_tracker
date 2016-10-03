@@ -362,28 +362,21 @@ class Note(BaseHandler):
 class Project(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self, form, project=None):
-        if project is None:
-            user_info = yield self.get_user()
-            if form == 'manage':
-                cursor = yield self.db.execute(
-                    "SELECT DISTINCT company.id, company.name "
-                    "FROM project "
-                    "LEFT JOIN company ON company = company.id;"
-                )
-                companies = cursor.fetchall()
-            else:
-                companies = yield self.get_companies()
-            self.render('project.html',
-                        companies=companies,
-                        user=user_info,
-                        form=form)
+    def get(self, form):
+        user_info = yield self.get_user()
+        if form == 'manage':
+            cursor = yield self.db.execute(
+                "SELECT DISTINCT company.id, company.name "
+                "FROM project "
+                "LEFT JOIN company ON company = company.id;"
+            )
+            companies = cursor.fetchall()
         else:
-            try:
-                # If a project is supplied the "form" actually contains the company number
-                self.render('projects/%s/%s.html' % (form, project))
-            except FileNotFoundError:
-                self.send_error(404)
+            companies = yield self.get_companies()
+        self.render('project.html',
+                    companies=companies,
+                    user=user_info,
+                    form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -412,6 +405,19 @@ class Project(BaseHandler):
             """,
             [project_name.lower(), description, company_id, project_path.lower()]
         )
+
+
+class ProjectRouter(BaseHandler):
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get(self, company, project, form):
+        try:
+            user_info = yield self.get_user()
+            self.render('projects/%s/%s/%s.html' % (company, project, project),
+                        user=user_info,
+                        form=form)
+        except FileNotFoundError:
+            self.send_error(404)
 
 
 class GetNotes(BaseHandler):
