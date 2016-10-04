@@ -410,7 +410,7 @@ class Project(BaseHandler):
 class ProjectRouter(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
-    def get(self, company, project, form):
+    def get(self, company, project, form=None):
         try:
             user_info = yield self.get_user()
             self.render('projects/%s/%s/%s.html' % (company, project, project),
