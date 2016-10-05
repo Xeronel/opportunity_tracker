@@ -29,6 +29,12 @@
 </script>
 {% elif form == 'manage' %}
 <script>
+    function loadProjects(company_id) {
+        api.v1.company.projects(company_id, function () {
+            $('#projects').dataTable().api().ajax.url(api.v1.company.url.projects(company_id)).load();
+        });
+    }
+
     $(function () {
         // Initialize data table
         $('#projects').DataTable({
@@ -54,10 +60,13 @@
         // Load data table on company selection
         var company = $('#company').selectize()[0].selectize;
         company.on('change', function (company_id) {
-            api.v1.company.projects(company_id, function () {
-                $('#projects').dataTable().api().ajax.url(api.v1.company.url.projects(company_id)).load();
-            });
+            loadProjects(company_id)
         });
+
+        // Load projects
+        if (company.getValue() != '') {
+            loadProjects(company.getValue());
+        }
     });
 </script>
 {% end %}
