@@ -29,31 +29,34 @@
 </script>
 {% elif form == 'manage' %}
 <script>
-    // Initialize data table
-    $('#projects').DataTable({
-        ajax: {
-            url: api.v1.company.url() + '/',
-            dataSrc: '',
-            type: 'GET'
-        },
-        columns: [
-            {
-                data: "name",
-                render: function (data, type, row, meta) {
-                    if(type === 'display') {
-                        data = '<a href="/project/' + row.company + '/' + row.path + '">' + data + '</a>';
-                    }
-                    return data;
-                }
+    $(function () {
+        // Initialize data table
+        $('#projects').DataTable({
+            ajax: {
+                url: api.v1.company.url() + '/',
+                dataSrc: '',
+                type: 'GET'
             },
-            {data: "description"}
-        ]
-    });
+            columns: [
+                {
+                    data: "name",
+                    render: function (data, type, row, meta) {
+                        if (type === 'display') {
+                            data = '<a href="/project/' + row.company + '/' + row.path + '">' + data + '</a>';
+                        }
+                        return data;
+                    }
+                },
+                {data: "description"}
+            ]
+        });
 
-    var company = $('#company').selectize()[0].selectize;
-    company.on('change', function (company_id) {
-        api.v1.company.projects(company_id, function () {
-            $('#projects').dataTable().api().ajax.url(api.v1.company.url.projects(company_id)).load();
+        // Load data table on company selection
+        var company = $('#company').selectize()[0].selectize;
+        company.on('change', function (company_id) {
+            api.v1.company.projects(company_id, function () {
+                $('#projects').dataTable().api().ajax.url(api.v1.company.url.projects(company_id)).load();
+            });
         });
     });
 </script>
