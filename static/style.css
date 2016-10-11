@@ -6,7 +6,6 @@ tbody > tr > td > a {
     display: block;
     text-transform: capitalize;
     color: #0081BD;
-    font-weight: bold;
 }
 
 .checkbox > label {
