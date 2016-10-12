@@ -5,7 +5,7 @@
             {% if required %}required="required"{% end %}>
         <option value=""></option>
         {% for uom in uoms %}
-        <option value="{{ uom[0] }}">{{ uom[1] }}</option>
+        <option value="{{ uom[0] }}">{{ uom[0] }}</option>
         {% end %}
     </select>
 </div>

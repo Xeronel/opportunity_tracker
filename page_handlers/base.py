@@ -65,6 +65,13 @@ class BaseHandler(tornado.web.RequestHandler):
             cursor = yield self.db.execute("SELECT id, name FROM company;")
         return cursor.fetchall()
 
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get_uoms(self):
+        cursor = yield self.db.execute("SELECT uom "
+                                       "FROM unit_of_measure")
+        return cursor.fetchall()
+
     @property
     def db(self):
         return self.application.database

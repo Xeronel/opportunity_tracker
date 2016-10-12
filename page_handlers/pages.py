@@ -395,10 +395,12 @@ class Part(BaseHandler):
             companies = yield self.get_companies()
         if user is None:
             user = yield self.get_user()
+        uoms = yield self.get_uoms()
 
         self.render('part.html',
                     form=self.form,
                     companies=companies,
+                    uoms=uoms,
                     user=user,
                     **kwargs)
 
