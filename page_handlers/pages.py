@@ -359,6 +359,50 @@ class Note(BaseHandler):
                     **kwargs)
 
 
+class Part(BaseHandler):
+    form = None
+
+    @tornado.gen.coroutine
+    @tornado.web.authenticated
+    def get(self, form):
+        self.form = form
+        forms = {'add': self.add_part,
+                 'mod': self.modify_part,
+                 'rem': self.remove_part}
+
+        if form in forms:
+            yield forms[form]()
+        else:
+            user_info = yield self.get_user()
+            self.render('part.html',
+                        user=user_info)
+
+    @gen.coroutine
+    def add_part(self):
+        yield self.render_form()
+
+    @gen.coroutine
+    def modify_part(self):
+        yield self.render_form()
+
+    @gen.coroutine
+    def remove_part(self):
+        yield self.render_form()
+
+    @gen.coroutine
+    def render_form(self, companies=None, user=None, **kwargs):
+        if companies is None:
+            companies = yield self.get_companies()
+        if user is None:
+            user = yield self.get_user()
+
+        self.render('part.html',
+                    form=self.form,
+                    companies=companies,
+                    user=user,
+                    **kwargs)
+
+
 class Project(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated

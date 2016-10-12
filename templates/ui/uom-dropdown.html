@@ -1,0 +1,11 @@
+<div class="{{ classes }}">
+    <label for="uom">{{ label }}</label>
+    <!-- Placeholder is used by Selectize -->
+    <select id="uom" name="uom" class="form-control" placeholder="Select a UOM..."
+            {% if required %}required="required"{% end %}>
+        <option value=""></option>
+        {% for uom in uoms %}
+        <option value="{{ uom[0] }}">{{ uom[1] }}</option>
+        {% end %}
+    </select>
+</div>

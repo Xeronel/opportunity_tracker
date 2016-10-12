@@ -67,7 +67,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @property
     def db(self):
-        return self.application.db
+        return self.application.database
 
     def parse_query(self, data, description):
         if type(data) == list:

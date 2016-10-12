@@ -1,0 +1,29 @@
+<div class="form-group">
+    <form role="form" id="add_note_form" method="post">
+        {% module xsrf_form_html() %}
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <label for="part_number">Part Number:</label>
+                <input id="part_number" name="part_number" type="text" class="form-control" required>
+            </div>
+        </div>
+        <div class="row">
+            {% module ContactDropdown(False) %}
+            <!-- Date selector -->
+            {% module DatePicker('date', classes='col-md-5 col-lg-4') %}
+        </div>
+        <div class="row">
+            <!-- Note entry -->
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <label for="note">Note:</label>
+                <textarea class="form-control" rows="5" id="note" name="note" required></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                <button type="reset" class="btn btn-inverse pull-right">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>

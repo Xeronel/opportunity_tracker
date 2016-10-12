@@ -1,10 +1,36 @@
 import config
 import tornado.ioloop
 import tornado.web
+import tornado.gen
+import psycopg2
 import momoko
 from page_handlers import *
 from page_handlers import api
 import ui_modules
+
+
+class Database:
+    def __init__(self):
+        self.pool = momoko.Pool(dsn="dbname=%s user=%s password=%s host=%s port=%s" %
+                                    (config.db.database, config.db.username, config.db.password,
+                                     config.db.hostname, config.db.port),
+                                size=1,
+                                max_size=config.db.max_size,
+                                auto_shrink=config.db.auto_shrink,
+                                ioloop=ioloop)
+
+    def connect(self):
+        return self.pool.connect()
+
+    @tornado.gen.coroutine
+    def execute(self, *args, **kwargs):
+        # Throws momoko.PartiallyConnectedError if database is down
+        try:
+            cursor = yield self.pool.execute(*args, **kwargs)
+        except psycopg2.OperationalError:
+            yield self.connect()
+            cursor = yield self.pool.execute(*args, **kwargs)
+        return cursor
 
 
 def make_app():
@@ -23,6 +49,7 @@ def make_app():
          (r'/(add|rem|mod)_company', Company),
          (r'/(add|rem|mod|view)_notification', Notification),
          (r'/(add|rem|mod|view)_notes?', Note),
+         (r'/(add|rem|mod)_part', Part),
          (r'/(add|manage)_project', Project),
          (r'/project/(\d+)/([a-zA-Z_\-]+)', ProjectRouter),
          (r'/project/(\d+)/([a-zA-Z_\-]+)/(.*)', ProjectRouter),
@@ -52,14 +79,8 @@ if __name__ == '__main__':
 
     # Attempt to connect to the database
     ioloop = tornado.ioloop.IOLoop.current()
-    app.db = momoko.Pool(dsn="dbname=%s user=%s password=%s host=%s port=%s" %
-                             (config.db.database, config.db.username, config.db.password,
-                              config.db.hostname, config.db.port),
-                         size=1,
-                         max_size=config.db.max_size,
-                         auto_shrink=config.db.auto_shrink,
-                         ioloop=ioloop)
-    future = app.db.connect()
+    app.database = Database()
+    future = app.database.connect()
     ioloop.add_future(future, lambda f: ioloop.stop())
     ioloop.start()
     future.result()  # raises exception on connection error

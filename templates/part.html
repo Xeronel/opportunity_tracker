@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ form.title() }} Part{% if form == 'view' %}s{% end %}{% end %}
+{% block active %}{{ form }}-part{% end %}
+
+{% block panel-heading %}
+{{ form.title() }}{% if form == 'mod' %}ify{% elif form == 'rem' %}ove{% else %}{% end %} Part
+{% end %}
+
+{% block panel-body %}
+{% if form == 'add' %}
+{% include 'forms/add_part.html' %}
+{% elif form == 'mod' %}
+{% include 'forms/mod_part.html' %}
+{% elif form == 'rem' %}
+{% include 'forms/rem_part.html' %}
+{% end %}
+{% end %}
