@@ -72,6 +72,13 @@ class BaseHandler(tornado.web.RequestHandler):
                                        "FROM unit_of_measure")
         return cursor.fetchall()
 
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get_part_types(self):
+        cursor = yield self.db.execute("SELECT part_type "
+                                       "FROM part_type")
+        return cursor.fetchall()
+
     @property
     def db(self):
         return self.application.database
