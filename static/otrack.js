@@ -41,6 +41,11 @@ $.validator.setDefaults({
         ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
         ':hidden:not(textarea)']
 });
+$.validator.addMethod("money", function (value, element) {
+    var regex = '^\\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|0)?\\.[0-9]{2,3}$';
+    regex = new RegExp(regex);
+    return this.optional(element) || regex.test(value);
+}, "This field is required.<br>(Ex: $1,000.005)");
 
 // Date picker
 $(function () {
