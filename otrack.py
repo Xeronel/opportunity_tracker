@@ -41,6 +41,8 @@ def make_app():
          (r'/api/v1/contact/(.*)', api.Contact),
          (r'/api/v1/employee/(.*)/(.*)', api.Employee),
          (r'/api/v1/employee/(.*)', api.Employee),
+         (r'/api/v1/part/(.*)/(.*)', api.Part),
+         (r'/api/v1/part/(.*)', api.Part),
          (r'/', Dashboard),
          (r'/dashboard', Dashboard),
          (r'/calendar', Calendar),

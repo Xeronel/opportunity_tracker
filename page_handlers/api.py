@@ -297,3 +297,30 @@ class Employee(ApiBase):
             return self.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
+
+
+class Part(ApiBase):
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get(self, arg, proc=''):
+        rpc = {'': self.part}
+
+        if proc in rpc:
+            result = yield rpc[proc](arg)
+            self.write(json_encode(result))
+        else:
+            self.write(json_encode({}))
+
+    @gen.coroutine
+    def part(self, part_number):
+        if part_number == 'parts':
+            cursor = yield self.db.execute("SELECT * FROM part;")
+            return self.parse_query(cursor.fetchall(), cursor.description)
+        elif part_number:
+            cursor = yield self.db.execute(
+                "SELECT * FROM part WHERE part_number = %s;",
+                [part_number]
+            )
+            return self.parse_query(cursor.fetchone(), cursor.description)
+        else:
+            return {}
