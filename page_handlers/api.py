@@ -319,7 +319,7 @@ class Part(ApiBase):
         elif part_number:
             cursor = yield self.db.execute(
                 "SELECT * FROM part WHERE part_number = %s;",
-                [part_number]
+                [part_number.upper()]
             )
             return self.parse_query(cursor.fetchone(), cursor.description)
         else:
