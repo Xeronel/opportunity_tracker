@@ -1,6 +1,7 @@
 import tornado.web
 from tornado import gen
 from datetime import date, datetime
+from decimal import Decimal
 
 
 class User:
@@ -83,7 +84,7 @@ class BaseHandler(tornado.web.RequestHandler):
     def db(self):
         return self.application.database
 
-    def parse_query(self, data, description):
+    def parse_query(self, data, description, convert_decimal=True):
         if type(data) == list:
             result = []
             for value in data:
@@ -93,6 +94,8 @@ class BaseHandler(tornado.web.RequestHandler):
             for i in range(len(description)):
                 if type(data[i]) == date:
                     value = data[i].strftime('%Y-%m-%d')
+                elif type(data[i]) == Decimal and convert_decimal:
+                    value = str(data[i])
                 else:
                     value = data[i]
                 result[description[i].name] = value
