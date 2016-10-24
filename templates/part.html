@@ -16,3 +16,27 @@
 {% include 'forms/rem_part.html' %}
 {% end %}
 {% end %}
+
+{% block footer %}
+{% if form == 'add' %}
+<script>
+    $('#add_part_form').validate({
+        rules: {
+            cost: {
+                required: true,
+                money: true
+            }
+        }
+    });
+
+    $(function () {
+        var part_type = $('#part_type').selectize()[0].selectize;
+        part_type.on('change', function (id) {
+            if (part_type.getValue() === 'KIT') {
+
+            }
+        });
+    });
+</script>
+{% end %}
+{% end %}
