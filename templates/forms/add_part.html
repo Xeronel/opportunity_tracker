@@ -1,17 +1,37 @@
 <div class="form-group">
-    <form role="form" id="add_note_form" method="post">
+    <form role="form" id="add_part_form" method="post">
         {% module xsrf_form_html() %}
         <div class="row">
             <div class="form-group col-lg-12">
                 <label for="part_number">Part Number:</label>
-                <input id="part_number" name="part_number" type="text" class="form-control" required>
+                <input id="part_number" name="part_number" type="text"
+                       class="form-control" style="text-transform:uppercase" required>
             </div>
         </div>
         <div class="row">
-            {% module UOMDropdown(uoms, classes='form-group col-md-5 col-lg-4') %}
+            {% module PartTypeDropdown(part_types, classes='form-group col-md-4 col-lg-4') %}
+            {% module UOMDropdown(uoms, classes='form-group col-md-4 col-lg-4') %}
+            <div class="form-group col-md-4 col-lg-4">
+                <label for="cost">Cost: </label>
+                <input id="cost" name="cost" type="text" class="form-control" required>
+            </div>
         </div>
         <div class="row">
-            <!-- Note entry -->
+            <div class="form-group col-lg-12">
+                <label>Bill Of Material:</label>
+                <table class="table table-condensed">
+                    <thead>
+                    <tr>
+                        <th>Part Number</th>
+                        <th>Qty</th>
+                        <th>Cost</th>
+                    </tr>
+                    </thead>
+                </table>
+                <button class="btn btn-primary pull-right">Add Item</button>
+            </div>
+        </div>
+        <div class="row">
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <label for="description">Description:</label>
                 <textarea class="form-control" rows="5" id="description" name="description" required></textarea>
