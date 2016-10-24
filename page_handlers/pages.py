@@ -366,6 +366,12 @@ class Part(BaseHandler):
     @tornado.web.authenticated
     def get(self, form):
         self.form = form
+        yield self.render_form()
+
+    @tornado.gen.coroutine
+    @tornado.web.authenticated
+    def post(self, form):
+        self.form = form
         forms = {'add': self.add_part,
                  'mod': self.modify_part,
                  'rem': self.remove_part}
@@ -379,6 +385,15 @@ class Part(BaseHandler):
 
     @gen.coroutine
     def add_part(self):
+        part_number = self.get_argument('part_number')
+        description = self.get_argument('description')
+        unit_of_measure = self.get_argument('uom')
+        part_type = self.get_argument('part_type')
+        cost = self.get_argument('cost')
+        self.db.execute(
+            "INSERT INTO part (part_number, description, uom, part_type, cost) "
+            "VALUES (%s, %s, %s, %s, %s);",
+            [part_number.upper(), description, unit_of_measure, part_type, cost])
         yield self.render_form()
 
     @gen.coroutine
@@ -396,10 +411,12 @@ class Part(BaseHandler):
         if user is None:
             user = yield self.get_user()
         uoms = yield self.get_uoms()
+        part_types = yield self.get_part_types()
 
         self.render('part.html',
                     form=self.form,
                     companies=companies,
+                    part_types=part_types,
                     uoms=uoms,
                     user=user,
                     **kwargs)
