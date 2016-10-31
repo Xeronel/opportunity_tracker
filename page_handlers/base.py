@@ -1,4 +1,5 @@
 import tornado.web
+from tornado.ioloop import IOLoop
 from tornado import gen
 from datetime import date, datetime
 from decimal import Decimal
@@ -31,7 +32,7 @@ class BaseHandler(tornado.web.RequestHandler):
                                        "WHERE (id = %(uid)s);", {'uid': uid})
         uid, first_name, last_name, email = cursor.fetchone()
         permissions = yield self.get_permissions()
-        return User(uid, first_name, last_name, email, permissions)
+        raise gen.Return(User(uid, first_name, last_name, email, permissions))
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -102,3 +103,11 @@ class BaseHandler(tornado.web.RequestHandler):
         else:
             result = {}
         return result
+
+    @gen.coroutine
+    def render(self, template_name, **kwargs):
+        if 'user' not in kwargs:
+            kwargs['user'] = yield self.get_user()
+        elif kwargs['user'] is None:
+            kwargs['user'] = yield self.get_user()
+        super(BaseHandler, self).render(template_name, **kwargs)
