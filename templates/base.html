@@ -192,6 +192,7 @@
     <script src="{{ static_url('bower/datatables-buttons/js/buttons.html5.js') }}"></script>
     <script src="{{ static_url('otrack.js') }}"></script>
     <script src="{{ static_url('ui.js') }}"></script>
+    {% block includes %}{% end %}
     <script>
         $(document).ready(
                 navSelector('{% block active %}{% end %}')
