@@ -245,3 +245,20 @@ api.v1.employee.companies = function (employee_id, success) {
     };
     $.get(api.v1.employee.url() + employee_id + '/companies', callback);
 };
+
+// Parts
+api.v1.part = {};
+api.v1.part.url = function () {
+    return 'api/v1/part/';
+};
+api.v1.part.url.parts = function () {
+    return api.v1.part.url() + 'parts';
+};
+
+api.v1.part.parts = function (success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.part.url.parts(), callback);
+};
