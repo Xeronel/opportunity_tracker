@@ -9,6 +9,12 @@ tbody > tr > td > a {
     font-weight: bold;
 }
 
+tbody > tr > td > input {
+    max-width: 70px;
+    margin-bottom: 0;
+    margin-right: 0;
+}
+
 .checkbox > label {
     font-weight: 700;
 }
