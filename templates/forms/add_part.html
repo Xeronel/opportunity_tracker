@@ -16,21 +16,45 @@
                 <input id="cost" name="cost" type="text" class="form-control" required>
             </div>
         </div>
-        <div class="row">
+
+        <div class="row hidden kit-row">
             <div class="form-group col-lg-12">
-                <label>Bill Of Material:</label>
-                <table class="table table-condensed">
+                <table class="table table-condensed" id="bill-of-materials" width="100%">
                     <thead>
                     <tr>
+                        <th></th>
                         <th>Part Number</th>
-                        <th>Qty</th>
+                        <th>Description</th>
+                        <th>UOM</th>
                         <th>Cost</th>
+                        <th>Type</th>
+                        <th>Qty</th>
                     </tr>
                     </thead>
                 </table>
-                <button class="btn btn-primary pull-right">Add Item</button>
+                <button type="button" class="btn btn-primary pull-right" onclick="removeItem()">Remove</button>
             </div>
         </div>
+
+        <div class="row hidden kit-row">
+            <div class="form-group col-lg-12">
+                <table class="table table-condensed" id="part-list" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Part Number</th>
+                        <th>Description</th>
+                        <th>UOM</th>
+                        <th>Cost</th>
+                        <th>Type</th>
+                        <th>Qty</th>
+                    </tr>
+                    </thead>
+                </table>
+                <button type="button" onclick="addItem()" class="btn btn-primary pull-right">Add</button>
+            </div>
+        </div>
+
         <div class="row">
             <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <label for="description">Description:</label>
