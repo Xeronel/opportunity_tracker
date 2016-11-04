@@ -1,12 +1,14 @@
-function toggleKit(part_type) {
+var add_part = {};
+
+add_part.toggleKit = function (part_type) {
     if (part_type.getValue() === 'KIT') {
         $('.kit-row').removeClass('hidden');
     } else {
         $('.kit-row').addClass('hidden');
     }
-}
+};
 
-function inputQty(target) {
+add_part.inputQty = function (target) {
     var element = $(target);
     var part_list = $('#part-list').dataTable().api();
     var row = part_list.row(element.parent());
@@ -19,9 +21,9 @@ function inputQty(target) {
             element.remove();
         }
     }
-}
+};
 
-function addItem() {
+add_part.addItem = function () {
     var part_list = $('#part-list').dataTable().api();
     var bill_of_materials = $('#bill-of-materials').dataTable();
     var rows = part_list.rows({selected: true}).data();
@@ -39,9 +41,9 @@ function addItem() {
         }
     });
     bill_of_materials.api().draw();
-}
+};
 
-function removeItem() {
+add_part.removeItem = function () {
     var bill_of_materials = $('#bill-of-materials').dataTable().api();
     var row = bill_of_materials.rows({selected: true});
 
@@ -50,14 +52,14 @@ function removeItem() {
             .remove()
             .draw();
     }
-}
+};
 
 $(function () {
     var part_type = $('#part_type').selectize()[0].selectize;
     part_type.on('change', function () {
-        toggleKit(part_type)
+        add_part.toggleKit(part_type)
     });
-    toggleKit(part_type);
+    add_part.toggleKit(part_type);
 
     var part_list = $('#part-list').DataTable({
         sDom: '<"header">frtip',
@@ -138,7 +140,7 @@ $(function () {
             var row_qty = element.text();
             element.html(
                 '<input id=' + row_id + ' class="form-control" type="text" ' +
-                'value="' + row_qty + '" onblur="inputQty(this)">'
+                'value="' + row_qty + '" onblur="add_part.inputQty(this)">'
             );
             var input = element.find('input');
             input.focus();
@@ -147,7 +149,7 @@ $(function () {
                 var keyCode = e.keyCode || e.which;
                 if (keyCode == 13) {
                     e.preventDefault();
-                    inputQty(e.target);
+                    add_part.inputQty(e.target);
                 }
             });
         }
@@ -161,4 +163,6 @@ $(function () {
             }
         }
     });
+
+    $()
 });
