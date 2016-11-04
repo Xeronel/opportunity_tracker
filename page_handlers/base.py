@@ -105,9 +105,12 @@ class BaseHandler(tornado.web.RequestHandler):
         return result
 
     @gen.coroutine
-    def render(self, template_name, **kwargs):
-        if 'user' not in kwargs:
-            kwargs['user'] = yield self.get_user()
-        elif kwargs['user'] is None:
-            kwargs['user'] = yield self.get_user()
-        super(BaseHandler, self).render(template_name, **kwargs)
+    def render(self, template_name, get_user=True, **kwargs):
+        if get_user:
+            if 'user' not in kwargs:
+                kwargs['user'] = yield self.get_user()
+            elif kwargs['user'] is None:
+                kwargs['user'] = yield self.get_user()
+            super(BaseHandler, self).render(template_name, **kwargs)
+        else:
+            super(BaseHandler, self).render(template_name, **kwargs)

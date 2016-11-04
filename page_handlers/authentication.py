@@ -4,11 +4,12 @@ from tornado import gen
 
 
 class Login(BaseHandler):
+    @gen.coroutine
     def get(self):
         if self.get_current_user():
             self.redirect('/dashboard')
         else:
-            self.render('login.html')
+            yield self.render('login.html', get_user=False)
 
     @gen.coroutine
     def post(self):
