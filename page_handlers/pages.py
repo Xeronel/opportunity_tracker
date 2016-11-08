@@ -1,5 +1,6 @@
 from .base import BaseHandler
 import tornado.web
+from tornado.web import MissingArgumentError
 import tornado.escape
 from tornado.escape import json_encode
 from tornado import gen
@@ -362,16 +363,43 @@ class Part(BaseHandler):
 
     @gen.coroutine
     def add_part(self):
-        part_number = self.get_argument('part_number')
-        description = self.get_argument('description')
-        unit_of_measure = self.get_argument('uom')
-        part_type = self.get_argument('part_type')
-        cost = self.get_argument('cost')
-        self.db.execute(
-            "INSERT INTO part (part_number, description, uom, part_type, cost) "
-            "VALUES (%s, %s, %s, %s, %s);",
-            [part_number.upper(), description, unit_of_measure, part_type, cost])
-        yield self.render_form()
+        try:
+            part_number = self.get_json_arg('part_number').upper()
+            description = self.get_json_arg('description').upper()
+            unit_of_measure = self.get_json_arg('uom').upper()
+            part_type = self.get_json_arg('part_type').upper()
+            cost = self.get_json_arg('cost')
+            self.db.execute(
+                "INSERT INTO part (part_number, description, uom, part_type, cost) "
+                "VALUES (%s, %s, %s, %s, %s);",
+                [part_number, description, unit_of_measure, part_type, cost])
+            if part_type == 'KIT':
+                kit_bom = self.get_json_arg('bill_of_materials')
+                if len(kit_bom) > 1000:
+                    raise ValueError
+
+                if len(kit_bom) > 1:
+                    values = ('(%s, %s, %s), ' * len(kit_bom))[:-2]
+                else:
+                    values = '(%s, , %s, %s)'
+
+                kit_items = []
+                for kit in kit_bom:
+                    kit_items.append(part_number)
+                    kit_items.append(kit['part_number'])
+                    kit_items.append(kit['qty'])
+
+                self.db.execute(
+                    "INSERT INTO kit_bom (kit_part_number, part_number, qty) "
+                    "VALUES %s;" % values,
+                    kit_items
+                )
+        except (TypeError, ValueError, KeyError, IndexError, MissingArgumentError):
+            self.send_error(400)
+        else:
+            self.clear()
+            self.set_status(200, 'OK')
+            self.finish('success')
 
     @gen.coroutine
     def modify_part(self):
