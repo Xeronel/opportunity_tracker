@@ -1,8 +1,8 @@
 import tornado.web
-from tornado.ioloop import IOLoop
 from tornado import gen
-from datetime import date, datetime
+from datetime import date
 from decimal import Decimal
+from tornado.escape import json_decode
 
 
 class User:
@@ -15,6 +15,10 @@ class User:
 
 
 class BaseHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, **kwargs):
+        super(BaseHandler, self).__init__(application, request, **kwargs)
+        self.json_args = {}
+
     def get_current_user(self):
         username = self.get_secure_cookie('username')
         uid = self.get_secure_cookie('uid')
@@ -102,6 +106,15 @@ class BaseHandler(tornado.web.RequestHandler):
                 result[description[i].name] = value
         else:
             result = {}
+        return result
+
+    def get_json_arg(self, name, default=None):
+        if not self.json_args:
+            # Raises TypeError or ValueError if the body is not properly formatted JSON
+            self.json_args = json_decode(self.request.body)
+        result = self.json_args.get(name, default)
+        if result is None:
+            raise tornado.web.MissingArgumentError
         return result
 
     @gen.coroutine
