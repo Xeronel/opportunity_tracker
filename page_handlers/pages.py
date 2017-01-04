@@ -7,7 +7,6 @@ from tornado import gen
 import pycountry
 import psycopg2
 from datetime import datetime
-from tornado.log import gen_log
 import traceback
 
 
