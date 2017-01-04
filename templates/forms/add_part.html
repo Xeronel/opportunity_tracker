@@ -1,5 +1,5 @@
 <div class="form-group">
-    <form role="form" id="add_part_form" method="post">
+    <form role="form" id="add-part-form" method="post">
         {% module xsrf_form_html() %}
         <div class="row">
             <div class="form-group col-lg-12">
@@ -63,7 +63,7 @@
         </div>
         <div class="row">
             <div class="form-group col-lg-12">
-                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                <button type="button" class="btn btn-primary pull-right" onclick="add_part.submit()">Submit</button>
                 <button type="reset" class="btn btn-inverse pull-right">Cancel</button>
             </div>
         </div>
