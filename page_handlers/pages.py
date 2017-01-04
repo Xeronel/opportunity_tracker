@@ -7,6 +7,8 @@ from tornado import gen
 import pycountry
 import psycopg2
 from datetime import datetime
+from tornado.log import gen_log
+import traceback
 
 
 class MainHandler(BaseHandler):
@@ -369,7 +371,7 @@ class Part(BaseHandler):
             unit_of_measure = self.get_json_arg('uom').upper()
             part_type = self.get_json_arg('part_type').upper()
             cost = self.get_json_arg('cost')
-            self.db.execute(
+            yield self.db.execute(
                 "INSERT INTO part (part_number, description, uom, part_type, cost) "
                 "VALUES (%s, %s, %s, %s, %s);",
                 [part_number, description, unit_of_measure, part_type, cost])
@@ -389,13 +391,16 @@ class Part(BaseHandler):
                     kit_items.append(kit['part_number'])
                     kit_items.append(kit['qty'])
 
-                self.db.execute(
+                yield self.db.execute(
                     "INSERT INTO kit_bom (kit_part_number, part_number, qty) "
                     "VALUES %s;" % values,
                     kit_items
                 )
         except (TypeError, ValueError, KeyError, IndexError, MissingArgumentError):
             self.send_error(400)
+        except psycopg2.IntegrityError as e:
+            self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
+            traceback.print_exc()
         else:
             self.clear()
             self.set_status(200, 'OK')
