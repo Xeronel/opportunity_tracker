@@ -54,6 +54,69 @@ add_part.removeItem = function () {
     }
 };
 
+add_part.serializeTable = function (element) {
+    var data = $(element).dataTable().api().data();
+    var result = [];
+
+    for (var i = 0; i < data.length; i++) {
+        result.push(data[i]);
+    }
+    return result;
+};
+
+add_part.serializeForm = function (element) {
+    var data = $(element).serializeArray();
+    var result = {};
+
+    for (var i = 0; i < data.length; i++) {
+        if (data[i].hasOwnProperty('name') && data[i].hasOwnProperty('value')) {
+            result[data[i].name] = data[i].value;
+        } else {
+            console.log(data[i] + ' missing name or value');
+        }
+    }
+    return result;
+};
+
+add_part.submit = function () {
+    var element = $("#add-part-form");
+    if (element.valid()) {
+        var data = add_part.serializeForm('#add-part-form');
+        data.bill_of_materials = add_part.serializeTable('#bill-of-materials');
+
+        if (data.part_type.toString() === 'KIT' && data.bill_of_materials.length < 0) {
+            $('#alert').html();
+            return
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: window.location.pathname,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-Xsrftoken', Cookies.get('_xsrf'));
+            },
+            success: function () {
+                var alertMessage = $('#alert-message');
+                if (alertMessage.length > 0) {
+                    alertMessage.remove();
+                }
+                element.trigger('reset');
+                location.reload();
+            },
+            error: function () {
+                $('#alert').html(
+                    '<div id="alert-message" class="alert alert-danger fade in" style="margin-top: -10px">' +
+                    '<a class="close" data-dismiss="alert">×</a>' +
+                    '<strong>Error!</strong> ' +
+                    'Unable to submit part! Make sure all field are filled out correctly.' +
+                    '</div>');
+            }
+        });
+    }
+};
+
 $(function () {
     var part_type = $('#part_type').selectize()[0].selectize;
     part_type.on('change', function () {
@@ -67,7 +130,7 @@ $(function () {
         order: [[1, 'asc']],
         select: {
             style: 'os',
-            selector: 'td:first-child'
+            selector: 'td:nth-child(-n+6)'
         },
         ajax: {
             url: api.v1.part.url.parts(),
@@ -110,7 +173,7 @@ $(function () {
         bLengthChange: false,
         select: {
             style: 'os',
-            selector: 'td:first-child'
+            selector: 'td:nth-child(-n+6)'
         },
         columnDefs: [{
             targets: 0,
@@ -155,14 +218,29 @@ $(function () {
         }
     });
 
-    $('#add_part_form').validate({
+    jQuery.validator.addMethod('kitBOM', function (value, element) {
+        var result = false;
+        var bom_rows = $('#bill-of-materials > tbody tr');
+
+        if (bom_rows.length === 1 && bom_rows[0].innerText !== 'No data available in table') {
+            result = true;
+        } else if (bom_rows.length > 1) {
+            result = true;
+        }
+
+        return this.optional(element) || result;
+    }, "Bill of materials can't be empty.");
+
+    $('#add-part-form').validate({
         rules: {
-            cost: {
+            "cost": {
                 required: true,
                 money: true
+            },
+            "part_type": {
+                required: true,
+                kitBOM: true
             }
         }
     });
-
-    $()
 });
