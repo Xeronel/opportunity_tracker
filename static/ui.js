@@ -60,7 +60,7 @@ $(function () {
         {id: '#employee', value: ''},
         {id: '#uom', value: ''},
         {id: '#part_type', value: ''},
-        {id: '#part_number', value: ''}
+        {id: '#part_number_dropdown', value: ''}
     ];
     for (var i = 0; i < dropdowns.length; i++) {
         var e = $(dropdowns[i].id);
