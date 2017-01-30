@@ -421,11 +421,13 @@ class Part(BaseHandler):
             user = yield self.get_user()
         uoms = yield self.get_uoms()
         part_types = yield self.get_part_types()
+        part_numbers = yield self.get_part_numbers()
 
         yield self.render('part.html',
                           form=self.form,
                           companies=companies,
                           part_types=part_types,
+                          part_numbers=part_numbers,
                           uoms=uoms,
                           user=user,
                           **kwargs)
