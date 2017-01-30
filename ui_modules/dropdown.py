@@ -50,3 +50,12 @@ class PartTypeDropdown(UIModule):
                                   classes=classes,
                                   label=label,
                                   required=required)
+
+
+class PartNumberDropdown(UIModule):
+    def render(self, part_numbers, required=True, label="Part Number:", classes="form-group"):
+        return self.render_string(get_path('part_number-dropdown.html'),
+                                  part_numbers=part_numbers,
+                                  label=label,
+                                  classes=classes,
+                                  required=required)
