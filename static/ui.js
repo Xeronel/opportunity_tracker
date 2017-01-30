@@ -59,7 +59,8 @@ $(function () {
         {id: '#country', value: 'US'},
         {id: '#employee', value: ''},
         {id: '#uom', value: ''},
-        {id: '#part_type', value: ''}
+        {id: '#part_type', value: ''},
+        {id: '#part_number', value: ''}
     ];
     for (var i = 0; i < dropdowns.length; i++) {
         var e = $(dropdowns[i].id);
