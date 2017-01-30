@@ -85,6 +85,12 @@ class BaseHandler(tornado.web.RequestHandler):
                                        "FROM part_type")
         return cursor.fetchall()
 
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get_part_numbers(self):
+        cursor = yield self.db.execute("SELECT * FROM part;")
+        return self.parse_query(cursor.fetchall(), cursor.description)
+
     @property
     def db(self):
         return self.application.database
