@@ -1,0 +1,10 @@
+<div class="form-group">
+    <form role="form" id="rem-part-form" method="post">
+        {% module xsrf_form_html() %}
+        <div class="row">
+            <div class="form-group col-lg-12">
+                {% module PartNumberDropdown(part_numbers) %}
+            </div>
+        </div>
+    </form>
+</div>
