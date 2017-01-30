@@ -26,6 +26,7 @@ def make_app():
          (r'/(add|manage)_project', Project),
          (r'/project/(\d+)/([a-zA-Z_\-]+)', ProjectRouter),
          (r'/project/(\d+)/([a-zA-Z_\-]+)/(.*)', ProjectRouter),
+         (r'/(wire_cutting)', Warehouse),
          (r'/get_notes/(.*)', GetNotes),
          (r'/get_contacts/(.*)', GetContacts),
          (r'/admin', Admin),

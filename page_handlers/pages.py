@@ -407,6 +407,16 @@ class Project(BaseHandler):
         )
 
 
+class Warehouse(BaseHandler):
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get(self, form):
+        user = yield self.get_user()
+        self.render('warehouse.html',
+                    form=form,
+                    user=user)
+
+
 class ProjectRouter(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated

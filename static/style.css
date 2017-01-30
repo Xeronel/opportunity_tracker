@@ -175,6 +175,7 @@ tbody > tr > td > a {
 }
 
 .panel-body {
+    background-color: white;
     margin-bottom: 10px;
 }
 
