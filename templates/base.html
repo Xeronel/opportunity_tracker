@@ -67,7 +67,7 @@
         <div class="panel" id="calendar-menu">
             <div class="panel-heading">
                 <span class="panel-title">
-                    <a href="calendar">
+                    <a href="/calendar">
                         <i class="fa fa-calendar"></i> Calendar
                     </a>
                 </span>
@@ -82,9 +82,21 @@
                 </span>
             </div>
             <div id="company-submenu" class="panel-collapse collapse">
-                <a id="add-company" href="add_company">Add Company</a>
-                <a id="mod-company" href="mod_company">Modify Company</a>
-                <a id="rem-company" href="rem_company">Remove Company</a>
+                <a id="add-company" href="/add_company">Add Company</a>
+                <a id="mod-company" href="/mod_company">Modify Company</a>
+                <a id="rem-company" href="/rem_company">Remove Company</a>
+            </div>
+        </div>
+        <div class="panel" id="warehouse-menu">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <a href="#warehouse-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
+                        <i class="fa fa-truck"></i> Warehouse
+                    </a>
+                </span>
+            </div>
+            <div id="warehouse-submenu" class="panel-collapse collapse">
+                <a id="wire-cutting" href="/wire_cutting">Wire Cutting</a>
             </div>
         </div>
         <div class="panel" id="contact-menu">
@@ -96,9 +108,9 @@
                 </span>
             </div>
             <div id="contact-submenu" class="panel-collapse collapse">
-                <a id="add-contact" href="add_contact">Add Contact</a>
-                <a id="mod-contact" href="mod_contact">Modify Contact</a>
-                <a id="rem-contact" href="rem_contact">Remove Contact</a>
+                <a id="add-contact" href="/add_contact">Add Contact</a>
+                <a id="mod-contact" href="/mod_contact">Modify Contact</a>
+                <a id="rem-contact" href="/rem_contact">Remove Contact</a>
             </div>
         </div>
         <div class="panel" id="notification-menu">
@@ -110,8 +122,8 @@
                 </span>
             </div>
             <div id="notification-submenu" class="panel-collapse collapse">
-                <a id="add-notification" href="add_notification">Add Notification</a>
-                <a id="view-notification" href="view_notification">View Notification</a>
+                <a id="add-notification" href="/add_notification">Add Notification</a>
+                <a id="view-notification" href="/view_notification">View Notification</a>
             </div>
         </div>
         <div class="panel" id="note-menu">
@@ -123,8 +135,8 @@
                 </span>
             </div>
             <div id="collapseNote" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                <a id="add-note" href="add_note">Add Note</a>
-                <a id="view-note" href="view_note">View Notes</a>
+                <a id="add-note" href="/add_note">Add Note</a>
+                <a id="view-note" href="/view_note">View Notes</a>
             </div>
         </div>
         <div class="panel" id="part-menu">
@@ -151,9 +163,9 @@
             </div>
             <div id="project-submenu" class="panel-collapse collapse">
                 {% if user.permissions['developer'] %}
-                <a id="add-project" href="add_project">Add Project</a>
+                <a id="add-project" href="/add_project">Add Project</a>
                 {% end %}
-                <a id="manage-project" href="manage_project">Manage Project</a>
+                <a id="manage-project" href="/manage_project">Manage Project</a>
             </div>
         </div>
         {% end %}

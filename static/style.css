@@ -6,7 +6,6 @@ tbody > tr > td > a {
     display: block;
     text-transform: capitalize;
     color: #0081BD;
-    font-weight: bold;
 }
 
 tbody > tr > td > input {
@@ -182,6 +181,7 @@ tbody > tr > td > input {
 }
 
 .panel-body {
+    background-color: white;
     margin-bottom: 10px;
 }
 
