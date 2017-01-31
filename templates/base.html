@@ -89,6 +89,7 @@
                 <a id="rem-company" href="/rem_company">Remove Company</a>
             </div>
         </div>
+        {% if user.permissions['developer'] %}
         <div class="panel" id="warehouse-menu">
             <div class="panel-heading">
                 <span class="panel-title">
@@ -101,6 +102,7 @@
                 <a id="wire-cutting" href="/wire_cutting">Wire Cutting</a>
             </div>
         </div>
+        {% end %}
         <div class="panel" id="contact-menu">
             <div class="panel-heading" role="tab">
                 <span class="panel-title">
