@@ -149,7 +149,9 @@
             </div>
             <div id="part-submenu" class="panel-collapse collapse">
                 <a id="add-part" href="add_part">Add Part</a>
+                {% if user.permissions['developer'] %}
                 <a id="mod-part" href="mod_part">Modify Part</a>
+                {% end %}
                 <a id="rem-part" href="rem_part">Remove Part</a>
             </div>
         </div>
