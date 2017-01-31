@@ -1,10 +1,13 @@
-<div class="form-group">
-    <form role="form" id="rem-part-form" method="post">
-        {% module xsrf_form_html() %}
-        <div class="row">
-            <div class="form-group col-lg-12">
-                {% module PartNumberDropdown(part_numbers) %}
-            </div>
+<form role="form" id="rem-part-form" method="post">
+    {% module xsrf_form_html() %}
+    <div class="row">
+        <div class="form-group col-lg-12">
+            {% module PartNumberDropdown(part_numbers) %}
         </div>
-    </form>
-</div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <button type="submit" class="btn btn-danger pull-right">Delete</button>
+        </div>
+    </div>
+</form>

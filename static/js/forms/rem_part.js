@@ -1,3 +1,3 @@
-/**
- * Created by davrei on 11/3/2016.
- */
+$(function () {
+    $('#rem-part-form').validate();
+});
