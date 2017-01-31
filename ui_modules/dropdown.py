@@ -32,3 +32,30 @@ class EmployeeDropdown(UIModule):
                                   classes=classes,
                                   label=label,
                                   required=required)
+
+
+class UOMDropdown(UIModule):
+    def render(self, uoms, required=True, label="Unit of Measure:", classes="form-group"):
+        return self.render_string(get_path('uom-dropdown.html'),
+                                  uoms=uoms,
+                                  classes=classes,
+                                  label=label,
+                                  required=required)
+
+
+class PartTypeDropdown(UIModule):
+    def render(self, part_types, required=True, label="Type:", classes="form-group"):
+        return self.render_string(get_path('part_type-dropdown.html'),
+                                  part_types=part_types,
+                                  classes=classes,
+                                  label=label,
+                                  required=required)
+
+
+class PartNumberDropdown(UIModule):
+    def render(self, part_numbers, required=True, label="Part Number:", classes="form-group"):
+        return self.render_string(get_path('part_number-dropdown.html'),
+                                  part_numbers=part_numbers,
+                                  label=label,
+                                  classes=classes,
+                                  required=required)

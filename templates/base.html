@@ -19,6 +19,8 @@
     <link rel="stylesheet" type="text/css"
           href="{{ static_url('bower/datatables-buttons/css/buttons.dataTables.css') }}">
     <link rel="stylesheet" type="text/css"
+          href="{{ static_url('bower/datatables-select/css/select.bootstrap.css') }}">
+    <link rel="stylesheet" type="text/css"
           href="{{ static_url('style.css') }}">
 </head>
 
@@ -62,6 +64,7 @@
                 </span>
             </div>
         </div>
+        {% if user.permissions['developer'] %}
         <div class="panel" id="calendar-menu">
             <div class="panel-heading">
                 <span class="panel-title">
@@ -71,6 +74,7 @@
                 </span>
             </div>
         </div>
+        {% end %}
         <div class="panel" id="company-menu">
             <div class="panel-heading">
                 <span class="panel-title">
@@ -85,6 +89,7 @@
                 <a id="rem-company" href="/rem_company">Remove Company</a>
             </div>
         </div>
+        {% if user.permissions['developer'] %}
         <div class="panel" id="warehouse-menu">
             <div class="panel-heading">
                 <span class="panel-title">
@@ -97,6 +102,7 @@
                 <a id="wire-cutting" href="/wire_cutting">Wire Cutting</a>
             </div>
         </div>
+        {% end %}
         <div class="panel" id="contact-menu">
             <div class="panel-heading" role="tab">
                 <span class="panel-title">
@@ -135,6 +141,22 @@
             <div id="collapseNote" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
                 <a id="add-note" href="/add_note">Add Note</a>
                 <a id="view-note" href="/view_note">View Notes</a>
+            </div>
+        </div>
+        <div class="panel" id="part-menu">
+            <div class="panel-heading">
+                <span class="panel-title">
+                    <a href="#part-submenu" class="collapsed" data-toggle="collapse" data-parent="#accordion">
+                        <i class="fa fa-wrench"></i> Part
+                    </a>
+                </span>
+            </div>
+            <div id="part-submenu" class="panel-collapse collapse">
+                <a id="add-part" href="add_part">Add Part</a>
+                {% if user.permissions['developer'] %}
+                <a id="mod-part" href="mod_part">Modify Part</a>
+                {% end %}
+                <a id="rem-part" href="rem_part">Remove Part</a>
             </div>
         </div>
         <div class="panel" id="project-menu">
@@ -181,12 +203,14 @@
     <script src="{{ static_url('bower/datatables/media/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ static_url('bower/datatables/media/js/dataTables.bootstrap.min.js') }}"></script>
     <script src="{{ static_url('bower/datatables-buttons/js/dataTables.buttons.js') }}"></script>
+    <script src="{{ static_url('bower/datatables-select/js/dataTables.select.js') }}"></script>
     <script src="{{ static_url('bower/jszip/dist/jszip.min.js') }}"></script>
     <script src="{{ static_url('bower/pdfmake/build/pdfmake.min.js') }}"></script>
     <script src="{{ static_url('bower/pdfmake/build/vfs_fonts.js') }}"></script>
     <script src="{{ static_url('bower/datatables-buttons/js/buttons.html5.js') }}"></script>
     <script src="{{ static_url('otrack.js') }}"></script>
     <script src="{{ static_url('ui.js') }}"></script>
+    {% block includes %}{% end %}
     <script>
         $(document).ready(
                 navSelector('{% block active %}{% end %}')

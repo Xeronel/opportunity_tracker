@@ -18,6 +18,39 @@ tinymce.init({
     }
 });
 
+// DataTables search function
+jQuery.fn.dataTableExt.oApi.fnFindCellRowIndexes = function ( oSettings, sSearch, iColumn )
+{
+    var
+        i,iLen, j, jLen, val,
+        aOut = [], aData,
+        columns = oSettings.aoColumns;
+
+    for ( i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
+    {
+        aData = oSettings.aoData[i]._aData;
+
+        if ( iColumn === undefined )
+        {
+            for ( j=0, jLen=columns.length ; j<jLen ; j++ )
+            {
+                val = this.fnGetData(i, j);
+
+                if ( val == sSearch )
+                {
+                    aOut.push( i );
+                }
+            }
+        }
+        else if (this.fnGetData(i, iColumn) == sSearch )
+        {
+            aOut.push( i );
+        }
+    }
+
+    return aOut;
+};
+
 // Validator
 $.validator.setDefaults({
     highlight: function (element) {
@@ -41,6 +74,11 @@ $.validator.setDefaults({
         ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
         ':hidden:not(textarea)']
 });
+$.validator.addMethod("money", function (value, element) {
+    var regex = '^\\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|0)?\\.[0-9]{2,3}$';
+    regex = new RegExp(regex);
+    return this.optional(element) || regex.test(value);
+}, "This field is required.<br>(Ex: $1,000.005)");
 
 // Date picker
 $(function () {
@@ -239,4 +277,21 @@ api.v1.employee.companies = function (employee_id, success) {
         success(data);
     };
     $.get(api.v1.employee.url() + employee_id + '/companies', callback);
+};
+
+// Parts
+api.v1.part = {};
+api.v1.part.url = function () {
+    return 'api/v1/part/';
+};
+api.v1.part.url.parts = function () {
+    return api.v1.part.url() + 'parts';
+};
+
+api.v1.part.parts = function (success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.part.url.parts(), callback);
 };

@@ -1,6 +1,8 @@
 import tornado.web
 from tornado import gen
-from datetime import date, datetime
+from datetime import date
+from decimal import Decimal
+from tornado.escape import json_decode
 
 
 class User:
@@ -13,6 +15,10 @@ class User:
 
 
 class BaseHandler(tornado.web.RequestHandler):
+    def __init__(self, application, request, **kwargs):
+        super(BaseHandler, self).__init__(application, request, **kwargs)
+        self.json_args = {}
+
     def get_current_user(self):
         username = self.get_secure_cookie('username')
         uid = self.get_secure_cookie('uid')
@@ -30,7 +36,7 @@ class BaseHandler(tornado.web.RequestHandler):
                                        "WHERE (id = %(uid)s);", {'uid': uid})
         uid, first_name, last_name, email = cursor.fetchone()
         permissions = yield self.get_permissions()
-        return User(uid, first_name, last_name, email, permissions)
+        raise gen.Return(User(uid, first_name, last_name, email, permissions))
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -65,11 +71,31 @@ class BaseHandler(tornado.web.RequestHandler):
             cursor = yield self.db.execute("SELECT id, name FROM company;")
         return cursor.fetchall()
 
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get_uoms(self):
+        cursor = yield self.db.execute("SELECT uom "
+                                       "FROM unit_of_measure")
+        return cursor.fetchall()
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get_part_types(self):
+        cursor = yield self.db.execute("SELECT part_type "
+                                       "FROM part_type")
+        return cursor.fetchall()
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get_part_numbers(self):
+        cursor = yield self.db.execute("SELECT * FROM part;")
+        return self.parse_query(cursor.fetchall(), cursor.description)
+
     @property
     def db(self):
-        return self.application.db
+        return self.application.database
 
-    def parse_query(self, data, description):
+    def parse_query(self, data, description, convert_decimal=True):
         if type(data) == list:
             result = []
             for value in data:
@@ -79,9 +105,31 @@ class BaseHandler(tornado.web.RequestHandler):
             for i in range(len(description)):
                 if type(data[i]) == date:
                     value = data[i].strftime('%Y-%m-%d')
+                elif type(data[i]) == Decimal and convert_decimal:
+                    value = str(data[i])
                 else:
                     value = data[i]
                 result[description[i].name] = value
         else:
             result = {}
         return result
+
+    def get_json_arg(self, name, default=None):
+        if not self.json_args:
+            # Raises TypeError or ValueError if the body is not properly formatted JSON
+            self.json_args = json_decode(self.request.body)
+        result = self.json_args.get(name, default)
+        if result is None:
+            raise tornado.web.MissingArgumentError
+        return result
+
+    @gen.coroutine
+    def render(self, template_name, get_user=True, **kwargs):
+        if get_user:
+            if 'user' not in kwargs:
+                kwargs['user'] = yield self.get_user()
+            elif kwargs['user'] is None:
+                kwargs['user'] = yield self.get_user()
+            super(BaseHandler, self).render(template_name, **kwargs)
+        else:
+            super(BaseHandler, self).render(template_name, **kwargs)

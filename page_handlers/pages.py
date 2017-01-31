@@ -1,11 +1,13 @@
 from .base import BaseHandler
 import tornado.web
+from tornado.web import MissingArgumentError
 import tornado.escape
 from tornado.escape import json_encode
 from tornado import gen
 import pycountry
 import psycopg2
 from datetime import datetime
+import traceback
 
 
 class MainHandler(BaseHandler):
@@ -18,46 +20,39 @@ class Dashboard(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        user_info = yield self.get_user()
-        self.render('dashboard.html', user=user_info)
+        yield self.render('dashboard.html')
 
 
 class Calendar(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        user_info = yield self.get_user()
-        self.render('calendar.html', user=user_info)
+        yield self.render('calendar.html')
 
 
 class Industry(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        user_info = yield self.get_user()
-        self.render('industry.html', user=user_info)
+        yield self.render('industry.html')
 
     @gen.coroutine
     @tornado.web.authenticated
     def post(self):
-        user_info = yield self.get_user()
-        self.render('industry.html', user=user_info)
-        print(self.get_argument('industry'))
+        yield self.render('industry.html')
 
 
 class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        user_info = yield self.get_user()
         employees = yield self.get_employees()
         companies = yield self.get_companies()
-        self.render('company.html',
-                    countries=pycountry.countries,
-                    user=user_info,
-                    employees=employees,
-                    companies=companies,
-                    form=form)
+        yield self.render('company.html',
+                          countries=pycountry.countries,
+                          employees=employees,
+                          companies=companies,
+                          form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -150,34 +145,30 @@ class Company(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def render_form(self, form=None, user_info=None, employees=None, companies=None):
+    def render_form(self, user_info=None, form=None, employees=None, companies=None):
         if not form:
             form = self.request.uri.strip('/')[:3]
-        if not user_info:
-            user_info = yield self.get_user()
         if not employees:
             employees = yield self.get_employees()
         if not companies:
             companies = yield self.get_companies()
 
-        self.render('company.html',
-                    countries=pycountry.countries,
-                    user=user_info,
-                    employees=employees,
-                    companies=companies,
-                    form=form)
+        yield self.render('company.html',
+                          countries=pycountry.countries,
+                          employees=employees,
+                          companies=companies,
+                          user=user_info,
+                          form=form)
 
 
 class Contact(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        user_info = yield self.get_user()
         companies = yield self.get_companies()
-        self.render('contact.html',
-                    companies=companies,
-                    user=user_info,
-                    form=form)
+        yield self.render('contact.html',
+                          companies=companies,
+                          form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -244,37 +235,31 @@ class Contact(BaseHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def render_form(self, form=None, user_info=None, companies=None):
+    def render_form(self, form=None, companies=None):
         if not form:
             form = self.request.uri.strip('/')[:3]
-        if not user_info:
-            user_info = yield self.get_user()
         if not companies:
             companies = yield self.get_companies()
 
-        self.render('contact.html',
-                    companies=companies,
-                    user=user_info,
-                    form=form)
+        yield self.render('contact.html',
+                          companies=companies,
+                          form=form)
 
 
 class Notification(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        user_info = yield self.get_user()
         companies = yield self.get_companies()
         employees = yield self.get_employees()
-        self.render('notification.html',
-                    companies=companies,
-                    employees=employees,
-                    user=user_info,
-                    form=form)
+        yield self.render('notification.html',
+                          companies=companies,
+                          employees=employees,
+                          form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
     def post(self, form):
-        user_info = yield self.get_user()
         companies = yield self.get_companies()
         company = self.get_argument('company')
         notify_date = datetime.strptime(self.get_argument('date'), '%m-%d-%Y')
@@ -283,7 +268,7 @@ class Notification(BaseHandler):
         yield self.db.execute("INSERT INTO notification (company, notify_date, note, employee) "
                               "VALUES (%s, %s, %s, %s)",
                               [company, notify_date.strftime('%Y-%m-%d'), note, uid])
-        self.render('notification.html', companies=companies, user=user_info)
+        yield self.render('notification.html', companies=companies)
 
 
 class Note(BaseHandler):
@@ -293,14 +278,12 @@ class Note(BaseHandler):
     @tornado.web.authenticated
     def get(self, form):
         self.form = form
-        user_info = yield self.get_user()
         companies = yield self.get_companies()
         employees = yield self.get_employees()
-        self.render('note.html',
-                    companies=companies,
-                    employees=employees,
-                    user=user_info,
-                    form=form)
+        yield self.render('note.html',
+                          companies=companies,
+                          employees=employees,
+                          form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -310,12 +293,10 @@ class Note(BaseHandler):
         if form in forms:
             yield forms[form]()
         else:
-            user_info = yield self.get_user()
             companies = yield self.get_companies()
-            self.render('note.html',
-                        companies=companies,
-                        user=user_info,
-                        form=form)
+            yield self.render('note.html',
+                              companies=companies,
+                              form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -352,18 +333,112 @@ class Note(BaseHandler):
             companies = yield self.get_companies()
         if user is None:
             user = yield self.get_user()
-        self.render('note.html',
-                    companies=companies,
-                    user=user,
-                    form=self.form,
-                    **kwargs)
+        yield self.render('note.html',
+                          companies=companies,
+                          user=user,
+                          form=self.form,
+                          **kwargs)
+
+
+class Part(BaseHandler):
+    form = None
+
+    @tornado.gen.coroutine
+    @tornado.web.authenticated
+    def get(self, form):
+        self.form = form
+        yield self.render_form()
+
+    @tornado.gen.coroutine
+    @tornado.web.authenticated
+    def post(self, form):
+        self.form = form
+        forms = {'add': self.add_part,
+                 'mod': self.modify_part,
+                 'rem': self.remove_part}
+
+        if form in forms:
+            yield forms[form]()
+        else:
+            yield self.render('part.html')
+
+    @gen.coroutine
+    def add_part(self):
+        try:
+            part_number = self.get_json_arg('part_number').upper()
+            description = self.get_json_arg('description').upper()
+            unit_of_measure = self.get_json_arg('uom').upper()
+            part_type = self.get_json_arg('part_type').upper()
+            cost = self.get_json_arg('cost')
+            yield self.db.execute(
+                "INSERT INTO part (part_number, description, uom, part_type, cost) "
+                "VALUES (%s, %s, %s, %s, %s);",
+                [part_number, description, unit_of_measure, part_type, cost])
+            if part_type == 'KIT':
+                kit_bom = self.get_json_arg('bill_of_materials')
+                if len(kit_bom) > 1000:
+                    raise ValueError
+
+                if len(kit_bom) > 1:
+                    values = ('(%s, %s, %s), ' * len(kit_bom))[:-2]
+                else:
+                    values = '(%s, %s, %s)'
+
+                kit_items = []
+                for kit in kit_bom:
+                    kit_items.append(part_number)
+                    kit_items.append(kit['part_number'])
+                    kit_items.append(kit['qty'])
+
+                yield self.db.execute(
+                    "INSERT INTO kit_bom (kit_part_number, part_number, qty) "
+                    "VALUES %s;" % values,
+                    kit_items
+                )
+        except (TypeError, ValueError, KeyError, IndexError, MissingArgumentError):
+            self.send_error(400)
+        except psycopg2.IntegrityError as e:
+            self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
+            traceback.print_exc()
+        else:
+            self.clear()
+            self.set_status(200, 'OK')
+            self.finish('success')
+
+    @gen.coroutine
+    def modify_part(self):
+        yield self.render_form()
+
+    @gen.coroutine
+    def remove_part(self):
+        part_number = self.get_argument('part_number')
+        yield self.db.execute("DELETE FROM part WHERE part_number = %s", [part_number])
+        yield self.render_form()
+
+    @gen.coroutine
+    def render_form(self, companies=None, user=None, **kwargs):
+        if companies is None:
+            companies = yield self.get_companies()
+        if user is None:
+            user = yield self.get_user()
+        uoms = yield self.get_uoms()
+        part_types = yield self.get_part_types()
+        part_numbers = yield self.get_part_numbers()
+
+        yield self.render('part.html',
+                          form=self.form,
+                          companies=companies,
+                          part_types=part_types,
+                          part_numbers=part_numbers,
+                          uoms=uoms,
+                          user=user,
+                          **kwargs)
 
 
 class Project(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        user_info = yield self.get_user()
         if form == 'manage':
             cursor = yield self.db.execute(
                 "SELECT DISTINCT company.id, company.name "
@@ -373,10 +448,9 @@ class Project(BaseHandler):
             companies = cursor.fetchall()
         else:
             companies = yield self.get_companies()
-        self.render('project.html',
-                    companies=companies,
-                    user=user_info,
-                    form=form)
+        yield self.render('project.html',
+                          companies=companies,
+                          form=form)
 
     @gen.coroutine
     @tornado.web.authenticated
@@ -385,12 +459,10 @@ class Project(BaseHandler):
         companies = yield self.get_companies()
         if form in forms:
             yield forms[form]()
-        user_info = yield self.get_user()
 
-        self.render('project.html',
-                    companies=companies,
-                    user=user_info,
-                    form=form)
+        yield self.render('project.html',
+                          companies=companies,
+                          form=form)
 
     @gen.coroutine
     def add_project(self):
@@ -422,10 +494,8 @@ class ProjectRouter(BaseHandler):
     @tornado.web.authenticated
     def get(self, company, project, form=None):
         try:
-            user_info = yield self.get_user()
-            self.render('projects/%s/%s/%s.html' % (company, project, project),
-                        user=user_info,
-                        form=form)
+            yield self.render('projects/%s/%s/%s.html' % (company, project, project),
+                              form=form)
         except FileNotFoundError:
             self.send_error(404)
 
@@ -446,10 +516,7 @@ class GetNotes(BaseHandler):
                                        [company])
         notes = cursor.fetchall()
         if len(notes) > 0:
-            user_info = yield self.get_user()
-            self.render('get_notes.html',
-                        notes=notes,
-                        user=user_info)
+            yield self.render('get_notes.html', notes=notes)
         else:
             self.write('')
 
@@ -482,8 +549,7 @@ class Profile(BaseHandler):
     @tornado.gen.coroutine
     @tornado.web.authenticated
     def get(self):
-        user_info = yield self.get_user()
-        self.render('profile.html', user=user_info)
+        yield self.render('profile.html')
 
     @tornado.gen.coroutine
     @tornado.web.authenticated

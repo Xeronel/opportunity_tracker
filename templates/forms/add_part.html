@@ -1,0 +1,71 @@
+<div class="form-group">
+    <form role="form" id="add-part-form" method="post">
+        {% module xsrf_form_html() %}
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <label for="part_number">Part Number:</label>
+                <input id="part_number" name="part_number" type="text"
+                       class="form-control" style="text-transform:uppercase" required>
+            </div>
+        </div>
+        <div class="row">
+            {% module PartTypeDropdown(part_types, classes='form-group col-md-4 col-lg-4') %}
+            {% module UOMDropdown(uoms, classes='form-group col-md-4 col-lg-4') %}
+            <div class="form-group col-md-4 col-lg-4">
+                <label for="cost">Cost: </label>
+                <input id="cost" name="cost" type="text" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="row hidden kit-row">
+            <div class="form-group col-lg-12">
+                <table class="table table-condensed" id="bill-of-materials" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Part Number</th>
+                        <th>Description</th>
+                        <th>UOM</th>
+                        <th>Cost</th>
+                        <th>Type</th>
+                        <th>Qty</th>
+                    </tr>
+                    </thead>
+                </table>
+                <button type="button" class="btn btn-primary pull-right" onclick="add_part.removeItem()">Remove</button>
+            </div>
+        </div>
+
+        <div class="row hidden kit-row">
+            <div class="form-group col-lg-12">
+                <table class="table table-condensed" id="part-list" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Part Number</th>
+                        <th>Description</th>
+                        <th>UOM</th>
+                        <th>Cost</th>
+                        <th>Type</th>
+                        <th>Qty</th>
+                    </tr>
+                    </thead>
+                </table>
+                <button type="button" onclick="add_part.addItem()" class="btn btn-primary pull-right">Add</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <label for="description">Description:</label>
+                <textarea class="form-control" rows="5" id="description" name="description" required></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <button type="button" class="btn btn-primary pull-right" onclick="add_part.submit()">Submit</button>
+                <button type="reset" class="btn btn-inverse pull-right">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
