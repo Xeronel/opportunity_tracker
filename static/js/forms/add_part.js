@@ -221,8 +221,11 @@ $(function () {
     jQuery.validator.addMethod('kitBOM', function (value, element) {
         var result = false;
         var bom_rows = $('#bill-of-materials > tbody tr');
+        var is_kit = $('#part_type').selectize()[0].selectize.getValue() === 'KIT';
 
-        if (bom_rows.length === 1 && bom_rows[0].innerText !== 'No data available in table') {
+        if (!is_kit) {
+            result = true;
+        } else if (bom_rows.length === 1 && bom_rows[0].innerText !== 'No data available in table') {
             result = true;
         } else if (bom_rows.length > 1) {
             result = true;
