@@ -382,7 +382,7 @@ class Part(BaseHandler):
                 if len(kit_bom) > 1:
                     values = ('(%s, %s, %s), ' * len(kit_bom))[:-2]
                 else:
-                    values = '(%s, , %s, %s)'
+                    values = '(%s, %s, %s)'
 
                 kit_items = []
                 for kit in kit_bom:
@@ -411,6 +411,8 @@ class Part(BaseHandler):
 
     @gen.coroutine
     def remove_part(self):
+        part_number = self.get_argument('part_number')
+        yield self.db.execute("DELETE FROM part WHERE part_number = %s", [part_number])
         yield self.render_form()
 
     @gen.coroutine
