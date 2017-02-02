@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.2
--- Dumped by pg_dump version 9.5.2
+-- Dumped from database version 9.5.1
+-- Dumped by pg_dump version 9.5.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -14,13 +14,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: postgres; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON DATABASE postgres IS 'default administrative connection database';
-
-
---
 -- Name: opportunity_tracker; Type: SCHEMA; Schema: -; Owner: postgres
 --
 
@@ -28,48 +21,6 @@ CREATE SCHEMA opportunity_tracker;
 
 
 ALTER SCHEMA opportunity_tracker OWNER TO postgres;
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
--- Name: adminpack; Type: EXTENSION; Schema: -; Owner:
---
-
-CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner:
---
-
-COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
-
-
---
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner:
---
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA opportunity_tracker;
-
-
---
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner:
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
 
 SET search_path = opportunity_tracker, pg_catalog;
 
@@ -201,37 +152,17 @@ ALTER SEQUENCE employee_id_seq OWNED BY employee.id;
 
 
 --
--- Name: industry; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
+-- Name: kit_bom; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
-CREATE TABLE industry (
-    id integer NOT NULL,
-    name character varying(80)
+CREATE TABLE kit_bom (
+    kit_part_number text NOT NULL,
+    part_number text NOT NULL,
+    qty integer NOT NULL
 );
 
 
-ALTER TABLE industry OWNER TO postgres;
-
---
--- Name: industry_id_seq; Type: SEQUENCE; Schema: opportunity_tracker; Owner: postgres
---
-
-CREATE SEQUENCE industry_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE industry_id_seq OWNER TO postgres;
-
---
--- Name: industry_id_seq; Type: SEQUENCE OWNED BY; Schema: opportunity_tracker; Owner: postgres
---
-
-ALTER SEQUENCE industry_id_seq OWNED BY industry.id;
-
+ALTER TABLE kit_bom OWNER TO postgres;
 
 --
 -- Name: location; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
@@ -351,7 +282,6 @@ ALTER SEQUENCE notification_id_seq OWNED BY notification.id;
 --
 
 CREATE TABLE part (
-    id integer NOT NULL,
     part_number text NOT NULL,
     description text,
     uom text NOT NULL,
@@ -367,27 +297,6 @@ ALTER TABLE part OWNER TO postgres;
 --
 
 COMMENT ON COLUMN part.uom IS 'unit of measure';
-
-
---
--- Name: part_id_seq; Type: SEQUENCE; Schema: opportunity_tracker; Owner: postgres
---
-
-CREATE SEQUENCE part_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE part_id_seq OWNER TO postgres;
-
---
--- Name: part_id_seq; Type: SEQUENCE OWNED BY; Schema: opportunity_tracker; Owner: postgres
---
-
-ALTER SEQUENCE part_id_seq OWNED BY part.id;
 
 
 --
@@ -520,13 +429,6 @@ ALTER TABLE ONLY employee ALTER COLUMN id SET DEFAULT nextval('employee_id_seq':
 -- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
-ALTER TABLE ONLY industry ALTER COLUMN id SET DEFAULT nextval('industry_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
---
-
 ALTER TABLE ONLY location ALTER COLUMN id SET DEFAULT nextval('location_id_seq'::regclass);
 
 
@@ -542,13 +444,6 @@ ALTER TABLE ONLY notes ALTER COLUMN id SET DEFAULT nextval('notes_id_seq'::regcl
 --
 
 ALTER TABLE ONLY notification ALTER COLUMN id SET DEFAULT nextval('notification_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
---
-
-ALTER TABLE ONLY part ALTER COLUMN id SET DEFAULT nextval('part_id_seq'::regclass);
 
 
 --
@@ -607,19 +502,11 @@ ALTER TABLE ONLY notification
 
 
 --
--- Name: industry_name_key; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: kit_bom_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
-ALTER TABLE ONLY industry
-    ADD CONSTRAINT industry_name_key UNIQUE (name);
-
-
---
--- Name: industry_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
---
-
-ALTER TABLE ONLY industry
-    ADD CONSTRAINT industry_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY kit_bom
+    ADD CONSTRAINT kit_bom_pkey PRIMARY KEY (kit_part_number, part_number);
 
 
 --
@@ -643,7 +530,7 @@ ALTER TABLE ONLY notes
 --
 
 ALTER TABLE ONLY part
-    ADD CONSTRAINT part_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT part_pkey PRIMARY KEY (part_number);
 
 
 --
@@ -738,6 +625,20 @@ CREATE INDEX fki_employee_fk ON company USING btree (employee);
 
 
 --
+-- Name: fki_kit_bom_part_number; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE INDEX fki_kit_bom_part_number ON kit_bom USING btree (part_number);
+
+
+--
+-- Name: fki_kit_part_number; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE INDEX fki_kit_part_number ON kit_bom USING btree (kit_part_number);
+
+
+--
 -- Name: fki_part_part_type_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
 --
 
@@ -749,6 +650,20 @@ CREATE INDEX fki_part_part_type_fk ON part USING btree (part_type);
 --
 
 CREATE INDEX fki_part_uom_fk ON part USING btree (uom);
+
+
+--
+-- Name: fki_price_cost_type_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE INDEX fki_price_cost_type_fk ON price USING btree (cost_type);
+
+
+--
+-- Name: fki_price_part_number_fk; Type: INDEX; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE INDEX fki_price_part_number_fk ON price USING btree (part_number);
 
 
 --
@@ -831,6 +746,22 @@ ALTER TABLE ONLY permissions
 
 
 --
+-- Name: kit_bom_kit_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY kit_bom
+    ADD CONSTRAINT kit_bom_kit_part_number_fkey FOREIGN KEY (kit_part_number) REFERENCES part(part_number) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: kit_bom_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY kit_bom
+    ADD CONSTRAINT kit_bom_part_number_fkey FOREIGN KEY (part_number) REFERENCES part(part_number);
+
+
+--
 -- Name: part_part_type_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
@@ -858,8 +789,24 @@ ALTER TABLE ONLY price
 -- Name: price_cost_type_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
-ALTER TABLE ONLY cost_type
-    ADD CONSTRAINT price_cost_type_fk FOREIGN KEY (cost_type) REFERENCES cost_type(cost_type);
+ALTER TABLE ONLY price
+    ADD CONSTRAINT price_cost_type_fk FOREIGN KEY (cost_type) REFERENCES cost_type(cost_type) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: price_part_number_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY price
+    ADD CONSTRAINT price_part_number_fk FOREIGN KEY (part_number) REFERENCES part(part_number) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: project_company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY project
+    ADD CONSTRAINT project_company_fk FOREIGN KEY (company) REFERENCES company(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
