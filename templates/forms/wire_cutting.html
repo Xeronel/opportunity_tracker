@@ -2,10 +2,41 @@
     <form role="form" id="wire-cutting-form" method="post">
         {% module xsrf_form_html() %}
         <div class="row">
+            {% module PartNumberDropdown(parts, classes='form-group col-lg-12') %}
+        </div>
+        <div class="row">
             <div class="form-group col-lg-12">
-                <label for="reels">Reels:</label>
-
+                <table class="table table-condensed" id="reels" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Part Number</th>
+                        <th>Description</th>
+                        <th>UOM</th>
+                        <th>Qty</th>
+                    </tr>
+                    </thead>
+                </table>
+                <button type="button" class="btn btn-primary pull-right" onclick="add_part.removeItem()">Remove</button>
             </div>
         </div>
+
+        <div class="row">
+            <div class="form-group col-lg-12">
+                <table class="table table-condensed" id="cuts" width="100%">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Part Number</th>
+                        <th>Description</th>
+                        <th>UOM</th>
+                        <th>Qty</th>
+                    </tr>
+                    </thead>
+                </table>
+                <button type="button" class="btn btn-primary pull-right" onclick="add_part.removeItem()">Remove</button>
+            </div>
+        </div>
+
     </form>
 </div>

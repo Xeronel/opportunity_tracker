@@ -87,8 +87,12 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @gen.coroutine
     @tornado.web.authenticated
-    def get_part_numbers(self):
-        cursor = yield self.db.execute("SELECT * FROM part;")
+    def get_part_numbers(self, part_type=None):
+        if part_type:
+            cursor = yield self.db.execute("SELECT * FROM part WHERE part_type = %s;",
+                                           [part_type])
+        else:
+            cursor = yield self.db.execute("SELECT * FROM part;")
         return self.parse_query(cursor.fetchall(), cursor.description)
 
     @property
