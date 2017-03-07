@@ -171,6 +171,7 @@ $(function () {
     $('#bill-of-materials').DataTable({
         sDom: '<"header">frtip',
         bLengthChange: false,
+        order: [[1, 'asc']],
         select: {
             style: 'os',
             selector: 'td:nth-child(-n+6)'
