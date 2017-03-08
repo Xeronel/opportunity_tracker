@@ -1,7 +1,7 @@
 <div class="{{ classes }}">
-    <label for="part_number">{{ label }}</label>
+    <label for={{ name }}>{{ label }}</label>
     <!-- Placeholder is used by Selectize -->
-    <select id="part_number_dropdown" name="part_number" class="form-control" placeholder="Select an item..."
+    <select id="{{ uid }}" name="{{ name }}" class="form-control" placeholder="Select an item..."
             {% if required %}required="required"{% end %}>
         <option value=""></option>
         {% for part_number in part_numbers %}

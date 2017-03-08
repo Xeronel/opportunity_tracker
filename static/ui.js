@@ -73,6 +73,11 @@ $(function () {
         }
     }
 
+    // Selectize item's with the ui-selectize class
+    $('.ui-selectize > select').each(function (idx, e) {
+        $(e).selectize(options);
+    });
+
     // Contact dropdown
     var contact = $('#contact');
     if (contact.length > 0) {
