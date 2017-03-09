@@ -288,10 +288,22 @@ api.v1.part.url.parts = function () {
     return api.v1.part.url() + 'parts';
 };
 
+api.v1.part.url.components = function (part_number) {
+    return api.v1.part.url() + part_number + '/components';
+};
+
 api.v1.part.parts = function (success) {
     var callback = function (data) {
         data = JSON.parse(data);
         success(data);
     };
     $.get(api.v1.part.url.parts(), callback);
+};
+
+api.v1.part.components = function (part_number, success) {
+    var callback = function (data) {
+        data = JSON.parse(data);
+        success(data);
+    };
+    $.get(api.v1.part.url.components(part_number), callback);
 };

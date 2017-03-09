@@ -303,7 +303,8 @@ class Part(ApiBase):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, arg, proc=''):
-        rpc = {'': self.part}
+        rpc = {'': self.part,
+               'components': self.components}
 
         if proc in rpc:
             result = yield rpc[proc](arg)
@@ -324,3 +325,9 @@ class Part(ApiBase):
             return self.parse_query(cursor.fetchone(), cursor.description)
         else:
             return {}
+
+    @gen.coroutine
+    def components(self, part_number):
+        if part_number:
+            cursor = yield self.db.execute("SELECT * FROM kit_bom WHERE kit_part_number = %s", [part_number])
+            return self.parse_query(cursor.fetchall(), cursor.description)
