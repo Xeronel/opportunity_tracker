@@ -484,9 +484,11 @@ class Warehouse(BaseHandler):
     @tornado.web.authenticated
     def get(self, form):
         user = yield self.get_user()
-        parts = yield self.get_part_numbers()
+        reels = yield self.get_part_numbers('ITEM')
+        cuts = yield self.get_part_numbers('KIT')
         self.render('warehouse.html',
-                    parts=parts,
+                    reels=reels,
+                    cuts=cuts,
                     form=form,
                     user=user)
 
