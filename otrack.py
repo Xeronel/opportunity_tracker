@@ -58,6 +58,7 @@ def make_app():
          (r'/(wire_cutting)', Warehouse),
          (r'/get_notes/(.*)', GetNotes),
          (r'/get_contacts/(.*)', GetContacts),
+         (r'/print', Print),
          (r'/admin', Admin),
          (r'/clear_company', ClearCompany),
          (r'/profile', Profile),

@@ -8,6 +8,8 @@ import pycountry
 import psycopg2
 from datetime import datetime
 import traceback
+from subprocess import call
+from os import devnull
 
 
 class MainHandler(BaseHandler):
@@ -578,3 +580,22 @@ class Profile(BaseHandler):
                 self.send_error(422)
         else:
             self.send_error(401)
+
+
+class Print(BaseHandler):
+    @gen.coroutine
+    @tornado.web.authenticated
+    def get(self):
+        yield self.render('print.html')
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def post(self):
+        qty = self.get_argument('qty')
+        top_left = self.get_argument('topleft', '')
+        left_center = self.get_argument('leftcenter', '')
+        bottom_left = self.get_argument('bottomleft', '')
+        call(['/usr/bin/python2', '/opt/opportunity_tracker/print_label.py', top_left, left_center, bottom_left, qty],
+             stdout=open(devnull, 'w'),
+             close_fds=True)
+        yield self.render('print.html')
