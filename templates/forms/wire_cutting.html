@@ -42,10 +42,9 @@
                     </tr>
                     </thead>
                 </table>
-                <button type="button" class="btn btn-primary pull-right" onclick="wire_cutting.removeItem()">Remove</button>
+                <button type="button" class="btn btn-primary pull-right" onclick="wire_cutting.remove_item('#reels')">Remove</button>
             </div>
         </div>
-
         <div class="form-group">
             <div class="row">
                 {% module PartNumberDropdown(
@@ -82,7 +81,7 @@
                     </tr>
                     </thead>
                 </table>
-                <button type="button" class="btn btn-primary pull-right" onclick="wire_cutting.removeItem()">Remove</button>
+                <button type="button" class="btn btn-primary pull-right" onclick="wire_cutting.remove_item('#cuts')">Remove</button>
             </div>
         </div>
     </form>

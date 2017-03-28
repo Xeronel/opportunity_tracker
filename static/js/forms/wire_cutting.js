@@ -8,7 +8,7 @@ wire_cutting.add_reel = function () {
 
     var new_row = {
         part_number: part,
-        qty: parseInt(qty),
+        qty: parseInt(qty) || 1,
         length: len
     };
 
@@ -17,7 +17,7 @@ wire_cutting.add_reel = function () {
         // If the part and length is the same, add to the qty
         if (row.hasOwnProperty('part_number') &&
             row.part_number === part && row.length === len) {
-            new_row.qty += parseInt(row.qty);
+            new_row.qty += parseInt(row.qty) || 0;
             this.remove();
         }
     });
@@ -31,7 +31,7 @@ wire_cutting.add_reel = function () {
 wire_cutting.add_cut = function () {
     var table = $('#cuts').dataTable();
     var part = $('#cut_partnumber').selectize()[0].selectize.getValue();
-    var qty = parseInt($('#cut_qty').val());
+    var qty = parseInt($('#cut_qty').val()) || 1;
     var new_row = {
         part_number: part,
         qty: qty,
@@ -49,7 +49,7 @@ wire_cutting.add_cut = function () {
             var row = this.data();
             // If the part is the same, add to the qty
             if (row.hasOwnProperty('part_number') && row.part_number === part) {
-                new_row.qty += parseInt(row.qty);
+                new_row.qty += parseInt(row.qty) || 0;
                 this.remove();
             }
         });
@@ -59,6 +59,16 @@ wire_cutting.add_cut = function () {
             table.api().draw();
         }
     });
+};
+
+wire_cutting.remove_item = function (e) {
+    var table = $(e).dataTable().api();
+    var rows = table.rows({selected: true});
+    if (rows.count() > 0) {
+        rows
+            .remove()
+            .draw();
+    }
 };
 
 $(function () {
