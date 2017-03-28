@@ -94,4 +94,19 @@ $(function () {
         $('<label class="pull-left" style="font-weight: 700">' + e.title + '</label>')
             .prependTo(e.id + "_filter");
     });
+
+    var inputs = [
+        {id: '#reel_qty', func: wire_cutting.add_reel},
+        {id: '#reel_len', func: wire_cutting.add_reel},
+        {id: '#cut_qty', func: wire_cutting.add_cut}
+    ];
+
+    // Bind functions to enter key
+    $(inputs).each(function (idx, e) {
+        $(e.id).keyup(function (event) {
+            if (event.keyCode === 13) {
+                e.func();
+            }
+        });
+    });
 });
