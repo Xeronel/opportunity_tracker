@@ -54,16 +54,6 @@ add_part.removeItem = function () {
     }
 };
 
-add_part.serializeTable = function (element) {
-    var data = $(element).dataTable().api().data();
-    var result = [];
-
-    for (var i = 0; i < data.length; i++) {
-        result.push(data[i]);
-    }
-    return result;
-};
-
 add_part.serializeForm = function (element) {
     var data = $(element).serializeArray();
     var result = {};
@@ -82,7 +72,7 @@ add_part.submit = function () {
     var element = $("#add-part-form");
     if (element.valid()) {
         var data = add_part.serializeForm('#add-part-form');
-        data.bill_of_materials = add_part.serializeTable('#bill-of-materials');
+        data.bill_of_materials = serializeTable('#bill-of-materials');
 
         if (data.part_type.toString() === 'KIT' && data.bill_of_materials.length < 0) {
             $('#alert').html();
