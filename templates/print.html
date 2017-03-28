@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Print{% end %}
+{% block active %}print-menu{% end %}
+
+{% block content-panel %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
+        <div class="panel-heading">
+            <span>Print Label</span>
+        </div>
+        <div class="panel-body" id="print_label_panel" style="background-color: white;">
+            <div id="alert"></div>
+            <form method="post" id="change_password_form">
+                {% module xsrf_form_html() %}
+                <fieldset class="form-group">
+                    <label for="Qty">Qty:</label>
+                    <input name="qty" type="text" class="form-control" placeholder="Number of labels"
+                           id="qty" required>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="topleft">Top Left:</label>
+                    <input name="topleft" type="text" class="form-control"
+                           placeholder="Top left corner">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="leftcenter">Left Center:</label>
+                    <input name="leftcenter" type="text" class="form-control"
+                           placeholder="Left center">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="bottomleft">Bottom Left:</label>
+                    <input name="bottomleft" type="text" class="form-control"
+                           placeholder="Bottom left corner">
+                </fieldset>
+                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% end %}
+
+{% block footer %}
+<script>
+</script>
+{% end %}

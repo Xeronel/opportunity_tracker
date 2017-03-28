@@ -1,10 +1,10 @@
 var wire_cutting = {};
 
-wire_cutting.add_part = function (tbl_id, part_id, qty_id, len_id) {
-    var table = $(tbl_id).dataTable();
-    var part = $(part_id).selectize()[0].selectize.getValue();
-    var qty = $(qty_id).val();
-    var len = $(len_id).val();
+wire_cutting.add_reel = function () {
+    var table = $('#reels').dataTable();
+    var part = $('#reel_partnumber').selectize()[0].selectize.getValue();
+    var qty = $('#reel_qty').val();
+    var len = $('#reel_len').val();
 
     var new_row = {
         part_number: part,
@@ -26,6 +26,19 @@ wire_cutting.add_part = function (tbl_id, part_id, qty_id, len_id) {
         table.api().row.add(new_row);
         table.api().draw();
     }
+};
+
+wire_cutting.add_cut = function () {
+    var table = $('#cuts').dataTable();
+    var part = $('#cut_partnumber').selectize()[0].selectize.getValue();
+    var qty = $('#cut_qty').val();
+    var len = api.v1.part.components(part, function (data) {
+        var result = 0;
+        $.each(data, function (idx, e) {
+            result += e.qty;
+        });
+        return result;
+    });
 };
 
 $(function () {

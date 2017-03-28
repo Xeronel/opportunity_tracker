@@ -4,7 +4,7 @@
         <div class="form-group">
             <div class="row">
                 {% module PartNumberDropdown(
-                    parts,
+                    reels,
                     uid="reel_partnumber",
                     name="reel_partnumber",
                     label="Reel:",
@@ -24,7 +24,7 @@
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <button type="button" class="btn btn-primary pull-right"
-                    onclick="wire_cutting.add_part('#reels', '#reel_partnumber', '#reel_qty', '#reel_len')">
+                    onclick="wire_cutting.add_reel()">
                         Add Reel
                     </button>
                 </div>
@@ -49,7 +49,7 @@
         <div class="form-group">
             <div class="row">
                 {% module PartNumberDropdown(
-                    parts,
+                    cuts,
                     uid="cut_partnumber",
                     name="cut_partnumber",
                     label="Cut:",
@@ -60,16 +60,11 @@
                     <input id="cut_qty" name="cut_qty" type="text"
                            class="form-control" required>
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding-bottom: 5px;">
-                    <label for="cut_len">Feet:</label>
-                    <input id="cut_len" name="cut_len" type="text"
-                           class="form-control" required>
-                </div>
             </div>
             <div class="row">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <button type="button" class="btn btn-primary pull-right"
-                    onclick="wire_cutting.add_part('#cuts', '#cut_partnumber', '#cut_qty', '#cut_len')">
+                    onclick="wire_cutting.add_cut()">
                         Add Reel
                     </button>
                 </div>
@@ -83,7 +78,6 @@
                         <th></th>
                         <th>Part Number</th>
                         <th>Qty</th>
-                        <th>Length</th>
                     </tr>
                     </thead>
                 </table>
