@@ -32,7 +32,8 @@ class Database:
 
     @gen.coroutine
     def get_stations(self):
-        pass
+        cursor = yield self.execute("SELECT * FROM wire_station")
+        return cursor.fetchall()
 
     @gen.coroutine
     def get_employees(self):
