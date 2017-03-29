@@ -1,11 +1,11 @@
-<div class="{{ classes }}">
+<div class="ui-selectize {{ classes }}">
     <label for={{ name }}>{{ label }}</label>
     {# Placeholder is used by Selectize #}
     <select id="{{ uid }}" name="{{ name }}" class="form-control" placeholder="Select a station..."
             {% if required %}required="required"{% end %}>
         <option value=""></option>
         {% for station in stations %}
-        <option value="{{ station['id'] }}">{{ part_number['part_number'] }}</option>
+        <option value="{{ station['id'] }}">{{ station['location'] + ': ' + station['name'] }}</option>
         {% end %}
     </select>
 </div>

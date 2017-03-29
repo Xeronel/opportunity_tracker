@@ -62,3 +62,15 @@ class PartNumberDropdown(UIModule):
                                   label=label,
                                   classes=classes,
                                   required=required)
+
+
+class WireStationDropdown(UIModule):
+    def render(self, stations, required=True, label="Wire Station:", classes="form-group",
+               uid="wire_station_dropdown", name="wire_station"):
+        return self.render_string(get_path('wire_station-dropdown.html'),
+                                  stations=stations,
+                                  uid=uid,
+                                  name=name,
+                                  label=label,
+                                  classes=classes,
+                                  required=required)
