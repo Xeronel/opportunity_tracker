@@ -71,6 +71,39 @@ wire_cutting.remove_item = function (e) {
     }
 };
 
+wire_cutting.submit = function () {
+    var table = $('#wire-cutting-form');
+    var data = {};
+    data.reels = serializeTable('#reels');
+    data.cuts = serializeTable('#cuts');
+    $.ajax({
+        type: 'POST',
+        url: window.location.pathname,
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('X-Xsrftoken', Cookies.get('_xsrf'));
+        },
+        success: function () {
+            var alertMessage = $('#alert-message');
+            if (alertMessage.length > 0) {
+                alertMessage.remove();
+            }
+            table.trigger('reset');
+            location.reload();
+        },
+        error: function () {
+            $('#alert').html(
+                '<div id="alert-message" class="alert alert-danger fade in" style="margin-top: -10px">' +
+                '<a class="close" data-dismiss="alert">×</a>' +
+                '<strong>Error!</strong> ' +
+                'Unable to create job! Make sure all field are filled out correctly.' +
+                '</div>'
+            );
+        }
+    });
+};
+
 $(function () {
     var dataTables = [
         {id: '#reels', title: 'Reels:'},
