@@ -58,7 +58,7 @@ class Company(ApiBase):
                 "SELECT id, company, address1, address2, city, state, postal_code, country "
                 "FROM location WHERE company = %(id)s",
                 {'id': company_id})
-            return self.parse_query(cursor.fetchone(), cursor.description)
+            return self.db.parse_query(cursor.fetchone(), cursor.description)
         else:
             return {}
 
@@ -70,7 +70,7 @@ class Company(ApiBase):
                 "SELECT id, name, active, employee, creator FROM company WHERE id = %s",
                 [company_id]
             )
-            return self.parse_query(cursor.fetchone(), cursor.description)
+            return self.db.parse_query(cursor.fetchone(), cursor.description)
         else:
             return {}
 
@@ -110,7 +110,7 @@ class Company(ApiBase):
                     "WHERE notes.company = %s;",
                     [company_id]
                 )
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
 
@@ -122,7 +122,7 @@ class Company(ApiBase):
                 "SELECT employee FROM company WHERE id = %s",
                 [company_id]
             )
-            return self.parse_query(cursor.fetchone(), cursor.description)
+            return self.db.parse_query(cursor.fetchone(), cursor.description)
         else:
             return {}
 
@@ -155,7 +155,7 @@ class Company(ApiBase):
                     "ON notification.employee = employee.id "
                     "WHERE notification.company=%s;",
                     [company_id])
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
 
@@ -167,7 +167,7 @@ class Company(ApiBase):
                 "WHERE company = %s",
                 [company_id]
             )
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
 
@@ -190,7 +190,7 @@ class Contact(ApiBase):
             cursor = yield self.db.execute("SELECT * FROM contact "
                                            "WHERE id = %s;",
                                            [contact_id])
-            return self.parse_query(cursor.fetchone(), cursor.description)
+            return self.db.parse_query(cursor.fetchone(), cursor.description)
         else:
             return {}
 
@@ -226,7 +226,7 @@ class Employee(ApiBase):
             cursor = yield self.db.execute("SELECT * FROM company "
                                            "WHERE employee = %s;",
                                            [employee_id])
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
 
@@ -260,7 +260,7 @@ class Employee(ApiBase):
                     "WHERE employee=%s;",
                     [employee_id]
                 )
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
 
@@ -294,7 +294,7 @@ class Employee(ApiBase):
                     "WHERE notification.employee=%s;",
                     [employee_id]
                 )
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)
         else:
             return {}
 
@@ -316,13 +316,13 @@ class Part(ApiBase):
     def part(self, part_number):
         if part_number == 'parts':
             cursor = yield self.db.execute("SELECT * FROM part;")
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)
         elif part_number:
             cursor = yield self.db.execute(
                 "SELECT * FROM part WHERE part_number = %s;",
                 [part_number.upper()]
             )
-            return self.parse_query(cursor.fetchone(), cursor.description)
+            return self.db.parse_query(cursor.fetchone(), cursor.description)
         else:
             return {}
 
@@ -330,4 +330,4 @@ class Part(ApiBase):
     def components(self, part_number):
         if part_number:
             cursor = yield self.db.execute("SELECT * FROM kit_bom WHERE kit_part_number = %s", [part_number])
-            return self.parse_query(cursor.fetchall(), cursor.description)
+            return self.db.parse_query(cursor.fetchall(), cursor.description)

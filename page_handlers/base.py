@@ -1,7 +1,5 @@
 import tornado.web
 from tornado import gen
-from datetime import date
-from decimal import Decimal
 from tornado.escape import json_decode
 
 
@@ -53,70 +51,9 @@ class BaseHandler(tornado.web.RequestHandler):
             results[cursor.description[i].name] = permissions[i]
         return results
 
-    @gen.coroutine
-    @tornado.web.authenticated
-    def get_employees(self):
-        cursor = yield self.db.execute("SELECT id, first_name, last_name FROM employee "
-                                       "ORDER BY first_name ASC, last_name ASC;")
-        return cursor.fetchall()
-
-    @gen.coroutine
-    @tornado.web.authenticated
-    def get_companies(self, uid=None):
-        if uid:
-            cursor = yield self.db.execute("SELECT id, name FROM company "
-                                           "WHERE employee = %s;",
-                                           [uid])
-        else:
-            cursor = yield self.db.execute("SELECT id, name FROM company;")
-        return cursor.fetchall()
-
-    @gen.coroutine
-    @tornado.web.authenticated
-    def get_uoms(self):
-        cursor = yield self.db.execute("SELECT uom "
-                                       "FROM unit_of_measure")
-        return cursor.fetchall()
-
-    @gen.coroutine
-    @tornado.web.authenticated
-    def get_part_types(self):
-        cursor = yield self.db.execute("SELECT part_type "
-                                       "FROM part_type")
-        return cursor.fetchall()
-
-    @gen.coroutine
-    @tornado.web.authenticated
-    def get_part_numbers(self, part_type=None):
-        if part_type:
-            cursor = yield self.db.execute("SELECT * FROM part WHERE part_type = %s;",
-                                           [part_type])
-        else:
-            cursor = yield self.db.execute("SELECT * FROM part;")
-        return self.parse_query(cursor.fetchall(), cursor.description)
-
     @property
     def db(self):
         return self.application.database
-
-    def parse_query(self, data, description, convert_decimal=True):
-        if type(data) == list:
-            result = []
-            for value in data:
-                result.append(self.parse_query(value, description))
-        elif type(data) == tuple:
-            result = {}
-            for i in range(len(description)):
-                if type(data[i]) == date:
-                    value = data[i].strftime('%Y-%m-%d')
-                elif type(data[i]) == Decimal and convert_decimal:
-                    value = str(data[i])
-                else:
-                    value = data[i]
-                result[description[i].name] = value
-        else:
-            result = {}
-        return result
 
     def get_json_arg(self, name, default=None):
         if not self.json_args:

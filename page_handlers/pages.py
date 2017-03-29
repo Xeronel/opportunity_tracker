@@ -48,8 +48,8 @@ class Company(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        employees = yield self.get_employees()
-        companies = yield self.get_companies()
+        employees = yield self.db.get_employees()
+        companies = yield self.db.get_companies()
         yield self.render('company.html',
                           countries=pycountry.countries,
                           employees=employees,
@@ -151,9 +151,9 @@ class Company(BaseHandler):
         if not form:
             form = self.request.uri.strip('/')[:3]
         if not employees:
-            employees = yield self.get_employees()
+            employees = yield self.db.get_employees()
         if not companies:
-            companies = yield self.get_companies()
+            companies = yield self.db.get_companies()
 
         yield self.render('company.html',
                           countries=pycountry.countries,
@@ -167,7 +167,7 @@ class Contact(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        companies = yield self.get_companies()
+        companies = yield self.db.get_companies()
         yield self.render('contact.html',
                           companies=companies,
                           form=form)
@@ -241,7 +241,7 @@ class Contact(BaseHandler):
         if not form:
             form = self.request.uri.strip('/')[:3]
         if not companies:
-            companies = yield self.get_companies()
+            companies = yield self.db.get_companies()
 
         yield self.render('contact.html',
                           companies=companies,
@@ -252,8 +252,8 @@ class Notification(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        companies = yield self.get_companies()
-        employees = yield self.get_employees()
+        companies = yield self.db.get_companies()
+        employees = yield self.db.get_employees()
         yield self.render('notification.html',
                           companies=companies,
                           employees=employees,
@@ -262,7 +262,7 @@ class Notification(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def post(self, form):
-        companies = yield self.get_companies()
+        companies = yield self.db.get_companies()
         company = self.get_argument('company')
         notify_date = datetime.strptime(self.get_argument('date'), '%m-%d-%Y')
         note = self.get_argument('note')
@@ -280,8 +280,8 @@ class Note(BaseHandler):
     @tornado.web.authenticated
     def get(self, form):
         self.form = form
-        companies = yield self.get_companies()
-        employees = yield self.get_employees()
+        companies = yield self.db.get_companies()
+        employees = yield self.db.get_employees()
         yield self.render('note.html',
                           companies=companies,
                           employees=employees,
@@ -295,7 +295,7 @@ class Note(BaseHandler):
         if form in forms:
             yield forms[form]()
         else:
-            companies = yield self.get_companies()
+            companies = yield self.db.get_companies()
             yield self.render('note.html',
                               companies=companies,
                               form=form)
@@ -332,7 +332,7 @@ class Note(BaseHandler):
         if self.form is None:
             self.form = self.request.uri[:self.request.uri.find('_')]
         if companies is None:
-            companies = yield self.get_companies()
+            companies = yield self.db.get_companies()
         if user is None:
             user = yield self.get_user()
         yield self.render('note.html',
@@ -420,12 +420,12 @@ class Part(BaseHandler):
     @gen.coroutine
     def render_form(self, companies=None, user=None, **kwargs):
         if companies is None:
-            companies = yield self.get_companies()
+            companies = yield self.db.get_companies()
         if user is None:
             user = yield self.get_user()
-        uoms = yield self.get_uoms()
-        part_types = yield self.get_part_types()
-        part_numbers = yield self.get_part_numbers()
+        uoms = yield self.db.get_uoms()
+        part_types = yield self.db.get_part_types()
+        part_numbers = yield self.db.get_part_numbers()
 
         yield self.render('part.html',
                           form=self.form,
@@ -449,7 +449,7 @@ class Project(BaseHandler):
             )
             companies = cursor.fetchall()
         else:
-            companies = yield self.get_companies()
+            companies = yield self.db.get_companies()
         yield self.render('project.html',
                           companies=companies,
                           form=form)
@@ -458,7 +458,7 @@ class Project(BaseHandler):
     @tornado.web.authenticated
     def post(self, form):
         forms = {'add': self.add_project}
-        companies = yield self.get_companies()
+        companies = yield self.db.get_companies()
         if form in forms:
             yield forms[form]()
 
@@ -485,14 +485,37 @@ class Warehouse(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def get(self, form):
-        user = yield self.get_user()
-        reels = yield self.get_part_numbers('ITEM')
-        cuts = yield self.get_part_numbers('KIT')
-        self.render('warehouse.html',
-                    reels=reels,
-                    cuts=cuts,
-                    form=form,
-                    user=user)
+        yield self.render(form)
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def post(self, form):
+        """
+        try:
+            yield self.db.execute(
+                ""
+            )
+        except (TypeError, ValueError, KeyError, IndexError, MissingArgumentError):
+            self.send_error(400)
+        except psycopg2.IntegrityError as e:
+            self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
+            traceback.print_exc()
+        else:
+            self.clear()
+            self.set_status(200, 'OK')
+            self.finish('success')
+        """
+        pass
+
+    @gen.coroutine
+    @tornado.web.authenticated
+    def render(self, form, **kwargs):
+        reels = yield self.db.get_part_numbers('ITEM')
+        cuts = yield self.db.get_part_numbers('KIT')
+        yield super(Warehouse, self).render('warehouse.html',
+                                            reels=reels,
+                                            cuts=cuts,
+                                            form=form)
 
 
 class ProjectRouter(BaseHandler):
