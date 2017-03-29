@@ -512,7 +512,9 @@ class Warehouse(BaseHandler):
     def render(self, form, **kwargs):
         reels = yield self.db.get_part_numbers('ITEM')
         cuts = yield self.db.get_part_numbers('KIT')
+        stations = yield self.db.get_stations()
         yield super(Warehouse, self).render('warehouse.html',
+                                            stations=stations,
                                             reels=reels,
                                             cuts=cuts,
                                             form=form)
