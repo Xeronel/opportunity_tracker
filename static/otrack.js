@@ -51,7 +51,9 @@ $.validator.setDefaults({
         $(element).closest('.form-group').addClass('has-error');
     },
     unhighlight: function (element) {
-        $(element).closest('.form-group').removeClass('has-error');
+        element = $(element).closest('.form-group');
+        element.removeClass('has-error');
+        element.children('span.help-block').remove();
     },
     errorElement: 'span',
     errorClass: 'help-block',
@@ -68,11 +70,30 @@ $.validator.setDefaults({
         ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
         ':hidden:not(textarea)']
 });
+
 $.validator.addMethod("money", function (value, element) {
     var regex = '^\\$?(([1-9][0-9]{0,2}(,[0-9]{3})*)|0)?\\.[0-9]{2,3}$';
     regex = new RegExp(regex);
     return this.optional(element) || regex.test(value);
 }, "This field is required.<br>(Ex: $1,000.005)");
+
+// DataTable validator
+$.validator.addMethod('dataTable', function (value, element, params) {
+    /*
+    * Params = [tableId, ErrorMessage]
+    */
+    var rows = $(params[0])[0].rows; // The first row contains the table header
+    var result = false;
+
+    // If there is only 2 rows verify that there is actually data in the table
+    if (rows.length === 2 && rows[1].innerText !== 'No data available in table') {
+        result = true;
+    } else if (rows.length > 2) {
+        result = true;
+    }
+
+    return result;
+}, $.validator.format("{1}"));
 
 // Date picker
 $(function () {

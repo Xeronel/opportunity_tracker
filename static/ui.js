@@ -42,14 +42,7 @@ function initDatePicker(id, date) {
 
 $(function () {
     var options = {
-        selectOnTab: true,
-        onChange: function (value) {
-            var control = $(this.$dropdown).closest('.form-group');
-            if (control.hasClass('has-error')) {
-                control.removeClass('has-error');
-                $(control).children('span.help-block').remove();
-            }
-        }
+        selectOnTab: true
     };
 
     // id, default value
