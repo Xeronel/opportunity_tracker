@@ -1,4 +1,4 @@
-from .base import BaseHandler
+from page_handlers import BaseHandler
 from tornado import gen
 from tornado.web import MissingArgumentError, authenticated
 from psycopg2 import IntegrityError

@@ -21,7 +21,6 @@ def make_app():
          (r'/', Dashboard),
          (r'/dashboard', Dashboard),
          (r'/calendar', Calendar),
-         (r'/add_industry', Industry),
          (r'/(add|rem|mod)_contact', Contact),
          (r'/(add|rem|mod)_company', Company),
          (r'/(add|rem|mod|view)_notification', Notification),
