@@ -6,6 +6,10 @@ wire_cutting.add_reel = function () {
     var qty = $('#reel_qty').val();
     var len = $('#reel_len').val();
 
+    if (!len) {
+        return;
+    }
+
     var new_row = {
         part_number: part,
         qty: parseInt(qty) || 1,
@@ -73,44 +77,48 @@ wire_cutting.remove_item = function (e) {
 
 wire_cutting.submit = function () {
     var table = $('#wire-cutting-form');
-    var data = {};
-    data.reels = serializeTable('#reels');
-    data.cuts = serializeTable('#cuts');
-    $.ajax({
-        type: 'POST',
-        url: window.location.pathname,
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader('X-Xsrftoken', Cookies.get('_xsrf'));
-        },
-        success: function () {
-            var alertMessage = $('#alert-message');
-            if (alertMessage.length > 0) {
-                alertMessage.remove();
+
+    if (table.valid()) {
+        var data = {};
+        data.reels = serializeTable('#reels');
+        data.cuts = serializeTable('#cuts');
+        data.wire_station = $('#wire_station_dropdown').selectize()[0].selectize.getValue();
+
+        $.ajax({
+            type: 'POST',
+            url: window.location.pathname,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('X-Xsrftoken', Cookies.get('_xsrf'));
+            },
+            success: function () {
+                var alertMessage = $('#alert-message');
+                if (alertMessage.length > 0) {
+                    alertMessage.remove();
+                }
+                table.trigger('reset');
+                location.reload();
+            },
+            error: function () {
+                $('#alert').html(
+                    '<div id="alert-message" class="alert alert-danger fade in" style="margin-top: -10px">' +
+                    '<a class="close" data-dismiss="alert">×</a>' +
+                    '<strong>Error!</strong> ' +
+                    'Unable to create job! Make sure all field are filled out correctly.' +
+                    '</div>'
+                );
             }
-            table.trigger('reset');
-            location.reload();
-        },
-        error: function () {
-            $('#alert').html(
-                '<div id="alert-message" class="alert alert-danger fade in" style="margin-top: -10px">' +
-                '<a class="close" data-dismiss="alert">×</a>' +
-                '<strong>Error!</strong> ' +
-                'Unable to create job! Make sure all field are filled out correctly.' +
-                '</div>'
-            );
-        }
-    });
+        });
+    }
 };
 
 $(function () {
+    // Initialize datatables
     var dataTables = [
         {id: '#reels', title: 'Reels:'},
         {id: '#cuts', title: 'Cuts:'}
     ];
-
-    // Initialize datatables
     $(dataTables).each(function (idx, e) {
         $(e.id).DataTable({
             sDom: '<"header">frtip',
@@ -138,18 +146,30 @@ $(function () {
             .prependTo(e.id + "_filter");
     });
 
+    // Bind functions to enter key
     var inputs = [
         {id: '#reel_qty', func: wire_cutting.add_reel},
         {id: '#reel_len', func: wire_cutting.add_reel},
         {id: '#cut_qty', func: wire_cutting.add_cut}
     ];
-
-    // Bind functions to enter key
     $(inputs).each(function (idx, e) {
         $(e.id).keyup(function (event) {
             if (event.keyCode === 13) {
                 e.func();
             }
         });
+    });
+
+    $('#wire-cutting-form').validate({
+        rules: {
+            "reel_partnumber": {
+                required: true,
+                dataTable: ['#reels', 'At least 1 reel is required.']
+            },
+            "cut_partnumber": {
+                required: false,
+                dataTable: ['#cuts', 'At least 1 cut is required.']
+            }
+        }
     });
 });
