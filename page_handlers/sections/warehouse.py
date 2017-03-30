@@ -6,7 +6,7 @@ import traceback
 import psycopg2
 
 
-class Warehouse(BaseHandler):
+class WireCutting(BaseHandler):
     @gen.coroutine
     @web.authenticated
     def get(self, form):
@@ -35,11 +35,11 @@ class Warehouse(BaseHandler):
         reels = yield self.db.get_part_numbers('ITEM')
         cuts = yield self.db.get_part_numbers('KIT')
         stations = yield self.db.get_wire_stations()
-        yield super(Warehouse, self).render('warehouse.html',
-                                            wire_stations=stations,
-                                            reels=reels,
-                                            cuts=cuts,
-                                            form=form)
+        yield super(WireCutting, self).render('warehouse.html',
+                                              wire_stations=stations,
+                                              reels=reels,
+                                              cuts=cuts,
+                                              form=form)
 
 
 class Print(BaseHandler):
