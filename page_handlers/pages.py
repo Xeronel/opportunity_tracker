@@ -490,31 +490,28 @@ class Warehouse(BaseHandler):
     @gen.coroutine
     @tornado.web.authenticated
     def post(self, form):
-        """
         try:
-            yield self.db.execute(
-                ""
-            )
+            station = self.get_json_arg('wire_station')
+            user = yield self.get_user()
+            reels = self.get_json_arg('reels')
+            wo_id = yield self.db.create_work_order(station, user.uid)
         except (TypeError, ValueError, KeyError, IndexError, MissingArgumentError):
             self.send_error(400)
         except psycopg2.IntegrityError as e:
             self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
             traceback.print_exc()
-        else:
-            self.clear()
-            self.set_status(200, 'OK')
-            self.finish('success')
-        """
-        pass
+        self.clear()
+        self.set_status(200, 'OK')
+        self.finish('success')
 
     @gen.coroutine
     @tornado.web.authenticated
     def render(self, form, **kwargs):
         reels = yield self.db.get_part_numbers('ITEM')
         cuts = yield self.db.get_part_numbers('KIT')
-        stations = yield self.db.get_stations()
+        stations = yield self.db.get_wire_stations()
         yield super(Warehouse, self).render('warehouse.html',
-                                            stations=stations,
+                                            wire_stations=stations,
                                             reels=reels,
                                             cuts=cuts,
                                             form=form)

@@ -31,7 +31,7 @@ class Database:
         return cursor
 
     @gen.coroutine
-    def get_stations(self):
+    def get_wire_stations(self):
         cursor = yield self.execute("SELECT * FROM wire_station")
         return self.parse_query(cursor.fetchall(), cursor.description)
 
@@ -71,6 +71,17 @@ class Database:
         else:
             cursor = yield self.execute("SELECT * FROM part;")
         return self.parse_query(cursor.fetchall(), cursor.description)
+
+    @gen.coroutine
+    def create_work_order(self, station, creator):
+        """Create a work order and return it's id"""
+        cursor = yield self.execute(
+            "INSERT INTO work_order (station, creator) "
+            "VALUES (%s, %s) "
+            "RETURNING id;",
+            [station, creator]
+        )
+        return cursor.fetchone()[0]
 
     def parse_query(self, data, description, convert_decimal=True):
         if type(data) == list:
