@@ -92,11 +92,12 @@ wire_cutting.submit = function () {
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('X-Xsrftoken', Cookies.get('_xsrf'));
             },
-            success: function () {
+            success: function (data) {
                 var alertMessage = $('#alert-message');
                 if (alertMessage.length > 0) {
                     alertMessage.remove();
                 }
+                alert(data);
                 table.trigger('reset');
                 location.reload();
             },

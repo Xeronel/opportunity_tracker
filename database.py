@@ -74,7 +74,12 @@ class Database:
 
     @gen.coroutine
     def create_work_order(self, station, creator):
-        """Create a work order and return it's id"""
+        """
+        Create a work order and return it's id
+        :param station: Station id
+        :param creator: User id
+        :return: Work order id
+        """
         cursor = yield self.execute(
             "INSERT INTO work_order (station, creator) "
             "VALUES (%s, %s) "
@@ -82,6 +87,47 @@ class Database:
             [station, creator]
         )
         return cursor.fetchone()[0]
+
+    @gen.coroutine
+    def add_reels(self, work_order, reels):
+        """
+        Add reels to a work order
+        :param work_order: Work order id
+        :param reels: List of reel objects
+        """
+        reel_list = []
+        for reel in reels:
+            for i in range(reel['qty']):
+                reel_list.append(reel['part_number'])
+                reel_list.append(reel['length'])
+                reel_list.append(work_order)
+
+        yield self.execute(
+            "INSERT INTO work_order_reels (part_number, reel_length, work_order) "
+            "VALUES %s" % self._value_builder(reel_list, 3),
+            reel_list
+        )
+
+    @gen.coroutine
+    def add_cuts(self, work_order, cuts):
+        """
+        Add cuts to a work order
+        :param work_order: 
+        :param cuts: 
+        :return: 
+        """
+        cut_list = []
+        for cut in cuts:
+            cut_list.append(cut['part_number'])
+            cut_list.append(cut['qty'])
+            cut_list.append(cut['length'])
+            cut_list.append(work_order)
+
+        yield self.execute(
+            "INSERT INTO work_order_cuts (part_number, qty, cut_length, work_order) "
+            "VALUES %s" % self._value_builder(cut_list, 4),
+            cut_list
+        )
 
     def parse_query(self, data, description, convert_decimal=True):
         if type(data) == list:
@@ -101,3 +147,11 @@ class Database:
         else:
             result = {}
         return result
+
+    @staticmethod
+    def _value_builder(values, arg_count):
+        query_len, remainder = divmod(len(values), arg_count)
+        if remainder != 0:
+            raise ValueError('Values must be evenly divisible by the number of arguments')
+        args = ('%s, ' * arg_count)[:-2]
+        return (('(%s), ' % args) * query_len)[:-2]

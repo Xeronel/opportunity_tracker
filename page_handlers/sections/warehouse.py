@@ -16,18 +16,21 @@ class WireCutting(BaseHandler):
     @web.authenticated
     def post(self, form):
         try:
-            station = self.get_json_arg('wire_station')
             user = yield self.get_user()
+            station = self.get_json_arg('wire_station')
             reels = self.get_json_arg('reels')
+            cuts = self.get_json_arg('cuts')
+
+            # Create a new work order
             wo_id = yield self.db.create_work_order(station, user.uid)
-        except (TypeError, ValueError, KeyError, IndexError, web.MissingArgumentError):
-            self.send_error(400)
+            yield [self.db.add_reels(wo_id, reels), self.db.add_cuts(wo_id, cuts)]
         except psycopg2.IntegrityError as e:
             self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
             traceback.print_exc()
-        self.clear()
-        self.set_status(200, 'OK')
-        self.finish('success')
+        else:
+            self.clear()
+            self.set_status(200, 'OK')
+            self.finish('Created work order: %s' % wo_id)
 
     @gen.coroutine
     @web.authenticated
