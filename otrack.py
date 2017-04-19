@@ -18,6 +18,10 @@ def make_app():
          (r'/api/v1/employee/(.*)', api.Employee),
          (r'/api/v1/part/(.*)/(.*)', api.Part),
          (r'/api/v1/part/(.*)', api.Part),
+         (r'/api/v1/work_order/(.*)/(.*)', api.WorkOrder),
+         (r'/api/v1/work_order/(.*)', api.WorkOrder),
+         (r'/api/v1/wire_station/(.*)/(.*)', api.WireStation),
+         (r'/api/v1/wire_station/(.*)', api.WireStation),
          (r'/', Dashboard),
          (r'/dashboard', Dashboard),
          (r'/calendar', Calendar),
@@ -53,7 +57,7 @@ def make_app():
 if __name__ == '__main__':
     # Create a new web application
     app = make_app()
-    app.listen(8181)
+    app.listen(config.web.port)
 
     # Attempt to connect to the database
     ioloop = tornado.ioloop.IOLoop.current()

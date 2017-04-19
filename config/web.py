@@ -29,7 +29,8 @@ class WebConfig(BaseConfig):
                     'static_path': Entry(os.path.join(base, 'static'), is_str),
                     'template_path': Entry(os.path.join(base, 'templates'), is_str),
                     'cookie_secret': Entry({0: 'j9Wy1m*3CnwKw!AFd5sd3kl@'}, _check_cs),
-                    'key_version': Entry(0, lambda x: type(x) == int)}
+                    'key_version': Entry(0, lambda x: type(x) == int),
+                    'port': Entry(8181, lambda x: type(x) == int)}
         super().__init__(skeleton, 'web_server')
 
         # Set some additional defaults if in debug mode
@@ -110,3 +111,7 @@ class WebConfig(BaseConfig):
         :return: cookie secret version
         """
         return int(self.raw_config['key_version'])
+
+    @property
+    def port(self):
+        return int(self.raw_config['port'])
