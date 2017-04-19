@@ -1,12 +1,24 @@
 from .base import BaseHandler
-import tornado.web
-import tornado.escape
+from tornado import web
 from tornado.escape import json_encode
 from tornado import gen
 from dateutil import parser as dateutil
 
 
 class ApiBase(BaseHandler):
+    def __init__(self, *args, **kwargs):
+        super(ApiBase, self).__init__(*args, **kwargs)
+        self.rpc = {}
+
+    @gen.coroutine
+    @web.authenticated
+    def get(self, arg, proc=''):
+        if proc in self.rpc:
+            result = yield self.rpc[proc](arg)
+            self.write(json_encode(result))
+        else:
+            self.write(json_encode({}))
+
     def _start_date(self):
         start_date = self.get_argument('start_date', False)
         if start_date:
@@ -22,7 +34,7 @@ class ApiBase(BaseHandler):
 
 class Company(ApiBase):
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def get(self, arg, proc=''):
         rpc = {'': self.company,
                'location': self.location,
@@ -37,7 +49,7 @@ class Company(ApiBase):
             self.write(json_encode({}))
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def post(self, arg, proc=''):
         rpc = {'': self.company,
                'location': self.location,
@@ -51,7 +63,7 @@ class Company(ApiBase):
             self.write(json_encode({}))
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def location(self, company_id):
         if company_id:
             cursor = yield self.db.execute(
@@ -63,7 +75,7 @@ class Company(ApiBase):
             return {}
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def company(self, company_id):
         if company_id:
             cursor = yield self.db.execute(
@@ -75,7 +87,7 @@ class Company(ApiBase):
             return {}
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def notes(self, company_id):
         if company_id:
             start_date = self.get_argument('start_date', False)
@@ -115,7 +127,7 @@ class Company(ApiBase):
             return {}
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def employee(self, company_id):
         if company_id:
             cursor = yield self.db.execute(
@@ -127,7 +139,7 @@ class Company(ApiBase):
             return {}
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def notifications(self, company_id):
         if company_id:
             start_date = self._start_date()
@@ -174,7 +186,7 @@ class Company(ApiBase):
 
 class Contact(ApiBase):
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def get(self, arg, proc=''):
         rpc = {'': self.contact}
         if proc in rpc:
@@ -184,7 +196,7 @@ class Contact(ApiBase):
             self.write(json_encode({}))
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def contact(self, contact_id):
         if contact_id:
             cursor = yield self.db.execute("SELECT * FROM contact "
@@ -197,7 +209,7 @@ class Contact(ApiBase):
 
 class Employee(ApiBase):
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def get(self, arg, proc=''):
         rpc = {'companies': self.companies,
                'notes': self.notes,
@@ -209,7 +221,7 @@ class Employee(ApiBase):
             self.write(json_encode({}))
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def post(self, arg, proc=''):
         rpc = {'companies': self.companies,
                'notes': self.notes}
@@ -220,7 +232,7 @@ class Employee(ApiBase):
             self.write(json_encode({}))
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def companies(self, employee_id):
         if employee_id:
             cursor = yield self.db.execute("SELECT * FROM company "
@@ -231,7 +243,7 @@ class Employee(ApiBase):
             return {}
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def notes(self, employee_id):
         if employee_id:
             start_date = self._start_date()
@@ -265,7 +277,7 @@ class Employee(ApiBase):
             return {}
 
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def notifications(self, employee_id):
         if employee_id:
             start_date = self._start_date()
@@ -301,7 +313,7 @@ class Employee(ApiBase):
 
 class Part(ApiBase):
     @gen.coroutine
-    @tornado.web.authenticated
+    @web.authenticated
     def get(self, arg, proc=''):
         rpc = {'': self.part,
                'components': self.components}
@@ -331,3 +343,19 @@ class Part(ApiBase):
         if part_number:
             cursor = yield self.db.execute("SELECT * FROM kit_bom WHERE kit_part_number = %s", [part_number])
             return self.db.parse_query(cursor.fetchall(), cursor.description)
+
+
+class WorkOrder(ApiBase):
+    def __init__(self, *args, **kwargs):
+        super(WorkOrder, self).__init__(*args, **kwargs)
+        self.rpc = {'': self.db.get_work_order,
+                    'items': self.db.get_items}
+
+
+class WireStation(ApiBase):
+    def __init__(self, *args, **kwargs):
+        super(WireStation, self).__init__(*args, **kwargs)
+        self.rpc = {
+            '': self.db.get_wire_station,
+            'active_work_order': self.db.get_active_work_order
+        }

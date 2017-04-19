@@ -2,7 +2,7 @@ import psycopg2
 import momoko
 import config
 from tornado import gen
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 
 
@@ -89,6 +89,61 @@ class Database:
         return cursor.fetchone()[0]
 
     @gen.coroutine
+    def get_work_order(self, work_order):
+        cursor1 = self.pool.execute("""
+        SELECT station, complete, creator, created
+        FROM work_order
+        WHERE id = %s
+        """, [work_order])
+        cursor2 = self.pool.execute("""
+        SELECT
+            woi.id, woi.part_number, woi.qty, woi.remaining, woi.cut_length, kit_bom.part_number AS reel_part_number
+        FROM
+            work_order_items woi
+        JOIN
+            kit_bom
+        ON
+            woi.part_number = kit_bom.kit_part_number
+        WHERE
+            woi.work_order = %s AND
+            woi.remaining > 0
+        """, [work_order])
+        cursor3 = self.pool.execute("""
+        SELECT id, part_number, reel_length, current_length
+        FROM work_order_reels
+        WHERE work_order = %s
+        """, [work_order])
+
+        try:
+            yield [cursor1, cursor2, cursor3]
+        except psycopg2.OperationalError:
+            yield self.connect()
+            yield [cursor1, cursor2, cursor3]
+
+        wo, wo_items, wo_reels = cursor1.result(), cursor2.result(), cursor3.result()
+        return {'work_order': self.parse_query(wo.fetchone(), wo.description),
+                'reels': self.parse_query(wo_reels.fetchall(), wo_reels.description),
+                'items': self.parse_query(wo_items.fetchall(), wo_items.description)}
+
+    @gen.coroutine
+    def get_active_work_order(self, station_name):
+        cursor = yield self.execute("""
+        SELECT active_work_order
+        FROM wire_station
+        WHERE name = %s
+        """, [station_name.upper()])
+        return self.parse_query(cursor.fetchone(), cursor.description)
+
+    @gen.coroutine
+    def get_wire_station(self, station_name):
+        cursor = yield self.execute("""
+        SELECT *
+        FROM wire_station
+        WHERE name = %s
+        """, [station_name.upper()])
+        return self.parse_query(cursor.fetchone(), cursor.description)
+
+    @gen.coroutine
     def add_reels(self, work_order, reels):
         """
         Add reels to a work order
@@ -109,7 +164,16 @@ class Database:
         )
 
     @gen.coroutine
-    def add_cuts(self, work_order, cuts):
+    def get_reels(self, work_order):
+        cursor = yield self.execute("""
+        SELECT id, part_number, reel_length, current_length
+        FROM work_order_reels
+        WHERE work_order = %s
+        """, [work_order])
+        return self.parse_query(cursor.fetchall(), cursor.description)
+
+    @gen.coroutine
+    def add_items(self, work_order, cuts):
         """
         Add cuts to a work order
         :param work_order: 
@@ -124,10 +188,28 @@ class Database:
             cut_list.append(work_order)
 
         yield self.execute(
-            "INSERT INTO work_order_cuts (part_number, qty, cut_length, work_order) "
+            "INSERT INTO work_order_items (part_number, qty, cut_length, work_order) "
             "VALUES %s" % self._value_builder(cut_list, 4),
             cut_list
         )
+
+    @gen.coroutine
+    def get_items(self, wo_id):
+        cursor = yield self.execute("""
+        SELECT
+            woi.id, woi.part_number, woi.qty, woi.remaining, woi.cut_length, kit_bom.part_number AS reel_part_number
+        FROM
+            work_order_items woi
+        JOIN
+            kit_bom
+        ON
+            woi.part_number = kit_bom.kit_part_number
+        WHERE
+            woi.work_order = %s AND
+            woi.remaining > 0
+        """, [wo_id])
+        result = self.parse_query(cursor.fetchall(), cursor.description)
+        return result
 
     def parse_query(self, data, description, convert_decimal=True):
         if type(data) == list:
@@ -137,7 +219,7 @@ class Database:
         elif type(data) == tuple:
             result = {}
             for i in range(len(description)):
-                if type(data[i]) == date:
+                if type(data[i]) == date or type(data[i]) == datetime:
                     value = data[i].strftime('%Y-%m-%d')
                 elif type(data[i]) == Decimal and convert_decimal:
                     value = str(data[i])

@@ -23,7 +23,7 @@ class WireCutting(BaseHandler):
 
             # Create a new work order
             wo_id = yield self.db.create_work_order(station, user.uid)
-            yield [self.db.add_reels(wo_id, reels), self.db.add_cuts(wo_id, cuts)]
+            yield [self.db.add_reels(wo_id, reels), self.db.add_items(wo_id, cuts)]
         except psycopg2.IntegrityError as e:
             self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
             traceback.print_exc()
