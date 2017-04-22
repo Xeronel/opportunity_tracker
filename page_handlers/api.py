@@ -3,6 +3,7 @@ from tornado import web
 from tornado.escape import json_encode
 from tornado import gen
 from dateutil import parser as dateutil
+from inspect import signature
 
 
 class ApiBase(BaseHandler):
@@ -12,9 +13,12 @@ class ApiBase(BaseHandler):
 
     @gen.coroutine
     @web.authenticated
-    def get(self, arg, proc=''):
+    def get(self, arg, proc=None):
         if proc in self.rpc:
-            result = yield self.rpc[proc](arg)
+            if len(signature(self.rpc[proc]).parameters) > 0:
+                result = yield self.rpc[proc](arg)
+            else:
+                result = yield self.rpc[proc]()
             self.write(json_encode(result))
         else:
             self.write(json_encode({}))
