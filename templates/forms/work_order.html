@@ -1,9 +1,9 @@
-<form role="form" id="wire-cutting-form" method="post">
+<form role="form" id="work-order-form" method="post">
     {% module xsrf_form_html() %}
     <div class="form-group">
         <div class="row">
-            {% module WireStationDropdown(
-                wire_stations,
+            {% module StationDropdown(
+                stations,
                 classes='col-lg-12 col-md-12 col-sm-12 col-xs-12'
             ) %}
         </div>
@@ -33,7 +33,7 @@
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <button type="button" class="btn btn-primary pull-right" style="margin-top: -15px;"
-                        onclick="wire_cutting.add_reel()">
+                        onclick="work_order.add_reel()">
                     Add Reel
                 </button>
             </div>
@@ -51,7 +51,7 @@
                 </tr>
                 </thead>
             </table>
-            <button type="button" class="btn btn-danger pull-right" onclick="wire_cutting.remove_item('#reels')">
+            <button type="button" class="btn btn-danger pull-right" onclick="work_order.remove_item('#reels')">
                 Remove
             </button>
         </div>
@@ -76,7 +76,7 @@
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <button type="button" class="btn btn-primary pull-right" style="margin-top: -15px;"
-                        onclick="wire_cutting.add_cut()">
+                        onclick="work_order.add_cut()">
                     Add Cut
                 </button>
             </div>
@@ -96,14 +96,14 @@
                     </thead>
                 </table>
                 <button type="button" class="btn btn-danger pull-right"
-                        onclick="wire_cutting.remove_item('#cuts')">Remove
+                        onclick="work_order.remove_item('#cuts')">Remove
                 </button>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <button type="button" class="btn btn-primary pull-right" onclick="wire_cutting.submit()">Create Job</button>
+            <button type="button" class="btn btn-primary pull-right" onclick="work_order.submit()">Create Job</button>
         </div>
     </div>
 </form>

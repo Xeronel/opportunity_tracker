@@ -4,8 +4,10 @@
     <select id="{{ uid }}" name="{{ name }}" class="form-control" placeholder="Select a station..."
             {% if required %}required="required"{% end %}>
         <option value=""></option>
-        {% for station in wire_stations %}
-        <option value="{{ station['id'] }}">{{ station['location'] + ': ' + station['name'] }}</option>
+        {% for station in stations %}
+        <option value="{{ station['id'] }}">{{
+                ('%s: %s %s' % (station['location'], station['first_name'], station['last_name'])).upper()
+        }}</option>
         {% end %}
     </select>
 </div>

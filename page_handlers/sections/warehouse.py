@@ -6,7 +6,7 @@ import traceback
 import psycopg2
 
 
-class WireCutting(BaseHandler):
+class WorkOrder(BaseHandler):
     @gen.coroutine
     @web.authenticated
     def get(self, form):
@@ -17,13 +17,13 @@ class WireCutting(BaseHandler):
     def post(self, form):
         try:
             user = yield self.get_user()
-            station = self.get_json_arg('wire_station')
+            station = self.get_json_arg('station')
             reels = self.get_json_arg('reels')
             cuts = self.get_json_arg('cuts')
 
             # Create a new work order
-            wo_id = yield self.db.create_work_order(station, user.uid)
-            yield [self.db.add_reels(wo_id, reels), self.db.add_items(wo_id, cuts)]
+            wo_id = yield self.db.work_order.create(station, user.uid)
+            yield [self.db.work_order.add_reels(wo_id, reels), self.db.work_order.add_items(wo_id, cuts)]
         except psycopg2.IntegrityError as e:
             self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
             traceback.print_exc()
@@ -37,12 +37,12 @@ class WireCutting(BaseHandler):
     def render(self, form, **kwargs):
         reels = yield self.db.get_part_numbers('ITEM')
         cuts = yield self.db.get_part_numbers('KIT')
-        stations = yield self.db.get_wire_stations()
-        yield super(WireCutting, self).render('warehouse.html',
-                                              wire_stations=stations,
-                                              reels=reels,
-                                              cuts=cuts,
-                                              form=form)
+        stations = yield self.db.station.get_all()
+        yield super(WorkOrder, self).render('warehouse.html',
+                                            stations=stations,
+                                            reels=reels,
+                                            cuts=cuts,
+                                            form=form)
 
 
 class Print(BaseHandler):

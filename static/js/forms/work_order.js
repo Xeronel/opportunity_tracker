@@ -1,6 +1,6 @@
-var wire_cutting = {};
+var work_order = {};
 
-wire_cutting.add_reel = function () {
+work_order.add_reel = function () {
     var table = $('#reels').dataTable();
     var part = $('#reel_partnumber').selectize()[0].selectize.getValue();
     var qty = $('#reel_qty').val();
@@ -32,7 +32,7 @@ wire_cutting.add_reel = function () {
     }
 };
 
-wire_cutting.add_cut = function () {
+work_order.add_cut = function () {
     var table = $('#cuts').dataTable();
     var part = $('#cut_partnumber').selectize()[0].selectize.getValue();
     var qty = parseInt($('#cut_qty').val()) || 1;
@@ -44,7 +44,7 @@ wire_cutting.add_cut = function () {
 
     api.v1.part.components(part, function (data) {
         // Total the number of kit components to get its length
-        // this should be a single wire unless the user made an error
+        // this should be a single item unless the user made an error
         $.each(data, function (idx, e) {
             new_row.length += parseInt(e.qty);
         });
@@ -65,7 +65,7 @@ wire_cutting.add_cut = function () {
     });
 };
 
-wire_cutting.remove_item = function (e) {
+work_order.remove_item = function (e) {
     var table = $(e).dataTable().api();
     var rows = table.rows({selected: true});
     if (rows.count() > 0) {
@@ -75,14 +75,14 @@ wire_cutting.remove_item = function (e) {
     }
 };
 
-wire_cutting.submit = function () {
-    var table = $('#wire-cutting-form');
+work_order.submit = function () {
+    var table = $('#work-order-form');
 
     if (table.valid()) {
         var data = {};
         data.reels = serializeTable('#reels');
         data.cuts = serializeTable('#cuts');
-        data.wire_station = $('#wire_station_dropdown').selectize()[0].selectize.getValue();
+        data.station = $('#station_dropdown').selectize()[0].selectize.getValue();
 
         $.ajax({
             type: 'POST',
@@ -149,9 +149,9 @@ $(function () {
 
     // Bind functions to enter key
     var inputs = [
-        {id: '#reel_qty', func: wire_cutting.add_reel},
-        {id: '#reel_len', func: wire_cutting.add_reel},
-        {id: '#cut_qty', func: wire_cutting.add_cut}
+        {id: '#reel_qty', func: work_order.add_reel},
+        {id: '#reel_len', func: work_order.add_reel},
+        {id: '#cut_qty', func: work_order.add_cut}
     ];
     $(inputs).each(function (idx, e) {
         $(e.id).keyup(function (event) {
@@ -161,7 +161,7 @@ $(function () {
         });
     });
 
-    $('#wire-cutting-form').validate({
+    $('#work-order-form').validate({
         rules: {
             "reel_partnumber": {
                 required: true,

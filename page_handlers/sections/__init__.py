@@ -1,4 +1,4 @@
-from .warehouse import WireCutting, Print
+from .warehouse import WorkOrder, Print
 from .admin import Admin
 from .company import ClearCompany, Company
 from .contact import Contact, GetContacts
@@ -8,4 +8,4 @@ from .notification import Notification
 from .part import Part
 from .profile import Profile
 from .project import Project, ProjectRouter
-from .warehouse import WireCutting, Print
+from .warehouse import WorkOrder, Print

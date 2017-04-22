@@ -348,14 +348,14 @@ class Part(ApiBase):
 class WorkOrder(ApiBase):
     def __init__(self, *args, **kwargs):
         super(WorkOrder, self).__init__(*args, **kwargs)
-        self.rpc = {'': self.db.get_work_order,
-                    'items': self.db.get_items}
+        self.rpc = {'': self.db.work_order.get_all,
+                    'items': self.db.work_order.get_items}
 
 
-class WireStation(ApiBase):
+class Station(ApiBase):
     def __init__(self, *args, **kwargs):
-        super(WireStation, self).__init__(*args, **kwargs)
+        super(Station, self).__init__(*args, **kwargs)
         self.rpc = {
-            '': self.db.get_wire_station,
-            'active_work_order': self.db.get_active_work_order
+            '': self.db.station.get,
+            'active_work_order': self.db.station.get_active
         }

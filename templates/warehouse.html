@@ -1,23 +1,23 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    {% if form == 'wire_cutting' %}
+    {% if form == 'work_order' %}
         Wire Cutting
     {% end %}
 {% end %}
-{% block active %}wire-cutting{% end %}
+{% block active %}work-order{% end %}
 
 {% block content-panel %}
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-lg-offset-1">
         <div class="panel-heading">
-            {% if form == 'wire_cutting' %}
+            {% if form == 'work_order' %}
                 Wire Cutting
             {% end %}
         </div>
         <div class="panel-body">
             <div id="alert"></div>
-            {% include 'forms/wire_cutting.html' %}
+            {% include 'forms/work_order.html' %}
         </div>
     </div>
 </div>
