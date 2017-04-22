@@ -366,6 +366,16 @@ class Station(ApiBase):
     def __init__(self, *args, **kwargs):
         super(Station, self).__init__(*args, **kwargs)
         self.rpc = {
-            '': self.db.station.get,
+            '': self.get_station,
             'active_work_order': self.db.station.get_active
         }
+
+    @gen.coroutine
+    def get_station(self, employee=None):
+        if not employee:
+            employee = self.get_secure_cookie('uid').decode()
+            result = yield self.db.station.get(employee)
+            return result
+        else:
+            result = yield self.db.station.get(employee)
+            return result
