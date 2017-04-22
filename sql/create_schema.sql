@@ -2,11 +2,12 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.5.1
--- Dumped by pg_dump version 9.5.1
+-- Dumped from database version 9.6.1
+-- Dumped by pg_dump version 9.6.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
@@ -23,6 +24,36 @@ CREATE SCHEMA opportunity_tracker;
 ALTER SCHEMA opportunity_tracker OWNER TO postgres;
 
 SET search_path = opportunity_tracker, pg_catalog;
+
+--
+-- Name: cut_added(); Type: FUNCTION; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE FUNCTION cut_added() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$BEGIN
+	NEW.remaining = NEW.qty - NEW.complete;
+    RETURN NEW;
+END
+$$;
+
+
+ALTER FUNCTION opportunity_tracker.cut_added() OWNER TO postgres;
+
+--
+-- Name: reel_added(); Type: FUNCTION; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE FUNCTION reel_added() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+	NEW.current_length = NEW.reel_length;
+    RETURN NEW;
+END$$;
+
+
+ALTER FUNCTION opportunity_tracker.reel_added() OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -394,6 +425,21 @@ ALTER SEQUENCE session_id_seq OWNED BY session.id;
 
 
 --
+-- Name: station; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE TABLE station (
+    location text NOT NULL,
+    ip_address inet,
+    id integer NOT NULL,
+    active_work_order integer,
+    employee integer NOT NULL
+);
+
+
+ALTER TABLE station OWNER TO postgres;
+
+--
 -- Name: unit_of_measure; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
@@ -405,56 +451,215 @@ CREATE TABLE unit_of_measure (
 ALTER TABLE unit_of_measure OWNER TO postgres;
 
 --
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+-- Name: wire_station_id_seq; Type: SEQUENCE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE SEQUENCE wire_station_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE wire_station_id_seq OWNER TO postgres;
+
+--
+-- Name: wire_station_id_seq; Type: SEQUENCE OWNED BY; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER SEQUENCE wire_station_id_seq OWNED BY station.id;
+
+
+--
+-- Name: work_order; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE TABLE work_order (
+    id integer NOT NULL,
+    station integer NOT NULL,
+    complete boolean DEFAULT false NOT NULL,
+    creator integer NOT NULL,
+    created timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE work_order OWNER TO postgres;
+
+--
+-- Name: work_order_items; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE TABLE work_order_items (
+    id integer NOT NULL,
+    part_number text NOT NULL,
+    qty integer NOT NULL,
+    work_order integer NOT NULL,
+    complete integer DEFAULT 0 NOT NULL,
+    cut_length integer NOT NULL,
+    remaining integer
+);
+
+
+ALTER TABLE work_order_items OWNER TO postgres;
+
+--
+-- Name: work_order_cuts_id_seq; Type: SEQUENCE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE SEQUENCE work_order_cuts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE work_order_cuts_id_seq OWNER TO postgres;
+
+--
+-- Name: work_order_cuts_id_seq; Type: SEQUENCE OWNED BY; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER SEQUENCE work_order_cuts_id_seq OWNED BY work_order_items.id;
+
+
+--
+-- Name: work_order_id_seq; Type: SEQUENCE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE SEQUENCE work_order_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE work_order_id_seq OWNER TO postgres;
+
+--
+-- Name: work_order_id_seq; Type: SEQUENCE OWNED BY; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER SEQUENCE work_order_id_seq OWNED BY work_order.id;
+
+
+--
+-- Name: work_order_reels; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE TABLE work_order_reels (
+    id integer NOT NULL,
+    part_number text NOT NULL,
+    reel_length integer NOT NULL,
+    work_order integer,
+    current_length integer
+);
+
+
+ALTER TABLE work_order_reels OWNER TO postgres;
+
+--
+-- Name: work_order_reels_id_seq; Type: SEQUENCE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE SEQUENCE work_order_reels_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE work_order_reels_id_seq OWNER TO postgres;
+
+--
+-- Name: work_order_reels_id_seq; Type: SEQUENCE OWNED BY; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER SEQUENCE work_order_reels_id_seq OWNED BY work_order_reels.id;
+
+
+--
+-- Name: company id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY company ALTER COLUMN id SET DEFAULT nextval('company_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+-- Name: contact id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY contact ALTER COLUMN id SET DEFAULT nextval('contact_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+-- Name: employee id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY employee ALTER COLUMN id SET DEFAULT nextval('employee_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+-- Name: location id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY location ALTER COLUMN id SET DEFAULT nextval('location_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+-- Name: notes id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notes ALTER COLUMN id SET DEFAULT nextval('notes_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+-- Name: notification id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notification ALTER COLUMN id SET DEFAULT nextval('notification_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+-- Name: session id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY session ALTER COLUMN id SET DEFAULT nextval('session_id_seq'::regclass);
 
 
 --
--- Name: company_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: station id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY station ALTER COLUMN id SET DEFAULT nextval('wire_station_id_seq'::regclass);
+
+
+--
+-- Name: work_order id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order ALTER COLUMN id SET DEFAULT nextval('work_order_id_seq'::regclass);
+
+
+--
+-- Name: work_order_items id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_items ALTER COLUMN id SET DEFAULT nextval('work_order_cuts_id_seq'::regclass);
+
+
+--
+-- Name: work_order_reels id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_reels ALTER COLUMN id SET DEFAULT nextval('work_order_reels_id_seq'::regclass);
+
+
+--
+-- Name: company company_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY company
@@ -462,7 +667,7 @@ ALTER TABLE ONLY company
 
 
 --
--- Name: contact_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: contact contact_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY contact
@@ -470,7 +675,7 @@ ALTER TABLE ONLY contact
 
 
 --
--- Name: cost_type_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: cost_type cost_type_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY cost_type
@@ -478,7 +683,7 @@ ALTER TABLE ONLY cost_type
 
 
 --
--- Name: employee_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: employee employee_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY employee
@@ -486,7 +691,7 @@ ALTER TABLE ONLY employee
 
 
 --
--- Name: employee_username_key; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: employee employee_username_key; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY employee
@@ -494,7 +699,7 @@ ALTER TABLE ONLY employee
 
 
 --
--- Name: id_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: notification id_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notification
@@ -502,7 +707,7 @@ ALTER TABLE ONLY notification
 
 
 --
--- Name: kit_bom_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: kit_bom kit_bom_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY kit_bom
@@ -510,7 +715,7 @@ ALTER TABLE ONLY kit_bom
 
 
 --
--- Name: location_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: location location_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY location
@@ -518,7 +723,7 @@ ALTER TABLE ONLY location
 
 
 --
--- Name: note_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: notes note_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notes
@@ -526,7 +731,7 @@ ALTER TABLE ONLY notes
 
 
 --
--- Name: part_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: part part_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY part
@@ -534,7 +739,7 @@ ALTER TABLE ONLY part
 
 
 --
--- Name: part_type_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: part_type part_type_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY part_type
@@ -542,7 +747,7 @@ ALTER TABLE ONLY part_type
 
 
 --
--- Name: pk_employee; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: permissions pk_employee; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY permissions
@@ -550,7 +755,7 @@ ALTER TABLE ONLY permissions
 
 
 --
--- Name: price_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: price price_pk; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY price
@@ -558,7 +763,7 @@ ALTER TABLE ONLY price
 
 
 --
--- Name: project_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: project project_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY project
@@ -566,7 +771,7 @@ ALTER TABLE ONLY project
 
 
 --
--- Name: session_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: session session_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY session
@@ -574,7 +779,7 @@ ALTER TABLE ONLY session
 
 
 --
--- Name: unique_name; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: company unique_name; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY company
@@ -582,11 +787,43 @@ ALTER TABLE ONLY company
 
 
 --
--- Name: unit_of_measure_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: unit_of_measure unit_of_measure_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY unit_of_measure
     ADD CONSTRAINT unit_of_measure_pkey PRIMARY KEY (uom);
+
+
+--
+-- Name: station wire_station_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY station
+    ADD CONSTRAINT wire_station_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: work_order_items work_order_cuts_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_items
+    ADD CONSTRAINT work_order_cuts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: work_order work_order_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order
+    ADD CONSTRAINT work_order_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: work_order_reels work_order_reels_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_reels
+    ADD CONSTRAINT work_order_reels_pkey PRIMARY KEY (id);
 
 
 --
@@ -674,7 +911,21 @@ CREATE INDEX i_project_customer ON project USING btree (company);
 
 
 --
--- Name: company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: work_order_reels new_reel; Type: TRIGGER; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE TRIGGER new_reel BEFORE INSERT ON work_order_reels FOR EACH ROW EXECUTE PROCEDURE reel_added();
+
+
+--
+-- Name: work_order_items remaining_update; Type: TRIGGER; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE TRIGGER remaining_update BEFORE INSERT OR UPDATE ON work_order_items FOR EACH ROW EXECUTE PROCEDURE cut_added();
+
+
+--
+-- Name: notification company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notification
@@ -682,7 +933,7 @@ ALTER TABLE ONLY notification
 
 
 --
--- Name: company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: notes company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notes
@@ -690,7 +941,7 @@ ALTER TABLE ONLY notes
 
 
 --
--- Name: company_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: location company_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY location
@@ -698,7 +949,7 @@ ALTER TABLE ONLY location
 
 
 --
--- Name: contact_company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: contact contact_company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY contact
@@ -706,7 +957,7 @@ ALTER TABLE ONLY contact
 
 
 --
--- Name: contact_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: notes contact_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notes
@@ -714,7 +965,7 @@ ALTER TABLE ONLY notes
 
 
 --
--- Name: creator_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: company creator_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY company
@@ -722,7 +973,7 @@ ALTER TABLE ONLY company
 
 
 --
--- Name: employee_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: company employee_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY company
@@ -730,7 +981,7 @@ ALTER TABLE ONLY company
 
 
 --
--- Name: employee_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: notification employee_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY notification
@@ -738,7 +989,7 @@ ALTER TABLE ONLY notification
 
 
 --
--- Name: fk_employee; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: permissions fk_employee; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY permissions
@@ -746,7 +997,23 @@ ALTER TABLE ONLY permissions
 
 
 --
--- Name: kit_bom_kit_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: work_order fk_work_order_employee; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order
+    ADD CONSTRAINT fk_work_order_employee FOREIGN KEY (creator) REFERENCES employee(id);
+
+
+--
+-- Name: work_order fk_work_order_station; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order
+    ADD CONSTRAINT fk_work_order_station FOREIGN KEY (station) REFERENCES station(id);
+
+
+--
+-- Name: kit_bom kit_bom_kit_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY kit_bom
@@ -754,7 +1021,7 @@ ALTER TABLE ONLY kit_bom
 
 
 --
--- Name: kit_bom_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: kit_bom kit_bom_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY kit_bom
@@ -762,7 +1029,7 @@ ALTER TABLE ONLY kit_bom
 
 
 --
--- Name: part_part_type_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: part part_part_type_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY part
@@ -770,7 +1037,7 @@ ALTER TABLE ONLY part
 
 
 --
--- Name: part_uom_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: part part_uom_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY part
@@ -778,7 +1045,7 @@ ALTER TABLE ONLY part
 
 
 --
--- Name: price_company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: price price_company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY price
@@ -786,7 +1053,7 @@ ALTER TABLE ONLY price
 
 
 --
--- Name: price_cost_type_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: price price_cost_type_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY price
@@ -794,7 +1061,7 @@ ALTER TABLE ONLY price
 
 
 --
--- Name: price_part_number_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: price price_part_number_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY price
@@ -802,7 +1069,7 @@ ALTER TABLE ONLY price
 
 
 --
--- Name: project_company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: project project_company_fk; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY project
@@ -810,7 +1077,7 @@ ALTER TABLE ONLY project
 
 
 --
--- Name: session_employee_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: session session_employee_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY session
@@ -818,12 +1085,51 @@ ALTER TABLE ONLY session
 
 
 --
--- Name: opportunity_tracker; Type: ACL; Schema: -; Owner: postgres
+-- Name: station wire_station_active_work_order_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
-REVOKE ALL ON SCHEMA opportunity_tracker FROM PUBLIC;
-REVOKE ALL ON SCHEMA opportunity_tracker FROM postgres;
-GRANT ALL ON SCHEMA opportunity_tracker TO postgres;
+ALTER TABLE ONLY station
+    ADD CONSTRAINT wire_station_active_work_order_fkey FOREIGN KEY (active_work_order) REFERENCES work_order(id);
+
+
+--
+-- Name: station wire_station_employee_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY station
+    ADD CONSTRAINT wire_station_employee_fkey FOREIGN KEY (employee) REFERENCES employee(id);
+
+
+--
+-- Name: work_order_items work_order_cuts_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_items
+    ADD CONSTRAINT work_order_cuts_part_number_fkey FOREIGN KEY (part_number) REFERENCES part(part_number);
+
+
+--
+-- Name: work_order_items work_order_cuts_work_order_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_items
+    ADD CONSTRAINT work_order_cuts_work_order_fkey FOREIGN KEY (work_order) REFERENCES work_order(id);
+
+
+--
+-- Name: work_order_reels work_order_reels_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_reels
+    ADD CONSTRAINT work_order_reels_part_number_fkey FOREIGN KEY (part_number) REFERENCES part(part_number);
+
+
+--
+-- Name: work_order_reels work_order_reels_work_order_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_reels
+    ADD CONSTRAINT work_order_reels_work_order_fkey FOREIGN KEY (work_order) REFERENCES work_order(id);
 
 
 --
