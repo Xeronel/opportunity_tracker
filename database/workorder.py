@@ -45,6 +45,11 @@ class WorkOrder(QueryGroup):
                 'items': self.parse_query(wo_items.fetchall(), wo_items.description)}
 
     @gen.coroutine
+    def get_all(self):
+        cursor = yield self.execute("SELECT * FROM work_order")
+        return self.parse_query(cursor.fetchall(), cursor.description)
+
+    @gen.coroutine
     def create(self, station, creator):
         """
         Create a work order and return it's id
