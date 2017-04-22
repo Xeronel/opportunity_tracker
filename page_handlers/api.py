@@ -4,6 +4,8 @@ from tornado.escape import json_encode
 from tornado import gen
 from dateutil import parser as dateutil
 from inspect import signature
+import psycopg2
+import traceback
 
 
 class ApiBase(BaseHandler):
@@ -16,7 +18,11 @@ class ApiBase(BaseHandler):
     def get(self, arg, proc=''):
         if proc in self.rpc:
             if len(signature(self.rpc[proc]).parameters) > 0:
-                result = yield self.rpc[proc](arg)
+                try:
+                    result = yield self.rpc[proc](arg)
+                except psycopg2.Error:
+                    traceback.print_exc()
+                    result = {}
             else:
                 result = yield self.rpc[proc]()
             self.write(json_encode(result))
