@@ -13,7 +13,7 @@ class ApiBase(BaseHandler):
 
     @gen.coroutine
     @web.authenticated
-    def get(self, arg, proc=None):
+    def get(self, arg, proc=''):
         if proc in self.rpc:
             if len(signature(self.rpc[proc]).parameters) > 0:
                 result = yield self.rpc[proc](arg)
