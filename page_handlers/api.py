@@ -358,8 +358,17 @@ class Part(ApiBase):
 class WorkOrder(ApiBase):
     def __init__(self, *args, **kwargs):
         super(WorkOrder, self).__init__(*args, **kwargs)
-        self.rpc = {'': self.db.work_order.get_all,
-                    'items': self.db.work_order.get_items}
+        self.rpc = {'': self.get_work_order,
+                    'items': self.db.work_order.get_items,
+                    'consumables': self.db.work_order.get_consumables}
+
+    @gen.coroutine
+    def get_work_order(self, arg):
+        if arg:
+            result = yield self.db.work_order.get(arg)
+        else:
+            result = yield self.db.work_order.get_all()
+        return result
 
 
 class Station(ApiBase):
