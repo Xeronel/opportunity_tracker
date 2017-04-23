@@ -23,6 +23,48 @@ CREATE SCHEMA opportunity_tracker;
 
 ALTER SCHEMA opportunity_tracker OWNER TO postgres;
 
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: adminpack; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION adminpack IS 'administrative functions for PostgreSQL';
+
+
+--
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA opportunity_tracker;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
+
 SET search_path = opportunity_tracker, pg_catalog;
 
 --
@@ -46,9 +88,8 @@ ALTER FUNCTION opportunity_tracker.cut_added() OWNER TO postgres;
 
 CREATE FUNCTION reel_added() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$
-BEGIN
-	NEW.current_length = NEW.reel_length;
+    AS $$BEGIN
+	NEW.current_qty = NEW.qty;
     RETURN NEW;
 END$$;
 
@@ -444,7 +485,8 @@ ALTER TABLE station OWNER TO postgres;
 --
 
 CREATE TABLE unit_of_measure (
-    uom text NOT NULL
+    uom text NOT NULL,
+    label text
 );
 
 
@@ -487,6 +529,21 @@ CREATE TABLE work_order (
 ALTER TABLE work_order OWNER TO postgres;
 
 --
+-- Name: work_order_consumable; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
+--
+
+CREATE TABLE work_order_consumable (
+    id integer NOT NULL,
+    part_number text NOT NULL,
+    qty integer NOT NULL,
+    work_order integer,
+    current_qty integer
+);
+
+
+ALTER TABLE work_order_consumable OWNER TO postgres;
+
+--
 -- Name: work_order_items; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
 --
 
@@ -496,7 +553,7 @@ CREATE TABLE work_order_items (
     qty integer NOT NULL,
     work_order integer NOT NULL,
     complete integer DEFAULT 0 NOT NULL,
-    cut_length integer NOT NULL,
+    consume_qty integer NOT NULL,
     remaining integer
 );
 
@@ -546,21 +603,6 @@ ALTER SEQUENCE work_order_id_seq OWNED BY work_order.id;
 
 
 --
--- Name: work_order_reels; Type: TABLE; Schema: opportunity_tracker; Owner: postgres
---
-
-CREATE TABLE work_order_reels (
-    id integer NOT NULL,
-    part_number text NOT NULL,
-    reel_length integer NOT NULL,
-    work_order integer,
-    current_length integer
-);
-
-
-ALTER TABLE work_order_reels OWNER TO postgres;
-
---
 -- Name: work_order_reels_id_seq; Type: SEQUENCE; Schema: opportunity_tracker; Owner: postgres
 --
 
@@ -578,7 +620,7 @@ ALTER TABLE work_order_reels_id_seq OWNER TO postgres;
 -- Name: work_order_reels_id_seq; Type: SEQUENCE OWNED BY; Schema: opportunity_tracker; Owner: postgres
 --
 
-ALTER SEQUENCE work_order_reels_id_seq OWNED BY work_order_reels.id;
+ALTER SEQUENCE work_order_reels_id_seq OWNED BY work_order_consumable.id;
 
 
 --
@@ -645,17 +687,17 @@ ALTER TABLE ONLY work_order ALTER COLUMN id SET DEFAULT nextval('work_order_id_s
 
 
 --
+-- Name: work_order_consumable id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
+--
+
+ALTER TABLE ONLY work_order_consumable ALTER COLUMN id SET DEFAULT nextval('work_order_reels_id_seq'::regclass);
+
+
+--
 -- Name: work_order_items id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
 --
 
 ALTER TABLE ONLY work_order_items ALTER COLUMN id SET DEFAULT nextval('work_order_cuts_id_seq'::regclass);
-
-
---
--- Name: work_order_reels id; Type: DEFAULT; Schema: opportunity_tracker; Owner: postgres
---
-
-ALTER TABLE ONLY work_order_reels ALTER COLUMN id SET DEFAULT nextval('work_order_reels_id_seq'::regclass);
 
 
 --
@@ -819,10 +861,10 @@ ALTER TABLE ONLY work_order
 
 
 --
--- Name: work_order_reels work_order_reels_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: work_order_consumable work_order_reels_pkey; Type: CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
-ALTER TABLE ONLY work_order_reels
+ALTER TABLE ONLY work_order_consumable
     ADD CONSTRAINT work_order_reels_pkey PRIMARY KEY (id);
 
 
@@ -911,10 +953,10 @@ CREATE INDEX i_project_customer ON project USING btree (company);
 
 
 --
--- Name: work_order_reels new_reel; Type: TRIGGER; Schema: opportunity_tracker; Owner: postgres
+-- Name: work_order_consumable new_reel; Type: TRIGGER; Schema: opportunity_tracker; Owner: postgres
 --
 
-CREATE TRIGGER new_reel BEFORE INSERT ON work_order_reels FOR EACH ROW EXECUTE PROCEDURE reel_added();
+CREATE TRIGGER new_reel BEFORE INSERT ON work_order_consumable FOR EACH ROW EXECUTE PROCEDURE reel_added();
 
 
 --
@@ -1117,18 +1159,18 @@ ALTER TABLE ONLY work_order_items
 
 
 --
--- Name: work_order_reels work_order_reels_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: work_order_consumable work_order_reels_part_number_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
-ALTER TABLE ONLY work_order_reels
+ALTER TABLE ONLY work_order_consumable
     ADD CONSTRAINT work_order_reels_part_number_fkey FOREIGN KEY (part_number) REFERENCES part(part_number);
 
 
 --
--- Name: work_order_reels work_order_reels_work_order_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
+-- Name: work_order_consumable work_order_reels_work_order_fkey; Type: FK CONSTRAINT; Schema: opportunity_tracker; Owner: postgres
 --
 
-ALTER TABLE ONLY work_order_reels
+ALTER TABLE ONLY work_order_consumable
     ADD CONSTRAINT work_order_reels_work_order_fkey FOREIGN KEY (work_order) REFERENCES work_order(id);
 
 

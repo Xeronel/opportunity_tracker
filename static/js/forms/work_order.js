@@ -1,10 +1,10 @@
 var work_order = {};
 
-work_order.add_reel = function () {
-    var table = $('#reels').dataTable();
-    var part = $('#reel_partnumber').selectize()[0].selectize.getValue();
-    var qty = $('#reel_qty').val();
-    var len = $('#reel_len').val();
+work_order.add_consumable = function () {
+    var table = $('#consumables').dataTable();
+    var part = $('#consumable_part').selectize()[0].selectize.getValue();
+    var qty = $('#consume_qty').val();
+    var len = $('#consume_amount').val();
 
     if (!len) {
         return;
@@ -32,10 +32,10 @@ work_order.add_reel = function () {
     }
 };
 
-work_order.add_cut = function () {
-    var table = $('#cuts').dataTable();
-    var part = $('#cut_partnumber').selectize()[0].selectize.getValue();
-    var qty = parseInt($('#cut_qty').val()) || 1;
+work_order.add_item = function () {
+    var table = $('#items').dataTable();
+    var part = $('#item_partnumber').selectize()[0].selectize.getValue();
+    var qty = parseInt($('#item_qty').val()) || 1;
     var new_row = {
         part_number: part,
         qty: qty,
@@ -80,8 +80,8 @@ work_order.submit = function () {
 
     if (table.valid()) {
         var data = {};
-        data.reels = serializeTable('#reels');
-        data.cuts = serializeTable('#cuts');
+        data.consumables = serializeTable('#consumables');
+        data.items = serializeTable('#items');
         data.station = $('#station_dropdown').selectize()[0].selectize.getValue();
 
         $.ajax({
@@ -117,8 +117,8 @@ work_order.submit = function () {
 $(function () {
     // Initialize datatables
     var dataTables = [
-        {id: '#reels', title: 'Reels:'},
-        {id: '#cuts', title: 'Cuts:'}
+        {id: '#consumables', title: 'Consumables:'},
+        {id: '#items', title: 'Cuts:'}
     ];
     $(dataTables).each(function (idx, e) {
         $(e.id).DataTable({
@@ -149,9 +149,9 @@ $(function () {
 
     // Bind functions to enter key
     var inputs = [
-        {id: '#reel_qty', func: work_order.add_reel},
-        {id: '#reel_len', func: work_order.add_reel},
-        {id: '#cut_qty', func: work_order.add_cut}
+        {id: '#consume_qty', func: work_order.add_consumable},
+        {id: '#consume_amount', func: work_order.add_consumable},
+        {id: '#item_qty', func: work_order.add_item}
     ];
     $(inputs).each(function (idx, e) {
         $(e.id).keyup(function (event) {
@@ -163,13 +163,13 @@ $(function () {
 
     $('#work-order-form').validate({
         rules: {
-            "reel_partnumber": {
+            "consumable_part": {
                 required: true,
-                dataTable: ['#reels', 'At least 1 reel is required.']
+                dataTable: ['#consumables', 'At least 1 consumable is required.']
             },
-            "cut_partnumber": {
+            "item_partnumber": {
                 required: false,
-                dataTable: ['#cuts', 'At least 1 cut is required.']
+                dataTable: ['#items', 'At least 1 item is required.']
             }
         }
     });

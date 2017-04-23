@@ -16,7 +16,7 @@ class WorkOrder(QueryGroup):
         """, [work_order])
         cursor2 = self.pool.execute("""
         SELECT
-            woi.id, woi.part_number, woi.qty, woi.remaining, woi.cut_length, kit_bom.part_number AS reel_part_number
+            woi.id, woi.part_number, woi.qty, woi.remaining, woi.consume_qty, kit_bom.part_number AS consumable_part_number
         FROM
             work_order_items woi
         JOIN
@@ -28,8 +28,8 @@ class WorkOrder(QueryGroup):
             woi.remaining > 0
         """, [work_order])
         cursor3 = self.pool.execute("""
-        SELECT id, part_number, reel_length, current_length
-        FROM work_order_reels
+        SELECT id, part_number, qty, current_qty
+        FROM work_order_consumable
         WHERE work_order = %s
         """, [work_order])
 
@@ -39,9 +39,9 @@ class WorkOrder(QueryGroup):
             yield self.connect()
             yield [cursor1, cursor2, cursor3]
 
-        wo, wo_items, wo_reels = cursor1.result(), cursor2.result(), cursor3.result()
+        wo, wo_items, wo_consumables = cursor1.result(), cursor2.result(), cursor3.result()
         return {'work_order': self.parse_query(wo.fetchone(), wo.description),
-                'reels': self.parse_query(wo_reels.fetchall(), wo_reels.description),
+                'consumables': self.parse_query(wo_consumables.fetchall(), wo_consumables.description),
                 'items': self.parse_query(wo_items.fetchall(), wo_items.description)}
 
     @gen.coroutine
@@ -66,60 +66,65 @@ class WorkOrder(QueryGroup):
         return cursor.fetchone()[0]
 
     @gen.coroutine
-    def add_reels(self, work_order, reels):
+    def add_consumables(self, work_order, consumables):
         """
-        Add reels to a work order
+        Add consumables to a work order
         :param work_order: Work order id
-        :param reels: List of reel objects
+        :param consumables: List of consumable objects
         """
-        reel_list = []
-        for reel in reels:
-            for i in range(reel['qty']):
-                reel_list.append(reel['part_number'])
-                reel_list.append(reel['length'])
-                reel_list.append(work_order)
+        consumable_list = []
+        for consumable in consumables:
+            for i in range(consumable['qty']):
+                consumable_list.append(consumable['part_number'])
+                consumable_list.append(consumable['length'])
+                consumable_list.append(work_order)
 
         yield self.execute(
-            "INSERT INTO work_order_reels (part_number, reel_length, work_order) "
-            "VALUES %s" % self._value_builder(reel_list, 3),
-            reel_list
+            "INSERT INTO work_order_consumable (part_number, qty, work_order) "
+            "VALUES %s" % self._value_builder(consumable_list, 3),
+            consumable_list
         )
 
     @gen.coroutine
-    def get_reels(self, work_order):
+    def get_consumables(self, work_order):
         cursor = yield self.execute("""
-        SELECT id, part_number, reel_length, current_length
-        FROM work_order_reels
+        SELECT id, part_number, qty, current_qty
+        FROM work_order_consumable
         WHERE work_order = %s
         """, [work_order])
         return self.parse_query(cursor.fetchall(), cursor.description)
 
     @gen.coroutine
-    def add_items(self, work_order, cuts):
+    def add_items(self, work_order, items):
         """
-        Add cuts to a work order
+        Add items to a work order
         :param work_order: 
-        :param cuts: 
+        :param items: 
         :return: 
         """
-        cut_list = []
-        for cut in cuts:
-            cut_list.append(cut['part_number'])
-            cut_list.append(cut['qty'])
-            cut_list.append(cut['length'])
-            cut_list.append(work_order)
+        item_list = []
+        for item in items:
+            item_list.append(item['part_number'])
+            item_list.append(item['qty'])
+            item_list.append(item['length'])
+            item_list.append(work_order)
 
         yield self.execute(
-            "INSERT INTO work_order_items (part_number, qty, cut_length, work_order) "
-            "VALUES %s" % self._value_builder(cut_list, 4),
-            cut_list
+            "INSERT INTO work_order_items (part_number, qty, consume_qty, work_order) "
+            "VALUES %s" % self._value_builder(item_list, 4),
+            item_list
         )
 
     @gen.coroutine
     def get_items(self, wo_id):
         cursor = yield self.execute("""
         SELECT
-            woi.id, woi.part_number, woi.qty, woi.remaining, woi.cut_length, kit_bom.part_number AS reel_part_number
+            woi.id,
+            woi.part_number,
+            woi.qty,
+            woi.remaining,
+            woi.consume_qty,
+            kit_bom.part_number AS consumable_part
         FROM
             work_order_items woi
         JOIN

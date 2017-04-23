@@ -18,12 +18,12 @@ class WorkOrder(BaseHandler):
         try:
             user = yield self.get_user()
             station = self.get_json_arg('station')
-            reels = self.get_json_arg('reels')
-            cuts = self.get_json_arg('cuts')
+            consumables = self.get_json_arg('consumables')
+            items = self.get_json_arg('items')
 
             # Create a new work order
             wo_id = yield self.db.work_order.create(station, user.uid)
-            yield [self.db.work_order.add_reels(wo_id, reels), self.db.work_order.add_items(wo_id, cuts)]
+            yield [self.db.work_order.add_consumables(wo_id, consumables), self.db.work_order.add_items(wo_id, items)]
         except psycopg2.IntegrityError as e:
             self.send_error(400, reason=e.pgerror.replace('\n', ' ').rstrip())
             traceback.print_exc()
@@ -35,13 +35,13 @@ class WorkOrder(BaseHandler):
     @gen.coroutine
     @web.authenticated
     def render(self, form, **kwargs):
-        reels = yield self.db.get_part_numbers('ITEM')
-        cuts = yield self.db.get_part_numbers('KIT')
+        consumables = yield self.db.get_part_numbers('ITEM')
+        kits = yield self.db.get_part_numbers('KIT')
         stations = yield self.db.station.get_all()
         yield super(WorkOrder, self).render('warehouse.html',
                                             stations=stations,
-                                            reels=reels,
-                                            cuts=cuts,
+                                            consumables=consumables,
+                                            kits=kits,
                                             form=form)
 
 
