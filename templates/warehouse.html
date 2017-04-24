@@ -24,5 +24,18 @@
 {% end %}
 
 {% block includes %}
+{% if form == 'work_order' %}
+<script>
+    var uoms = {};
+    $({% raw json_encode(uoms) %}).each(function (idx, e) {
+        uoms[e.uom] = e.label;
+    });
+
+    var consumables = {};
+    $({% raw json_encode(consumables) %}).each(function (idx, e) {
+        consumables[e.part_number] = uoms[e.uom];
+    });
+</script>
+{% end %}
 <script src="{{ static_url('js/forms/' + form + '.js') }}"></script>
 {% end %}

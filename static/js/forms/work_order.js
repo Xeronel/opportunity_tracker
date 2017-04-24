@@ -173,4 +173,8 @@ $(function () {
             }
         }
     });
+
+    $('#consumable_part').selectize().on('change', function (value) {
+        $('label[for="consume_amount"]').html(consumables[$(this).selectize()[0].selectize.getValue()]+':');
+    });
 });

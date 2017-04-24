@@ -51,9 +51,9 @@ class Database:
 
     @gen.coroutine
     def get_uoms(self):
-        cursor = yield self.execute("SELECT uom "
+        cursor = yield self.execute("SELECT * "
                                     "FROM unit_of_measure")
-        return cursor.fetchall()
+        return self.parse_query(cursor.fetchall(), cursor.description)
 
     @gen.coroutine
     def get_part_types(self):

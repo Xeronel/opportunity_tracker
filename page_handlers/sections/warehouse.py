@@ -1,5 +1,5 @@
 from page_handlers import BaseHandler
-from tornado import gen, web
+from tornado import gen, web, escape
 from subprocess import call
 from os import devnull
 import traceback
@@ -38,11 +38,13 @@ class WorkOrder(BaseHandler):
         consumables = yield self.db.get_part_numbers('ITEM')
         kits = yield self.db.get_part_numbers('KIT')
         stations = yield self.db.station.get_all()
+        uoms = yield self.db.get_uoms()
         yield super(WorkOrder, self).render('warehouse.html',
                                             stations=stations,
                                             consumables=consumables,
                                             kits=kits,
-                                            form=form)
+                                            form=form,
+                                            uoms=uoms)
 
 
 class Print(BaseHandler):
