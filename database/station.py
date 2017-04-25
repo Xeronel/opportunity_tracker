@@ -1,5 +1,6 @@
 from tornado import gen
 from .base import QueryGroup
+from .workorder import WorkOrder
 
 
 class Station(QueryGroup):
@@ -33,7 +34,10 @@ class Station(QueryGroup):
         FROM station
         WHERE id = %s
         """, [station_id])
-        return self.parse_query(cursor.fetchone(), cursor.description)
+        get_work_order = WorkOrder.get
+        # noinspection PyTypeChecker
+        result = yield get_work_order(self, cursor.fetchone()[0])
+        return result
 
     @gen.coroutine
     def get(self, employee):
