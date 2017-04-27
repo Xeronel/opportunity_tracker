@@ -9,12 +9,12 @@ class WorkOrder(QueryGroup):
 
     @gen.coroutine
     def get(self, work_order):
-        cursor1 = self.pool.execute("""
-        SELECT station, complete, creator, created
+        wo_cursor = self.pool.execute("""
+        SELECT id, station, complete, creator, created
         FROM work_order
         WHERE id = %s
         """, [work_order])
-        cursor2 = self.pool.execute("""
+        wo_items_cursor = self.pool.execute("""
         SELECT
             woi.id, woi.part_number, woi.qty, woi.remaining, woi.consume_qty, kit_bom.part_number AS consumable_part_number
         FROM
@@ -27,19 +27,19 @@ class WorkOrder(QueryGroup):
             woi.work_order = %s AND
             woi.remaining > 0
         """, [work_order])
-        cursor3 = self.pool.execute("""
+        wo_consumables_cursor = self.pool.execute("""
         SELECT id, part_number, qty, current_qty
         FROM work_order_consumable
         WHERE work_order = %s
         """, [work_order])
 
         try:
-            yield [cursor1, cursor2, cursor3]
+            yield [wo_cursor, wo_items_cursor, wo_consumables_cursor]
         except psycopg2.OperationalError:
             yield self.connect()
-            yield [cursor1, cursor2, cursor3]
+            yield [wo_cursor, wo_items_cursor, wo_consumables_cursor]
 
-        wo, wo_items, wo_consumables = cursor1.result(), cursor2.result(), cursor3.result()
+        wo, wo_items, wo_consumables = wo_cursor.result(), wo_items_cursor.result(), wo_consumables_cursor.result()
         return {'work_order': self.parse_query(wo.fetchone(), wo.description),
                 'consumables': self.parse_query(wo_consumables.fetchall(), wo_consumables.description),
                 'items': self.parse_query(wo_items.fetchall(), wo_items.description)}
